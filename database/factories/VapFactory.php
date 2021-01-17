@@ -2,19 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Vap;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class VapFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = User::class;
+    protected $model = Vap::class;
 
     /**
      * Define the model's default state.
@@ -25,10 +23,6 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'email' => 'user@example.com',
-            'email_verified_at' => now(),
-            'password' => Hash::make('123456'), // password
-            'remember_token' => Str::random(10),
         ];
     }
 }
