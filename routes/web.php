@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ProductController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/* Load SPA */
 Route::get('/', function () {
     return view('index');
 });
+
+// Route::get('products', [ProductController::class, 'index']);
+Route::resource('products', ProductController::class);

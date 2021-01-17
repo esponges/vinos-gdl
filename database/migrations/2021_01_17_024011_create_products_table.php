@@ -16,8 +16,9 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->integer('price');
             $table->integer('capacity')->default(750);
+            $table->integer('price');
+            $table->boolean('featured')->default(true);
             $table->foreignId('vap_id')->nullable()->constrained('vaps');
             $table->foreignId('category_id')->nullable()->constrained('categories');
             $table->foreignId('discount_id')->nullable()->constrained('discounts');

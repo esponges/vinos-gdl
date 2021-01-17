@@ -14,19 +14,19 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        DB::table('categories')->insert(
-            [
-                'name' => 'Tequila'
-            ],
-            [
-                'name' => 'Vodka'
-            ],
-            [
-                'name' => 'Whisky'
-            ],
-            [
-                'name' => 'Gin'
-            ]
-        );
+        // DB::table('categories')->insert(
+        //     [
+        //         'name' => 'Tequila'
+        //     ],
+        //     [
+        //         'name' => 'Vodka'
+        //     ],
+        //     [
+        //         'name' => 'Whisky'
+        //     ],
+        //     [
+        //         'name' => 'Gin'
+        //     ]
+        // );
     }
 }
