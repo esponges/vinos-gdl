@@ -31,9 +31,21 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Gin'
             ]
         ]);
+
         DB::table('discounts')->insert([
-            'description' => Factory::create()->sentence(4)
+            [
+                'description' => Factory::create()->sentence(3),
+                'discount' => 0.10,
+            ], [
+                'description' => Factory::create()->sentence(3),
+                'discount' => 0.15,
+            ], [
+                'description' => Factory::create()->sentence(3),
+                'discount' => 0.05,
+            ]
         ]);
+
+
         Vap::factory(10)->create();
         Product::factory(50)->create();
         User::factory()->create();
