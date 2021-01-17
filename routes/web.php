@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProductController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,5 +21,6 @@ Route::get('/', function () {
     return view('index');
 });
 
-// Route::get('products', [ProductController::class, 'index']);
 Route::resource('products', ProductController::class);
+
+Route::get('categories/{category-name}', [CategoryController::class, 'show']);
