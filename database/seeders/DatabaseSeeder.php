@@ -47,7 +47,7 @@ class DatabaseSeeder extends Seeder
 
 
         Vap::factory(10)->create();
-        Product::factory(50)->create();
+        Product::factory(30)->create();
         User::factory()->create();
     }
 }

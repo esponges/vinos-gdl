@@ -19,9 +19,12 @@ class CreateProductsTable extends Migration
             $table->integer('capacity')->default(750);
             $table->integer('price');
             $table->boolean('featured')->default(true);
+            $table->string('img')->nullable();
+
             $table->foreignId('vap_id')->nullable()->constrained('vaps');
             $table->foreignId('category_id')->nullable()->constrained('categories');
             $table->foreignId('discount_id')->nullable()->constrained('discounts');
+
             $table->timestamps();
         });
     }

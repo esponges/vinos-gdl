@@ -33,8 +33,9 @@ class CategoryTest extends TestCase
         $categoriesProducts = [];
 
         for ($i=0; $i < sizeOf($categories); $i++) {
-            array_push($categoriesProducts, [$categories[$i]->name => $categories[$i]->products]);
+            array_push($categoriesProducts, ['id' => $categories[$i]->id, 'category_name' => $categories[$i]->name, 'products' => $categories[$i]->products]);
         }
+        // dd ($categoriesProducts[1]['products']);
 
         $this->assertEquals(json_encode($response->original), json_encode($categoriesProducts));
     }

@@ -18,9 +18,9 @@ class CategoryController extends Controller
         $categoriesProducts = [];
 
         for ($i = 0; $i < sizeOf($categories); $i++) {
-            array_push($categoriesProducts, [$categories[$i]->name => $categories[$i]->products]);
+            array_push($categoriesProducts, ['id' => $categories[$i]->id, 'category_name' => $categories[$i]->name, 'products' => $categories[$i]->products]);
         }
-        // dd ($categoriesProducts);
+        // dd ($categoriesProducts[0]['category_name']);
 
         return response()->json($categoriesProducts, 200);
     }
