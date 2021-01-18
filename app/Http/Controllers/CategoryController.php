@@ -14,7 +14,15 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        $categoriesProducts = [];
+
+        for ($i = 0; $i < sizeOf($categories); $i++) {
+            array_push($categoriesProducts, [$categories[$i]->name => $categories[$i]->products]);
+        }
+        // dd ($categoriesProducts);
+
+        return response()->json($categoriesProducts, 200);
     }
 
     /**

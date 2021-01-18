@@ -68,11 +68,11 @@ class ProductCRUDTest extends TestCase
 
         $response->assertOk();
 
-        $response->dumpHeaders();
+        // $response->dumpHeaders();
 
-        $response->dumpSession();
+        // $response->dumpSession();
 
-        $response->dump();
+        // $response->dump();
 
         $response->assertJsonFragment($product);
     }

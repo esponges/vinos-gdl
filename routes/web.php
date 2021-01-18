@@ -23,4 +23,4 @@ Route::get('/', function () {
 
 Route::resource('products', ProductController::class);
 
-Route::get('categories/{category-name}', [CategoryController::class, 'show']);
+Route::resource('categories', CategoryController::class);
