@@ -24,7 +24,7 @@ class CartController extends Controller
             'attributes' => array()
         ));
 
-        return response()->json([$product->name . ' ' . $product->capacity .  'ml agregado al carrito'], 200);
+        return response()->json([$product->name . ' agregado al carrito'], 200);
     }
 
     //remove item from cart
@@ -32,6 +32,6 @@ class CartController extends Controller
     {
         \Cart::remove($product->id);
 
-        return response()->json([$product->name . " " . $product->capacity . 'ml eliminado del carrito']);
+        return response()->json([$product->name . ' eliminado del carrito']);
     }
 }

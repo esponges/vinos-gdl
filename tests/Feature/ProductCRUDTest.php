@@ -55,13 +55,15 @@ class ProductCRUDTest extends TestCase
         $this->withoutExceptionHandling();
 
         $product = [
-            'name' => Factory::create()->sentence(2),
+            'name' => Factory::create()->sentence(2) . ' 750ml',
+            'description' => Factory::create()->sentence(10),
             'price' => Factory::create()->numberBetween(400, 700),
             'category_id' => Factory::create()->numberBetween(1, 4),
         ];
 
         $response = $this->post('/products', [
             'name' => $product['name'],
+            'description' => $product['description'],
             'price' => $product['price'],
             'category_id' => $product['category_id']
         ]);

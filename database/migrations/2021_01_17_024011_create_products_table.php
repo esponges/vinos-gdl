@@ -17,11 +17,10 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('description');
-            $table->integer('capacity')->default(750);
-            $table->integer('price');
+            $table->integer('capacity')->nullable();
+            $table->float('price');
             $table->boolean('featured')->default(true);
             $table->string('img')->nullable();
-
             $table->foreignId('vap_id')->nullable()->constrained('vaps');
             $table->foreignId('category_id')->nullable()->constrained('categories');
             $table->foreignId('discount_id')->nullable()->constrained('discounts');
