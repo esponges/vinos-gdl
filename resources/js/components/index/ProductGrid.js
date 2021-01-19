@@ -1,34 +1,92 @@
 import React from "react";
-import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-const ProductGrid = () => {
+const ProductGrid = (props) => {
+    const categories = props.products;
+
     return (
-        <div className="row mt-3">
-            <div className="col md-3">
-                <Card style={{ width: "18rem" }}>
-                    <Card.Img
-                        variant="top"
-                        src="holder.js/100px180?text=Image cap"
-                    />
-                    <Card.Body>
-                        <Card.Title>Card Title</Card.Title>
-                        <Card.Text>
-                            Some quick example text to build on the card title
-                            and make up the bulk of the card's content.
-                        </Card.Text>
-                    </Card.Body>
-                    <ListGroup className="list-group-flush">
-                        <ListGroupItem>Cras justo odio</ListGroupItem>
-                        <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-                        <ListGroupItem>Vestibulum at eros</ListGroupItem>
-                    </ListGroup>
-                    <Card.Body>
-                        <Card.Link href="#">Card Link</Card.Link>
-                        <Card.Link href="#">Another Link</Card.Link>
-                    </Card.Body>
-                </Card>
-            </div>
-        </div>
+        <>
+            {/* {categories ? console.log(categories[0].id) : ''} */}
+            {categories ? categories.map(category => {
+                return (
+                    <div
+                        className="mt-2"
+                        id={category.category_name}
+                        key={category.id}
+                    >
+                        <section
+                            className="container mb-2"
+                            id={category.category_name}
+                        >
+                            <h1 className="mt-5">{category.category_name}</h1>
+                            <div className="row mt-3">
+                                {category.products.map((product) => {
+                                    return (
+                                        <div
+                                            key={product.id}
+                                            className="col-md-3 mt-3"
+                                        >
+                                            <Card style={{ width: "18rem" }}>
+                                                <Card.Img
+                                                    variant="top"
+                                                    src="img/bottle.png"
+                                                />
+                                                <Card.Body>
+                                                    <Card.Title>
+                                                        <b>{product.name}</b>
+                                                    </Card.Title>
+                                                </Card.Body>
+                                                <ListGroup className="list-group-flush">
+                                                    <ListGroupItem>
+                                                        Cap. {product.capacity}
+                                                    </ListGroupItem>
+                                                    <ListGroupItem>
+                                                        Precio {product.price}
+                                                    </ListGroupItem>
+                                                </ListGroup>
+                                                <Card.Body>
+                                                    <div className="row">
+                                                        <div className="col-6">
+                                                            <Card.Link href="#">
+                                                                <Button variant="primary">
+                                                                    Comprar
+                                                                </Button>
+                                                            </Card.Link>
+                                                        </div>
+                                                        <div className="col-6">
+                                                            <Link
+                                                                to={{
+                                                                    pathname: `/products/${product.id}`,
+                                                                    state: {
+                                                                        name:
+                                                                            product.name,
+                                                                        description:
+                                                                            product.description,
+                                                                        capacity:
+                                                                            product.capacity,
+                                                                        price:
+                                                                            product.price,
+                                                                    },
+                                                                }}
+                                                            >
+                                                                <Button variant="secondary">
+                                                                    Detalles
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    </div>
+                );
+            }) : ""}
+        </>
     );
 };
 
