@@ -1,9 +1,24 @@
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const ProductGrid = (props) => {
     const categories = props.products;
+
+    const addToCart = (id, event) => {
+        event.preventDefault();
+        // console.log(id, 'onclick');
+        axios.get(`cart/${id}/add`)
+        .then(res => {
+            // console.log(res.data, 'added to cart!!!');
+            window.alert(res.data);
+        })
+        .catch(err => {
+            console.log('not added bro!!!');
+        })
+    }
+
 
     return (
         <>
@@ -39,16 +54,17 @@ const ProductGrid = (props) => {
                                                 </Card.Body>
                                                 <ListGroup className="list-group-flush">
                                                     <ListGroupItem>
-                                                        Cap. {product.capacity}
-                                                    </ListGroupItem>
-                                                    <ListGroupItem>
                                                         Precio {product.price}
                                                     </ListGroupItem>
                                                 </ListGroup>
                                                 <Card.Body>
                                                     <div className="row">
                                                         <div className="col-6">
-                                                            <Card.Link href="#">
+                                                            <Card.Link
+                                                                onClick={() => addToCart(
+                                                                    product.id, event
+                                                                )}
+                                                            >
                                                                 <Button variant="primary">
                                                                     Comprar
                                                                 </Button>
@@ -63,8 +79,6 @@ const ProductGrid = (props) => {
                                                                             product.name,
                                                                         description:
                                                                             product.description,
-                                                                        capacity:
-                                                                            product.capacity,
                                                                         price:
                                                                             product.price,
                                                                     },

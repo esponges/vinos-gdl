@@ -10,12 +10,11 @@ const Footer = () => {
     return (
         <>
             <br />
-            <Navbar bg="light" variant="light">
+            <Navbar bg="light" variant="light" fixed="bottom">
                 <Navbar.Brand href="#home">Vinoreo</Navbar.Brand>
                 <Nav className="mr-auto">
                     <Nav.Link href="#home">TyC</Nav.Link>
                     <Nav.Link href="#features">KlustermxDesign</Nav.Link>
-                    <Nav.Link href="#pricing">Pricing</Nav.Link>
                 </Nav>
                 <Nav>
                     <a href="#" className="floating-btn-ig">

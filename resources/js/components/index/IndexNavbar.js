@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Navbar, Form, Nav, FormControl, NavDropdown } from 'react-bootstrap';
+import { Button, Navbar, Form, Nav, FormControl, NavDropdown, NavItem } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 const IndexNavbar = () => {
     return (
@@ -31,10 +32,9 @@ const IndexNavbar = () => {
                         </NavDropdown>
                     </Nav>
                     <Nav>
-                        <Nav.Link href="#deets">More deets</Nav.Link>
-                        <Nav.Link eventKey={2} href="#memes">
-                            Dank memes
-                        </Nav.Link>
+                        <NavItem style={{ marginRight: "10px" }}>
+                            <Link to="/cart">Carrito</Link>
+                        </NavItem>
                         <Form inline>
                             <FormControl
                                 type="text"

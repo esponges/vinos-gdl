@@ -2,7 +2,8 @@ import React from "react";
 import Home from "./Home";
 import ReactDOM from 'react-dom';
 import { Switch, HashRouter, Route } from "react-router-dom";
-import SingleProduct from "./detail/SingleProduct";
+import SingleProduct from "./elements/SingleProduct";
+import Cart from "./elements/Cart";
 
 const App = () => {
     return (
@@ -10,6 +11,9 @@ const App = () => {
             <Switch>
                 <Route path="/products/:id">
                     <SingleProduct />
+                </Route>
+                <Route path="/cart">
+                    <Cart />
                 </Route>
                 <Route path="/">
                     <Home />
