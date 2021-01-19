@@ -2,21 +2,52 @@
 
 namespace Tests\Feature;
 
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class CartTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
+    public function dummyItem()
     {
-        $response = $this->get('/');
+        $product = Product::find(1);
 
-        $response->assertStatus(200);
+        \Cart::add($product->id, $product->name, $product->price, 1, array());
+    }
+
+    public function test_get_cart_items()
+    {
+        $this->withoutExceptionHandling();
+        $cartContent = \Cart::getContent();
+
+        $response = $this->get('/cart');
+
+        $response->assertOk();
+        $response->assertJsonFragment($cartContent->toArray());
+    }
+
+    public function test_can_add_items_to_cart()
+    {
+        $this->withoutExceptionHandling();
+        $product = Product::find(1);
+
+        $response = $this->get(route('cart.add', $product));
+
+        $response->assertOk();
+        $response->dump();
+        $response->assertJson([$product->name . ' ' . $product->capacity .  'ml agregado al carrito']);
+    }
+
+    public function test_remove_items_from_cart()
+    {
+        $this->withoutExceptionHandling();
+        $product = Product::find(1);
+
+        $response = $this->get(route('cart.destroy', $product));
+
+        $response->assertOk();
+        $response->dump();
+        $response->assertJson([$product->name . " " . $product->capacity . 'ml eliminado del carrito']);
     }
 }

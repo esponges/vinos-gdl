@@ -2,6 +2,7 @@
 
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -24,3 +25,9 @@ Route::get('/', function () {
 Route::resource('products', ProductController::class);
 
 Route::resource('categories', CategoryController::class);
+
+Route::prefix('cart')->group( function () {
+    Route::get('/', [CartController::class, 'index']);
+    Route::get('/{product}/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
+});
