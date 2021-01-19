@@ -29,6 +29,8 @@
         "@fortawesome/free-brands-svg-icons": "^5.15.2",
         "@fortawesome/free-solid-svg-icons": "^5.15.2",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "react-bootstrap": "^1.4.3"
+        "react-bootstrap": "^1.4.3",
+        "react-router": "^5.2.0",
+        "react-router-dom": "^5.2.0"
     }
 }
