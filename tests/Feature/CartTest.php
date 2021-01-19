@@ -35,8 +35,8 @@ class CartTest extends TestCase
         $response = $this->get(route('cart.add', $product));
 
         $response->assertOk();
-        $response->dump();
-        $response->assertJson([$product->name . ' ' . $product->capacity .  'ml agregado al carrito']);
+        // $response->dump();
+        $response->assertJson([$product->name . ' agregado al carrito'], 200);
     }
 
     public function test_remove_items_from_cart()
@@ -47,7 +47,7 @@ class CartTest extends TestCase
         $response = $this->get(route('cart.destroy', $product));
 
         $response->assertOk();
-        $response->dump();
-        $response->assertJson([$product->name . " " . $product->capacity . 'ml eliminado del carrito']);
+        // $response->dump();
+        $response->assertJson([$product->name . ' eliminado del carrito']);
     }
 }
