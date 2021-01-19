@@ -23,6 +23,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => $this->faker->sentence(2),
+            'description' => $this->faker->sentence(12),
             'price' => $this->faker->numberBetween(400, 700),
             'category_id' => $this->faker->numberBetween(1,4)
         ];
