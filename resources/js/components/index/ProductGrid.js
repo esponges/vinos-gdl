@@ -14,7 +14,7 @@ const ProductGrid = (props) => {
             // console.log(res.data, 'added to cart!!!');
             window.alert(res.data);
         })
-        .catch(err => {
+        .catch(() => {
             console.log('not added bro!!!');
         })
     }

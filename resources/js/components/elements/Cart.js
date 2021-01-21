@@ -18,16 +18,12 @@ const Cart = () => {
     };
 
     const addOneMore = (i, id) => {
-        /* update array only */
-        // let updatedCart = [...cart];
-        // updatedCart[i].quantity += 1;
-        // setCart(updatedCart);
-
-        /* update cart with axios */
         axios
             .get(`cart/${id}/add`)
-            .then((res) => {
-                setCart(Object.values(res.data));
+            .then(() => {
+                const updatedCart = [...cart];
+                updatedCart[i].quantity += 1;
+                setCart(updatedCart);
             })
             .catch((err) => {
                 setError(err.message);
@@ -37,9 +33,8 @@ const Cart = () => {
     const removeItem = (productToRemove, productId) => {
         axios
         .get(`/cart/${productId}/destroy`)
-        .then( res => {
-            setCart(Object.values(res.data));
-            // setCart(cart.filter((product) => product !== productToRemove)); // remove just that product from cart
+        .then(() => {
+            setCart(cart.filter((product) => product !== productToRemove)); // remove just that product from cart
         })
         .catch( err => {
             setCart( err.message );
@@ -48,7 +43,6 @@ const Cart = () => {
 
 
     useEffect(() => {
-        let mounted = true;
         axios
             .get("cart")
             .then((res) => {
@@ -59,10 +53,7 @@ const Cart = () => {
                 // console.log(err.message);
                 setError(err.message);
             });
-        return () => {
-            mounted = false;
-        }
-    }, [cart]);
+    }, []);
 
     return (
         <div>
