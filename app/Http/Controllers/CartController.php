@@ -10,7 +10,8 @@ class CartController extends Controller
     //get cart items
     public function index()
     {
-        return response()->json(\Cart::getContent());
+        // returns all cart info and cart count
+        return response()->json(\Cart::getContent(), 200);
     }
 
     //add item to cart
@@ -25,6 +26,12 @@ class CartController extends Controller
         ));
 
         return response()->json([$product->name . ' agregado al carrito'], 200);
+    }
+
+    // cart count
+    public function count()
+    {
+        return response()->json([\Cart::getTotalQuantity()]);
     }
 
     //remove item from cart

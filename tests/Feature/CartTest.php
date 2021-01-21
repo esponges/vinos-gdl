@@ -20,11 +20,23 @@ class CartTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $cartContent = \Cart::getContent();
+        $cartItems = \Cart::getTotalQuantity();
 
         $response = $this->get('/cart');
 
         $response->assertOk();
         $response->assertJsonFragment($cartContent->toArray());
+    }
+
+    public function test_get_cart_total_count()
+    {
+        $this->withoutExceptionHandling();
+        $cartCount = \Cart::getTotalQuantity();
+
+        $response = $this->get('/cart/count');
+
+        $response->assertOk();
+        $response->assertJsonFragment([$cartCount]);
     }
 
     public function test_can_add_items_to_cart()
