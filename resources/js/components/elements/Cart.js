@@ -4,7 +4,8 @@ import { Button, Table } from "react-bootstrap";
 import Footer from "../index/Footer";
 import IndexNavbar from "../index/IndexNavbar";
 import Loader from "../../loader.gif";
-import { Card } from 'react-bootstrap';
+import { Card } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
     const [cart, setCart] = useState([]);
@@ -14,20 +15,54 @@ const Cart = () => {
 
     const handleChange = (e) => {
         console.log(e.target.value);
+    };
+
+    const addOneMore = (i, id) => {
+        /* update array only */
+        // let updatedCart = [...cart];
+        // updatedCart[i].quantity += 1;
+        // setCart(updatedCart);
+
+        /* update cart with axios */
+        axios
+            .get(`cart/${id}/add`)
+            .then((res) => {
+                setCart(Object.values(res.data));
+            })
+            .catch((err) => {
+                setError(err.message);
+            });
+    };
+
+    const removeItem = (productToRemove, productId) => {
+        axios
+        .get(`/cart/${productId}/destroy`)
+        .then( res => {
+            setCart(Object.values(res.data));
+            // setCart(cart.filter((product) => product !== productToRemove)); // remove just that product from cart
+        })
+        .catch( err => {
+            setCart( err.message );
+        })
     }
 
+
     useEffect(() => {
+        let mounted = true;
         axios
             .get("cart")
             .then((res) => {
                 // console.log(res.data);
-                setCart(res.data);
+                setCart(Object.values(res.data));
             })
             .catch((err) => {
                 // console.log(err.message);
                 setError(err.message);
             });
-    }, []);
+        return () => {
+            mounted = false;
+        }
+    }, [cart]);
 
     return (
         <div>
@@ -47,21 +82,37 @@ const Cart = () => {
                                 {/* <th>Acciones</th> */}
                             </tr>
                         </thead>
-                        {Object.values(cart).map((product) => {
+                        {cart.map((product, i) => {
                             return (
-                                <tbody key={product.id}>
+                                <tbody key={i}>
                                     <tr>
                                         <td>
                                             <h5>{product.name}</h5>
                                         </td>
                                         <td>
-                                            {product.quantity}
-                                            <Card.Link href="#" onClick={() => product.quantity + 1}>
+                                            <Button variant="success">
+                                                {product.quantity}
+                                            </Button>
+                                            <Button
+                                                variant="link"
+                                                onClick={() =>
+                                                    addOneMore(i, product.id)
+                                                }
+                                            >
                                                 <b>&nbsp; ¡Una más!</b>
-                                            </Card.Link>
-                                            <Card.Link href="#">
+                                            </Button>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                onClick={() =>
+                                                    removeItem(
+                                                        product,
+                                                        product.id
+                                                    )
+                                                }
+                                            >
                                                 Eliminar
-                                            </Card.Link>
+                                            </Button>
                                         </td>
                                         <td>
                                             {product.quantity * product.price}
@@ -85,6 +136,15 @@ const Cart = () => {
                             );
                         })}
                     </Table>
+                )}
+                {cart.length == 0 ? (
+                    <Link to="/">
+                        <Button> Regresar </Button>
+                    </Link>
+                ) : (
+                    <Link to="/cart/checkout">
+                        <Button> Pagar </Button>
+                    </Link>
                 )}
             </div>
             <Footer />
