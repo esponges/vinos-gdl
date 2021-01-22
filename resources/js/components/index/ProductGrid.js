@@ -12,17 +12,17 @@ const ProductGrid = (props) => {
         axios.get(`cart/${id}/add`)
         .then(res => {
             // console.log(res.data, 'added to cart!!!');
+            props.cartCountUpdate();
             window.alert(res.data);
         })
-        .catch(() => {
-            console.log('not added bro!!!');
+        .catch((err) => {
+            console.error(err);
         })
     }
 
 
     return (
         <>
-            {/* {categories ? console.log(categories[0].id) : ''} */}
             {categories ? categories.map(category => {
                 return (
                     <div
