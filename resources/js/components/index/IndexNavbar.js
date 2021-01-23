@@ -19,7 +19,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const IndexNavbar = () => {
+const IndexNavbar = (props) => {
     const [itemCount, setItemCount] = useState(0);
     const [error, setError] = useState("");
     const [navbar, setNavbar] = useState(false);
@@ -35,16 +35,6 @@ const IndexNavbar = () => {
     useEffect(() => {
         handleScroll();
         window.addEventListener("scroll", handleScroll);
-
-        axios
-            .get("/cart/count")
-            .then((res) => {
-                setItemCount(res.data);
-            })
-            .catch((err) => {
-                setError(err.message);
-            });
-
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -87,7 +77,7 @@ const IndexNavbar = () => {
                             <b>Carrito</b> &nbsp;&nbsp;&nbsp;
                             <Badge pill variant="info" size="sm">
                                 <FontAwesomeIcon icon={faShoppingBasket} />
-                                &nbsp;{itemCount}
+                                &nbsp;{props.cartCount ?? props.cartCount}
                             </Badge>
                         </Link>
 

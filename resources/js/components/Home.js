@@ -10,6 +10,15 @@ const Home = () => {
     const [data, setData] = useState(null);
     const [error, setError] = useState("");
 
+    const countItems = () => {
+        axios
+        .get('/cart/count')
+        .then( res => {
+            console.log('counting items!')
+        })
+    }
+
+
     useEffect(() => {
         axios.get("/categories")
             .then((res) => {
@@ -26,7 +35,7 @@ const Home = () => {
             <IndexNavbar />
             <MainJumbo />
             <MastHead />
-            <ProductGrid products={data} />
+            <ProductGrid products={data} countItems={countItems}/>
             <Footer />
         </div>
     );

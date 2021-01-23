@@ -10,7 +10,6 @@ const SingleProduct = (props) => {
     return (
         <>
             {/* {console.log(props.location.state)} */}
-            <IndexNavbar />
             {product ? (
                 <Card style={{ width: "18rem", marginTop: "10%" }}>
                     <Card.Img variant="top" src="img/bottle.png" />
@@ -31,7 +30,6 @@ const SingleProduct = (props) => {
             ) : (
                 ""
             )}
-            <Footer />
         </>
     );
 }
