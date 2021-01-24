@@ -48,9 +48,10 @@ class AuthTest extends TestCase
         ]);
 
         $response->getStatusCode();
-        // $response->dumpHeaders();
-        // $response->dump();
+        $response->dumpHeaders();
+        $response->dump();
         $response->assertStatus(302);
+        $this->assertAuthenticated();
     }
 
     public function test_user_can_log_out()
