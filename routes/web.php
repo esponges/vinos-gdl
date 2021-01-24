@@ -32,3 +32,7 @@ Route::prefix('cart')->group( function () {
     Route::get('/{product}/add', [CartController::class, 'add'])->name('cart.add');
     Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
