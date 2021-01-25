@@ -11,6 +11,7 @@ import MainJumbo from "./index/MainJumbo";
 import Footer from "./index/Footer";
 import axios from "axios";
 import Login from './auth/Login';
+import RegisterForm from "./auth/RegisterForm";
 
 const App = () => {
     const [products, setProducts] = useState(null);
@@ -33,7 +34,6 @@ const App = () => {
         axios
             .get("/categories")
             .then((res) => {
-                // console.log(res.data[0].id)
                 setProducts(res.data);
             })
             .catch((err) => {
@@ -55,7 +55,6 @@ const App = () => {
             if (res.data) {
                 setLoggedIn(true);
             }
-            console.log(res.data)
         })
     }, []);
 
@@ -83,6 +82,9 @@ const App = () => {
                     </Route>
                     <Route path="/login">
                         <Login loggedIn={loggedIn} login={login}/>
+                    </Route>
+                    <Route path="/register">
+                        <RegisterForm />
                     </Route>
                     <Route path="/">
                         <MainJumbo />

@@ -15,8 +15,7 @@ const Login = (props) => {
         setSessionError(false);
         sanctumApi
             .get("sanctum/csrf-cookie")
-            .then((res) => {
-                console.log(email, password, res);
+            .then(() => {
                 axios
                     .post("login", {
                         email: email,
