@@ -58,7 +58,7 @@ const Cart = (props) => {
     return (
         <div>
             {/* {console.log(Object.values(cart))} */}
-            <div className="container" style={{ marginTop: "15%" }}>
+            <div>
                 <h1>Tu vinos seleccionados</h1>
                 {cart.length == 0 ? (
                     "No tienes vinos en el carrito"

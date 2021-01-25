@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Home from "./Home";
 import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
@@ -11,16 +10,35 @@ import ProductGrid from "./index/ProductGrid";
 import MainJumbo from "./index/MainJumbo";
 import Footer from "./index/Footer";
 import axios from "axios";
-import { get } from "jquery";
+import Login from './auth/Login';
+import RegisterForm from "./auth/RegisterForm";
 
-const App = () => {
+const App = (props) => {
     const [products, setProducts] = useState(null);
     const [cart, setCart] = useState([]);
     const [cartCount, setCartCount] = useState(0);
-    const [error, setError] = useState("");
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [style, setStyle] = useState(15);
 
     const cartCountUpdate = () => {
         setCartCount(cartCount + 1);
+    };
+
+    const login = () => {
+        setLoggedIn(true);
+        axios
+        .get('api/user-name')
+        .then( res => {
+            setUserName( Object.values(res.data) )
+        })
+        .catch(err => {
+            console.error(err, ' in login method')
+        })
+    }
+
+    const logout = () => {
+        setLoggedIn(false);
     }
 
 
@@ -28,7 +46,6 @@ const App = () => {
         axios
             .get("/categories")
             .then((res) => {
-                // console.log(res.data[0].id)
                 setProducts(res.data);
             })
             .catch((err) => {
@@ -39,46 +56,67 @@ const App = () => {
             .then((res) => {
                 setCart(Object.values(res.data));
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error(err);
-            })
-        axios
-            .get("/cart/count")
-            .then(res => {
-                setCartCount(res.data[0]);
-            })
-    }, []);
+            });
+        axios.get("/cart/count").then((res) => {
+            setCartCount(res.data[0]);
+        });
+        axios.get("api/is-auth")
+        .then(res => {
+            if (res.data) {
+                setLoggedIn(true);
+                axios
+                    .get("api/user-name")
+                    .then((res) => {
+                        setUserName(Object.values(res.data));
+                    })
+                    .catch((err) => {
+                        console.error(err, " in login method");
+                    });
+            }
+        })
+        // props.location.pathname == "/" && setStyle(0);
+    }, [loggedIn]);
 
     return (
         <HashRouter>
-            <IndexNavbar cartCount={cartCount} />
-            <Switch>
-                <Route path="/products/:id">
-                    <div
-                        className="container"
-                        style={{ marginTop: "18%" }}
-                    ></div>
-                    <SingleProduct />
-                </Route>
-                <Route path="/cart/checkout">
-                    <Checkout />
-                </Route>
-                <Route path="/cart">
-                    <div
-                        className="container"
-                        style={{ marginTop: "15%" }}
-                    ></div>
-                    <Cart cart={cart} />
-                </Route>
-                <Route path="/">
-                    <MainJumbo />
-                    <MastHead />
-                    <ProductGrid
-                        products={products}
-                        cartCountUpdate={cartCountUpdate}
-                    />
-                </Route>
-            </Switch>
+            <IndexNavbar cartCount={cartCount} userLogged={loggedIn} userName={userName} logout={logout}/>
+            <div className="container" style={{ marginTop: `${style}%` }}>
+                <Switch>
+                    <Route path="/products/:id">
+                        <div
+                            className="container"
+                            style={{ marginTop: "18%" }}
+                        ></div>
+                        <SingleProduct />
+                    </Route>
+                    <Route path="/cart/checkout">
+                        <Checkout loggedIn={loggedIn} />
+                    </Route>
+                    <Route path="/cart">
+                        <div
+                            className="container"
+                            style={{ marginTop: "15%" }}
+                        ></div>
+                        <Cart cart={cart} />
+                    </Route>
+                    <Route path="/login">
+                        <Login loggedIn={loggedIn} login={login}/>
+                    </Route>
+                    <Route path="/register">
+                        <RegisterForm />
+                    </Route>
+                    <Route path="/">
+                        <MainJumbo />
+                        <MastHead />
+                        <ProductGrid
+                            products={products}
+                            cartCountUpdate={cartCountUpdate}
+                        />
+                    </Route>
+                </Switch>
+            </div>
             <Footer />
         </HashRouter>
     );

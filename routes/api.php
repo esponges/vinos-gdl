@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +17,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/is-auth', function () {
+    return response()->json(Auth::check());
+})->name('is-auth');
+
+Route::get('/user-name', function () {
+    if (Auth::check()) {
+        return response()->json(auth()->user(), 200);
+    }
 });

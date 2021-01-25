@@ -7,21 +7,14 @@ import {
     Nav,
     FormControl,
     NavDropdown,
-    NavItem,
     Badge,
 } from "react-bootstrap";
-import {
-    fas,
-    faShoppingCart,
-    faShoppingBasket,
-} from "@fortawesome/free-solid-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { Link } from "react-router-dom";
+import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
+import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
+import sanctumApi from "../../sanctum-api";
 
 const IndexNavbar = (props) => {
-    const [itemCount, setItemCount] = useState(0);
-    const [error, setError] = useState("");
     const [navbar, setNavbar] = useState(false);
 
     const handleScroll = (e) => {
@@ -32,9 +25,44 @@ const IndexNavbar = (props) => {
         }
     };
 
+    const logout = () => {
+        sanctumApi
+            .get("sanctum/csrf-cookie")
+            .then(() => {
+                axios.post("/logout")
+                .then(() => {
+                    console.log('logging out!!!');
+                    props.logout();
+                    props.history.push("/login");
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    };
+
     useEffect(() => {
+        //transition effect
         handleScroll();
         window.addEventListener("scroll", handleScroll);
+
+        //get user name if logged in
+        // if (props.userLogged) {
+        //     axios
+        //         .get("user-name")
+        //         .then((res) => {
+        //             console.log(res);
+        //             setUserName(res);
+        //         })
+        //         .catch((err) => {
+        //             console.err(err);
+        //         });
+        // }
+
+        //remove event listener
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -89,6 +117,16 @@ const IndexNavbar = (props) => {
                             />
                             <Button variant="outline-primary">Buscar</Button>
                         </Form>
+                        {props.userLogged && (
+                            <NavDropdown
+                                title={`${props.userName[1]}`}
+                                id="collasible-nav-dropdown"
+                            >
+                                <NavDropdown.Item onClick={logout}>
+                                    Cerrar sesión
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                        )}
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
@@ -96,4 +134,4 @@ const IndexNavbar = (props) => {
     );
 };
 
-export default IndexNavbar;
+export default withRouter(IndexNavbar);
