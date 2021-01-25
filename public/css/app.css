@@ -5805,6 +5805,12 @@ a.close.disabled {
   position: relative;
 }
 
+@media (max-width: 750px) {
+    .carousel {
+    display: none;
+    }
+}
+
 .carousel.pointer-event {
   touch-action: pan-y;
 }
@@ -5824,8 +5830,8 @@ a.close.disabled {
   position: relative;
   display: none;
   float: left;
-  max-height: 600px;
-  width: 100%;
+  height: 500px;
+  min-width: 100%;
   margin-right: -100%;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;

@@ -67,6 +67,7 @@ const Cart = (props) => {
                         <thead>
                             <tr>
                                 <th>Producto</th>
+                                <th></th>
                                 <th>Cantidad</th>
                                 <th>Sub-Total</th>
                                 {/* <th>Acciones</th> */}
@@ -78,6 +79,9 @@ const Cart = (props) => {
                                     <tr>
                                         <td>
                                             <h5>{product.name}</h5>
+                                        </td>
+                                        <td className="center">
+                                            <img src="img/bottle.png" style={{ width: "85px", height: "85px" }} />
                                         </td>
                                         <td>
                                             <Button variant="success">

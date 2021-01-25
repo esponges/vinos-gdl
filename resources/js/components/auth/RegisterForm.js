@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
+import { Link } from 'react-router-dom';
 import sanctumApi from "../../sanctum-api";
 
 const RegisterForm = (props) => {
@@ -143,6 +144,7 @@ const RegisterForm = (props) => {
                         Regístrate
                     </Button>
                 )}
+                <Link to="/cart" className="btn btn-secondary">Regresar</Link>
             </Form>
         </div>
     );

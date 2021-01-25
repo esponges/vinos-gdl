@@ -4,26 +4,22 @@ const MainJumbo = () => {
     return (
         <div>
             <div className="jumbotron center">
-                <h1 className="display-3">VINOREO</h1>
-                <p className="lead">
-                    This is a simple hero unit, a simple jumbotron-style
-                    component for calling extra attention to featured content or
-                    information.
-                </p>
+                <div className="row">
+                    <div className="col-md-8">
+                        <h1>VINOREO</h1>
+                        <p className="lead">
+                            Consigue el vino que requieras para tu evento o
+                            consumo en casa sin salir de tu casa.
+                        </p>
+                    </div>
+                    <div className="col-md-4 center">
+                        <img src="img/delivery.png" />
+                    </div>
+                </div>
+
                 <hr className="my-4" />
-                <p>
-                    It uses utility classes for typography and spacing to space
-                    content out within the larger container.
-                </p>
-                <p className="lead">
-                    <a
-                        className="btn btn-primary btn-lg"
-                        href="#"
-                        role="button"
-                    >
-                        Learn more
-                    </a>
-                </p>
+                <p>No pagues precios inflados. Producto garantizado.</p>
+                <p className="lead"></p>
             </div>
         </div>
     );
