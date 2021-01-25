@@ -47,9 +47,9 @@ class AuthTest extends TestCase
             'password' => '123456',
         ]);
 
-        $response->getStatusCode();
-        $response->dumpHeaders();
-        $response->dump();
+        // $response->getStatusCode();
+        // $response->dumpHeaders();
+        // $response->dump();
         $response->assertStatus(302);
         $this->assertAuthenticated();
     }
@@ -63,5 +63,17 @@ class AuthTest extends TestCase
         $response = $this->actingAs($user)->post('/logout');
 
         $response->assertStatus(302);
+    }
+
+    public function test_get_user_name()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->actingAs(User::first())
+            ->get('/api/user-name');
+
+        // $response->dumpSession();
+        // $response->dump();
+        $response->assertOk();
     }
 }

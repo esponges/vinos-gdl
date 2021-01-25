@@ -3,6 +3,7 @@ import { Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import sanctumApi from "../../sanctum-api";
+import { Redirect, withRouter } from "react-router";
 
 const Login = (props) => {
     const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const Login = (props) => {
                         if (res.status === 204) {
                             props.login();
                             console.log("successss madafaka", res);
+                            props.history.push("/cart");
                         } else {
                             console.log("not 204, delete cookies", res);
                         }
@@ -83,4 +85,4 @@ const Login = (props) => {
     );
 };
 
-export default Login;
+export default withRouter(Login);

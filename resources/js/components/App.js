@@ -13,12 +13,13 @@ import axios from "axios";
 import Login from './auth/Login';
 import RegisterForm from "./auth/RegisterForm";
 
-const App = () => {
+const App = (props) => {
     const [products, setProducts] = useState(null);
     const [cart, setCart] = useState([]);
     const [cartCount, setCartCount] = useState(0);
-    const [error, setError] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
+    const [userName, setUserName] = useState("");
+    const [style, setStyle] = useState(15);
 
     const cartCountUpdate = () => {
         setCartCount(cartCount + 1);
@@ -26,7 +27,18 @@ const App = () => {
 
     const login = () => {
         setLoggedIn(true);
-        console.log('im now logged in')
+        axios
+        .get('api/user-name')
+        .then( res => {
+            setUserName( Object.values(res.data) )
+        })
+        .catch(err => {
+            console.error(err, ' in login method')
+        })
+    }
+
+    const logout = () => {
+        setLoggedIn(false);
     }
 
 
@@ -54,14 +66,23 @@ const App = () => {
         .then(res => {
             if (res.data) {
                 setLoggedIn(true);
+                axios
+                    .get("api/user-name")
+                    .then((res) => {
+                        setUserName(Object.values(res.data));
+                    })
+                    .catch((err) => {
+                        console.error(err, " in login method");
+                    });
             }
         })
-    }, []);
+        // props.location.pathname == "/" && setStyle(0);
+    }, [loggedIn]);
 
     return (
         <HashRouter>
-            <IndexNavbar cartCount={cartCount} />
-            <div className="container" style={{ marginTop: "15%" }}>
+            <IndexNavbar cartCount={cartCount} userLogged={loggedIn} userName={userName} logout={logout}/>
+            <div className="container" style={{ marginTop: `${style}%` }}>
                 <Switch>
                     <Route path="/products/:id">
                         <div
