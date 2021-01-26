@@ -4,6 +4,7 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -36,6 +37,12 @@ Route::prefix('cart')->group( function () {
 
 Route::prefix('order')->group( function () {
     Route::post('create', [OrderController::class, 'create']);
+});
+
+Route::prefix('paypal')->group( function () {
+    Route::get('/checkout/{orderId}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
+    Route::get('/success/{orderId}', [PaypalController::class, 'getExpressCheckoutSuccess'])->name('paypal.success');
+    Route::get('/fail/{orderId}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');
 });
 
 Auth::routes();

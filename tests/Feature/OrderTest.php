@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
-use App\Models\Product;
-use App\Models\User;
 use Faker\Factory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderTest extends TestCase
 {
@@ -36,5 +38,51 @@ class OrderTest extends TestCase
         ]);
 
         $response->assertOk();
+    }
+
+    // public function test_paypal()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $order = Order::first();
+    //     $this->addItems();
+
+    //     $response = $this->actingAs(User::first())->get('paypal/checkout/' . $order->id);
+
+    //     // $response->dumpHeaders();
+    //     $response->dump();
+    //     $response->getStatusCode();
+    //     $response->assertStatus(302);
+    //     $response->assertJsonFragment(["ACK" => "Success"]);
+    // }
+
+    public function test_success_payment_information()
+    {
+        $this->withoutExceptionHandling();
+        // $this->addItems();
+        $order = Order::first();
+
+        $orderItems = DB::table('order_items')
+            ->where('order_id', $order->id)
+            ->get();
+
+        $products = [];
+
+        foreach ($orderItems as $item) {
+            $product = Product::find($item->product_id)->toArray();
+            $quantity = ['quantity' => $item->qty];
+            $subtotal = ['subtotal' => $quantity['quantity'] * $product['price']];
+            $total = array_merge($product, $quantity, $subtotal);
+            array_push($products, $total);
+        }
+
+        $grandTotal = [];
+
+        foreach ($products as $product) {
+            array_push($grandTotal, $product['subtotal']);
+        }
+
+        $grandTotal = array_sum($grandTotal);
+
+        dd ($products, $grandTotal);
     }
 }

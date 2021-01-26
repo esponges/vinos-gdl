@@ -21,7 +21,7 @@ const SingleProduct = (props) => {
                     </Card.Body>
                     <ListGroup className="list-group-flush">
                         <ListGroupItem>Precio: $ {product.price}</ListGroupItem>
-                        <ListGroupItem>Vestibulum at eros</ListGroupItem>
+                        <ListGroupItem>Compara precios: Walmart/Consuvino</ListGroupItem>
                     </ListGroup>
                     <Card.Body>
                         <Card.Link href="#">Card Link</Card.Link>
