@@ -3,6 +3,7 @@
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
@@ -31,6 +32,10 @@ Route::prefix('cart')->group( function () {
     Route::get('/count', [CartController::class, 'count']);
     Route::get('/{product}/add', [CartController::class, 'add'])->name('cart.add');
     Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
+});
+
+Route::prefix('order')->group( function () {
+    Route::post('create', [OrderController::class, 'create']);
 });
 
 Auth::routes();
