@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vinoreo</title>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    {{-- csrf token --}}
+    <script>
+        const csrf_token = '<?php echo csrf_token(); ?>';
+    </script>
 </head>
 <body>
     <div id="root"></div>
