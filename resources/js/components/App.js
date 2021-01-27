@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import { Switch, HashRouter, Route } from "react-router-dom";
+import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
 import Checkout from "./elements/Checkout.js";
@@ -10,15 +10,16 @@ import ProductGrid from "./index/ProductGrid";
 import MainJumbo from "./index/MainJumbo";
 import Footer from "./index/Footer";
 import axios from "axios";
-import Login from './auth/Login';
+import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
     const [cart, setCart] = useState([]);
     const [cartCount, setCartCount] = useState(0);
+    const [cartTotal, setCartTotal] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [userName, setUserName] = useState("");
+    const [userInfo, setUserInfo] = useState("");
     const [style, setStyle] = useState(15);
 
     const cartCountUpdate = () => {
@@ -28,19 +29,18 @@ const App = (props) => {
     const login = () => {
         setLoggedIn(true);
         axios
-        .get('api/user-name')
-        .then( res => {
-            setUserName( Object.values(res.data) )
-        })
-        .catch(err => {
-            console.error(err, ' in login method')
-        })
-    }
+            .get("api/user-name")
+            .then((res) => {
+                setUserInfo(Object.values(res.data));
+            })
+            .catch((err) => {
+                console.error(err, " in login method");
+            });
+    };
 
     const logout = () => {
         setLoggedIn(false);
-    }
-
+    };
 
     useEffect(() => {
         axios
@@ -62,26 +62,37 @@ const App = (props) => {
         axios.get("/cart/count").then((res) => {
             setCartCount(res.data[0]);
         });
-        axios.get("api/is-auth")
-        .then(res => {
+        axios.get("/cart/get-total").then((res) => {
+            setCartTotal(res.data);
+        });
+        // props.location.pathname == "/" && setStyle(0);
+    }, []);
+
+    //cleanup will cause reloading hook so will create one separated
+    useEffect(() => {
+        axios.get("api/is-auth").then((res) => {
             if (res.data) {
                 setLoggedIn(true);
                 axios
                     .get("api/user-name")
                     .then((res) => {
-                        setUserName(Object.values(res.data));
+                        setUserInfo(Object.values(res.data));
                     })
                     .catch((err) => {
                         console.error(err, " in login method");
                     });
             }
-        })
-        // props.location.pathname == "/" && setStyle(0);
+        });
     }, [loggedIn]);
 
     return (
         <HashRouter>
-            <IndexNavbar cartCount={cartCount} userLogged={loggedIn} userName={userName} logout={logout}/>
+            <IndexNavbar
+                cartCount={cartCount}
+                userLogged={loggedIn}
+                userInfo={userInfo}
+                logout={logout}
+            />
             <div className="container" style={{ marginTop: `${style}%` }}>
                 <Switch>
                     <Route path="/products/:id">
@@ -91,18 +102,22 @@ const App = (props) => {
                         ></div>
                         <SingleProduct />
                     </Route>
-                    <Route path="/cart/checkout">
-                        <Checkout loggedIn={loggedIn} />
-                    </Route>
                     <Route path="/cart">
                         <div
                             className="container"
                             style={{ marginTop: "15%" }}
                         ></div>
-                        <Cart cart={cart} />
+                        <Cart updateCart={cartCountUpdate} />
+                        <Route path="/cart/checkout">
+                            <Checkout
+                                loggedIn={loggedIn}
+                                userInfo={userInfo}
+                                cartTotal={cartTotal}
+                            />
+                        </Route>
                     </Route>
                     <Route path="/login">
-                        <Login loggedIn={loggedIn} login={login}/>
+                        <Login loggedIn={loggedIn} login={login} cartCount={cartCount}/>
                     </Route>
                     <Route path="/register">
                         <RegisterForm />
@@ -122,6 +137,6 @@ const App = (props) => {
     );
 };
 
-export default App;
+export default withRouter(App);
 
 ReactDOM.render(<App />, document.getElementById("root"));
