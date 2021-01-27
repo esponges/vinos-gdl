@@ -10,24 +10,35 @@ import { Link } from "react-router-dom";
 const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState("");
-    const [loader, setLoader] = useState(false);
-    const [value, setValue] = useState(0);
+    const [subTotal, setSubTotal] = useState(0);
+    const [total, setTotal] = useState([]);
 
     const handleChange = (e) => {
         console.log(e.target.value);
     };
 
-    const addOneMore = (i, id) => {
+    //update view
+    const addOneMore = (i, id, price) => {
         axios
             .get(`cart/${id}/add`)
             .then(() => {
                 const updatedCart = [...cart];
                 updatedCart[i].quantity += 1;
                 setCart(updatedCart);
+                setTotal(
+                    // map a subtotal array
+                    updatedCart
+                        .map((item) => {
+                            return item.price * item.quantity;
+                        })
+                        //then sum mapped items for total
+                        .reduce((a, b) => a + b, 0)
+                );
             })
             .catch((err) => {
                 setError(err.message);
             });
+        props.updateCart();
     };
 
     const removeItem = (productToRemove, productId) => {
@@ -46,18 +57,23 @@ const Cart = (props) => {
         axios
             .get("cart")
             .then((res) => {
-                // console.log(res.data);
                 setCart(Object.values(res.data));
+                setTotal(
+                    // map a subtotal array
+                    Object.values(res.data).map((item) => {
+                        return item.price * item.quantity;
+                    })
+                    //then sum mapped item
+                    .reduce((a, b) => a + b, 0)
+                );
             })
             .catch((err) => {
-                // console.log(err.message);
                 setError(err.message);
             });
     }, []);
 
     return (
         <div>
-            {/* {console.log(Object.values(cart))} */}
             <div>
                 <h1>Tu vinos seleccionados</h1>
                 {cart.length == 0 ? (
@@ -81,7 +97,13 @@ const Cart = (props) => {
                                             <h5>{product.name}</h5>
                                         </td>
                                         <td className="center">
-                                            <img src="img/bottle.png" style={{ width: "85px", height: "85px" }} />
+                                            <img
+                                                src="img/bottle.png"
+                                                style={{
+                                                    width: "85px",
+                                                    height: "85px",
+                                                }}
+                                            />
                                         </td>
                                         <td>
                                             <Button variant="success">
@@ -90,7 +112,7 @@ const Cart = (props) => {
                                             <Button
                                                 variant="link"
                                                 onClick={() =>
-                                                    addOneMore(i, product.id)
+                                                    addOneMore(i, product.id, product.price)
                                                 }
                                             >
                                                 <b>&nbsp; ¡Una más!</b>
@@ -111,26 +133,13 @@ const Cart = (props) => {
                                         <td>
                                             {product.quantity * product.price}
                                         </td>
-                                        {/* <td>
-                                            <Button variant="primary" size="sm">
-                                                <input
-                                                    type="number"
-                                                    className="input-number"
-                                                    value={product.quantity}
-                                                    onChange={handleChange}
-                                                />
-                                                Añade
-                                            </Button>
-                                            <a>
-                                                Borrar
-                                            </a>
-                                        </td> */}
                                     </tr>
                                 </tbody>
                             );
                         })}
                     </Table>
                 )}
+                <h5>Total {total}</h5>
                 {cart.length == 0 ? (
                     <Link to="/">
                         <Button> Regresar </Button>
