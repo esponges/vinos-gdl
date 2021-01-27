@@ -25,6 +25,17 @@ class OrderTest extends TestCase
             'attributes' => [],
             'associatedModel' => $product
         ));
+
+        $productTwo = Product::factory()->create();
+
+        \Cart::add(array(
+            'id' => $productTwo->id,
+            'name' => $productTwo->name,
+            'price' => $productTwo->price,
+            'quantity' => Factory::create()->numberBetween(2, 6),
+            'attributes' => [],
+            'associatedModel' => $productTwo
+        ));
     }
 
     public function test_order_gets_created()
@@ -58,7 +69,7 @@ class OrderTest extends TestCase
     public function test_success_payment_information()
     {
         $this->withoutExceptionHandling();
-        // $this->addItems();
+        $this->addItems();
         $order = Order::first();
 
         $orderItems = DB::table('order_items')
@@ -83,6 +94,18 @@ class OrderTest extends TestCase
 
         $grandTotal = array_sum($grandTotal);
 
-        dd ($products, $grandTotal);
+        dd (\Cart::getContent(), \Cart::getTotal());
+    }
+
+    public function test_get_cart_total()
+    {
+        $this->withoutExceptionHandling();
+        $this->addItems();
+
+        $response = $this->get('cart/get-total');
+
+        $response->dump();
+        $response->dumpHeaders();
+        $response->assertOk();
     }
 }

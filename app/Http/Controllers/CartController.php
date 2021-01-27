@@ -34,6 +34,12 @@ class CartController extends Controller
         return response()->json([\Cart::getTotalQuantity()]);
     }
 
+    //get cart total
+    public function getTotal()
+    {
+        return response()->json(\Cart::getTotal());
+    }
+
     //remove item from cart
     public function destroy(Product $product)
     {
