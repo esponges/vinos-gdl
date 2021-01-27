@@ -19,11 +19,9 @@ class OrderController extends Controller
             $order->payment_mode = $request->payment_mode;
             $order->address = $request->address;
 
-            // dd ($order);
             $order->save();
 
             $cartItems = \Cart::getContent();
-            // dd($cartItems);
 
             foreach ($cartItems as $item ) {
                 DB::table('order_items')->insert([
@@ -35,7 +33,7 @@ class OrderController extends Controller
             }
 
             if ($request->payment_mode == 'paypal') {
-                dd ('make paypal');
+                return redirect()->route('paypal.checkout', $order->id);
             }
         }
         return response()->json('session timed out', 408);
