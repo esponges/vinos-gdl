@@ -119,7 +119,7 @@ const IndexNavbar = (props) => {
                         </Form>
                         {props.userLogged && (
                             <NavDropdown
-                                title={`${props.userName[1]}`}
+                                title={`${props.userInfo[1]}`}
                                 id="collasible-nav-dropdown"
                             >
                                 <NavDropdown.Item onClick={logout}>
