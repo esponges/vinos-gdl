@@ -25,6 +25,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->sentence(1) . " 750ml",
             'description' => $this->faker->sentence(12),
             'price' => $this->faker->numberBetween(400, 700),
+            'img' => uniqid(),
             'category_id' => $this->faker->numberBetween(1,4)
         ];
     }

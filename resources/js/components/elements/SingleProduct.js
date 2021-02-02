@@ -9,10 +9,10 @@ const SingleProduct = (props) => {
 
     return (
         <>
-            {/* {console.log(props.location.state)} */}
+            {console.log(props)}
             {product ? (
                 <Card style={{ width: "18rem", marginTop: "10%" }}>
-                    <Card.Img variant="top" src="img/bottle.png" />
+                    <Card.Img variant="top" src={`/img/${props.match.params.id}.jpg`} />
                     <Card.Body>
                         <Card.Title>{product.name}</Card.Title>
                         <Card.Text>

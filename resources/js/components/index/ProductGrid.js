@@ -45,7 +45,7 @@ const ProductGrid = (props) => {
                                             <Card style={{ width: "18rem" }}>
                                                 <Card.Img
                                                     variant="top"
-                                                    src="img/bottle.png"
+                                                    src={`/img/${product.id}.jpg`}
                                                 />
                                                 <Card.Body>
                                                     <Card.Title>
