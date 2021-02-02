@@ -3,7 +3,7 @@ import { Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import sanctumApi from "../../sanctum-api";
-import { Redirect, withRouter } from "react-router";
+import { withRouter } from "react-router";
 
 const Login = (props) => {
     const [email, setEmail] = useState("");
@@ -25,7 +25,10 @@ const Login = (props) => {
                     .then((res) => {
                         if (res.status === 204) {
                             props.login();
-                            console.log("successss madafaka", res);
+                            if (props.cartCount > 0) {
+                                props.history.push("/cart/checkout");
+                                console.log('redirecting to checkout')
+                            }
                             props.history.push("/cart");
                         } else {
                             console.log("not 204, delete cookies", res);
@@ -43,7 +46,7 @@ const Login = (props) => {
 
     return (
         <div className="container">
-            {/* {console.log(props)} */}
+            {/* {console.log(props.cartCount)} */}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
