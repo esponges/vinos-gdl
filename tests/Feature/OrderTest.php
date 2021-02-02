@@ -66,36 +66,42 @@ class OrderTest extends TestCase
     //     $response->assertJsonFragment(["ACK" => "Success"]);
     // }
 
-    public function test_success_payment_information()
-    {
-        $this->withoutExceptionHandling();
-        $this->addItems();
-        $order = Order::first();
+    /*
+    *
+    *
+    Creating payment information
+    */
 
-        $orderItems = DB::table('order_items')
-            ->where('order_id', $order->id)
-            ->get();
+    // public function test_success_payment_information()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $this->addItems();
+    //     $order = Order::first();
 
-        $products = [];
+    //     $orderItems = DB::table('order_items')
+    //         ->where('order_id', $order->id)
+    //         ->get();
 
-        foreach ($orderItems as $item) {
-            $product = Product::find($item->product_id)->toArray();
-            $quantity = ['quantity' => $item->qty];
-            $subtotal = ['subtotal' => $quantity['quantity'] * $product['price']];
-            $total = array_merge($product, $quantity, $subtotal);
-            array_push($products, $total);
-        }
+    //     $products = [];
 
-        $grandTotal = [];
+    //     foreach ($orderItems as $item) {
+    //         $product = Product::find($item->product_id)->toArray();
+    //         $quantity = ['quantity' => $item->qty];
+    //         $subtotal = ['subtotal' => $quantity['quantity'] * $product['price']];
+    //         $total = array_merge($product, $quantity, $subtotal);
+    //         array_push($products, $total);
+    //     }
 
-        foreach ($products as $product) {
-            array_push($grandTotal, $product['subtotal']);
-        }
+    //     $grandTotal = [];
 
-        $grandTotal = array_sum($grandTotal);
+    //     foreach ($products as $product) {
+    //         array_push($grandTotal, $product['subtotal']);
+    //     }
 
-        dd (\Cart::getContent(), \Cart::getTotal());
-    }
+    //     $grandTotal = array_sum($grandTotal);
+
+    //     dd (\Cart::getContent(), \Cart::getTotal());
+    // }
 
     public function test_get_cart_total()
     {
