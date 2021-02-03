@@ -4,15 +4,16 @@ import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const ProductGrid = (props) => {
+    const [itemCount, setItemCount] = useState(1);
     const categories = props.products;
 
     const addToCart = (id, event) => {
         event.preventDefault();
-        // console.log(id, 'onclick');
-        axios.get(`cart/${id}/add`)
+        console.log(`item ${id}, cantidad ${itemCount}`);
+        axios.get(`cart/${id}/add/${itemCount}`)
         .then(res => {
             // console.log(res.data, 'added to cart!!!');
-            props.cartCountUpdate();
+            props.cartCountUpdate(itemCount);
             window.alert(res.data);
         })
         .catch((err) => {
@@ -59,15 +60,39 @@ const ProductGrid = (props) => {
                                                 </ListGroup>
                                                 <Card.Body>
                                                     <div className="row">
+                                                        <div className="row">
+                                                            <div className="col-md-6"></div>
+                                                        </div>
                                                         <div className="col-6">
-                                                            <Card.Link
-                                                                onClick={() => addToCart(
-                                                                    product.id, event
-                                                                )}
-                                                            >
-                                                                <Button variant="primary">
-                                                                    Comprar
-                                                                </Button>
+                                                            <Card.Link>
+                                                                <div className="row">
+                                                                    <div className="col-6">
+                                                                        <input
+                                                                            type="number"
+                                                                            name="quantity"
+                                                                            defaultValue={
+                                                                                1
+                                                                            }
+                                                                            className="form-control input-number"
+                                                                            onChange={async (e) =>
+                                                                                await setItemCount(parseInt(e.target.value))}
+                                                                                style={{ minWidth: "60px"}}
+                                                                        />
+                                                                    </div>
+                                                                    <div className="col-6">
+                                                                        <Button
+                                                                            variant="primary"
+                                                                            onClick={() =>
+                                                                                addToCart(
+                                                                                    product.id,
+                                                                                    event
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            +
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
                                                             </Card.Link>
                                                         </div>
                                                         <div className="col-6">
