@@ -12,6 +12,7 @@ import Footer from "./index/Footer";
 import axios from "axios";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
+import Category from "./elements/Category";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -94,7 +95,7 @@ const App = (props) => {
                 userInfo={userInfo}
                 logout={logout}
             />
-            <div className="container" style={{ marginTop: `${style}%` }}>
+            <div className="container mb-5" style={{ marginTop: `${style}%` }}>
                 <Switch>
                     <Route path="/products/:id">
                         <div
@@ -103,19 +104,21 @@ const App = (props) => {
                         ></div>
                         <SingleProduct cartCountUpdate={cartCountUpdate} />
                     </Route>
+                    <Route path="/categories/:name">
+                        <div
+                            className="container"
+                            style={{ marginTop: "18%" }}
+                        ></div>
+                        <Category />
+                    </Route>
                     <Route path="/cart">
                         <div
                             className="container"
                             style={{ marginTop: "15%" }}
                         ></div>
-                        <Cart
-                            cartCountUpdate={cartCountUpdate}
-                        />
+                        <Cart cartCountUpdate={cartCountUpdate} />
                         <Route path="/cart/checkout">
-                            <Checkout
-                                loggedIn={loggedIn}
-                                userInfo={userInfo}
-                            />
+                            <Checkout loggedIn={loggedIn} userInfo={userInfo} />
                         </Route>
                     </Route>
                     <Route path="/login">
