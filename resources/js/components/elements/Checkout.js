@@ -5,22 +5,6 @@ import { Link } from "react-router-dom";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("Ingresa tu número telefónico");
-    const [address, setAddress] = useState("");
-
-    const pay = (e) => {
-        e.preventDefault();
-        axios.
-        post('order/create', {
-            address: address,
-            payment_mode: 'paypal'
-        })
-        .then(res => {
-            console.log(res);
-        })
-        .catch(err => {
-            console.error(err);
-        })
-    }
 
     useEffect(() => {
         props.userInfo[3] && setPhone(props.userInfo[3]);
