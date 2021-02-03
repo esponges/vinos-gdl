@@ -22,8 +22,8 @@ const App = (props) => {
     const [userInfo, setUserInfo] = useState("");
     const [style, setStyle] = useState(15);
 
-    const cartCountUpdate = () => {
-        setCartCount(cartCount + 1);
+    const cartCountUpdate = (qty) => {
+        setCartCount(cartCount + qty);
     };
 
     const login = () => {
@@ -65,7 +65,8 @@ const App = (props) => {
         axios.get("/cart/get-total").then((res) => {
             setCartTotal(res.data);
         });
-        // props.location.pathname == "/" && setStyle(0);
+        if (`${location.host}/#/home`)
+            setStyle(3);
     }, []);
 
     //cleanup will cause reloading hook so will create one separated
@@ -100,35 +101,42 @@ const App = (props) => {
                             className="container"
                             style={{ marginTop: "18%" }}
                         ></div>
-                        <SingleProduct />
+                        <SingleProduct cartCountUpdate={cartCountUpdate} />
                     </Route>
                     <Route path="/cart">
                         <div
                             className="container"
                             style={{ marginTop: "15%" }}
                         ></div>
-                        <Cart updateCart={cartCountUpdate} />
+                        <Cart
+                            cartCountUpdate={cartCountUpdate}
+                        />
                         <Route path="/cart/checkout">
                             <Checkout
                                 loggedIn={loggedIn}
                                 userInfo={userInfo}
-                                cartTotal={cartTotal}
                             />
                         </Route>
                     </Route>
                     <Route path="/login">
-                        <Login loggedIn={loggedIn} login={login} cartCount={cartCount}/>
+                        <Login
+                            loggedIn={loggedIn}
+                            login={login}
+                            cartCount={cartCount}
+                        />
                     </Route>
                     <Route path="/register">
                         <RegisterForm />
                     </Route>
                     <Route path="/">
-                        <MainJumbo />
-                        <MastHead />
-                        <ProductGrid
-                            products={products}
-                            cartCountUpdate={cartCountUpdate}
-                        />
+                        <div className="index-page">
+                            <MainJumbo />
+                            <MastHead />
+                            <ProductGrid
+                                products={products}
+                                cartCountUpdate={cartCountUpdate}
+                            />
+                        </div>
                     </Route>
                 </Switch>
             </div>
