@@ -24,6 +24,7 @@ const ProductGrid = (props) => {
 
     return (
         <>
+            {categories && console.log(categories)}
             {categories ? categories.map(category => {
                 return (
                     <div
@@ -39,15 +40,9 @@ const ProductGrid = (props) => {
                             <div className="row mt-3">
                                 {category.products.map((product) => {
                                     return (
-                                        <div
-                                            key={product.id}
-                                            className="col-md-3 mt-3"
-                                        >
+                                        <div key={product.id} className="col-lg-4 mt-3">
                                             <Card style={{ width: "18rem" }}>
-                                                <Card.Img
-                                                    variant="top"
-                                                    src={`/img/${product.id}.jpg`}
-                                                />
+                                                <Card.Img variant="top" src={`/img/${product.id}.jpg`}/>
                                                 <Card.Body>
                                                     <Card.Title>
                                                         <b>{product.name}</b>
@@ -70,27 +65,18 @@ const ProductGrid = (props) => {
                                                                         <input
                                                                             type="number"
                                                                             name="quantity"
-                                                                            defaultValue={
-                                                                                1
-                                                                            }
+                                                                            defaultValue={1}
                                                                             className="form-control input-number"
-                                                                            onChange={async (e) =>
-                                                                                await setItemCount(parseInt(e.target.value))}
-                                                                                style={{ minWidth: "60px"}}
+                                                                            onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                                                            style={{ minWidth:"60px" }}
                                                                         />
                                                                     </div>
                                                                     <div className="col-6">
                                                                         <Button
                                                                             variant="primary"
                                                                             onClick={() =>
-                                                                                addToCart(
-                                                                                    product.id,
-                                                                                    event
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            +
-                                                                        </Button>
+                                                                                addToCart( product.id, event )}
+                                                                        > + </Button>
                                                                     </div>
                                                                 </div>
                                                             </Card.Link>
@@ -120,6 +106,11 @@ const ProductGrid = (props) => {
                                         </div>
                                     );
                                 })}
+                            </div>
+                            <div className="container mt-5">
+                                <Link className="ml-5 mt-3" to={`/categories/${category.category_name}`}>
+                                    <Button variant="outline-primary" size="lg">Ver todos los disponibles</Button>
+                                </Link>
                             </div>
                         </section>
                     </div>
