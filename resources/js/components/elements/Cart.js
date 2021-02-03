@@ -13,24 +13,21 @@ const Cart = (props) => {
     const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState([]);
 
-    const handleChange = (e) => {
-        console.log(e.target.value);
-    };
-
-    //update view
-    const addOneMore = (i, id, price) => {
+    //add 1 item
+    const addOneMore = (i, id) => {
         axios
-            .get(`cart/${id}/add`)
+            .get(`cart/${id}/add/1`)
             .then(() => {
+                // update count visibility
                 const updatedCart = [...cart];
-                updatedCart[i].quantity += 1;
+                updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
+
                 setCart(updatedCart);
+                // update cart total
                 setTotal(
                     // map a subtotal array
                     updatedCart
-                        .map((item) => {
-                            return item.price * item.quantity;
-                        })
+                        .map((item) => item.price * item.quantity)
                         //then sum mapped items for total
                         .reduce((a, b) => a + b, 0)
                 );
@@ -38,26 +35,37 @@ const Cart = (props) => {
             .catch((err) => {
                 setError(err.message);
             });
-        props.updateCart();
+        // call method from parent App.js
+        props.cartCountUpdate(1);
     };
 
-    const removeItem = (productToRemove, productId) => {
+    // remove all items with given id
+    const removeItem = (productToRemove, productId, qty) => {
+        console.log('remove item')
         axios
         .get(`/cart/${productId}/destroy`)
         .then(() => {
-            setCart(cart.filter((product) => product !== productToRemove)); // remove just that product from cart
+            const updatedCart = cart.filter(
+                (product) => product !== productToRemove
+            );
+            setCart(updatedCart); // clear item from cart list
+            setTotal(updatedCart.map(item => item.quantity * item.price).reduce((a, b) => a + b, 0));
+            props.cartCountUpdate(qty * -1);
         })
         .catch( err => {
             setCart( err.message );
-        })
-    }
+        });
+        console.log('end of removeitem')
+    };
 
-
+    // set cart items and total
     useEffect(() => {
         axios
             .get("cart")
             .then((res) => {
+                // cart items
                 setCart(Object.values(res.data));
+                // cart total
                 setTotal(
                     // map a subtotal array
                     Object.values(res.data).map((item) => {
@@ -75,6 +83,7 @@ const Cart = (props) => {
     return (
         <div>
             <div>
+                {console.log('rendering')}
                 <h1>Tu vinos seleccionados</h1>
                 {cart.length == 0 ? (
                     "No tienes vinos en el carrito"
@@ -86,7 +95,6 @@ const Cart = (props) => {
                                 <th></th>
                                 <th>Cantidad</th>
                                 <th>Sub-Total</th>
-                                {/* <th>Acciones</th> */}
                             </tr>
                         </thead>
                         {cart.map((product, i) => {
@@ -98,7 +106,7 @@ const Cart = (props) => {
                                         </td>
                                         <td className="center">
                                             <img
-                                                src="img/bottle.png"
+                                                src={`/img/${product.id}.jpg`}
                                                 style={{
                                                     width: "85px",
                                                     height: "85px",
@@ -123,7 +131,8 @@ const Cart = (props) => {
                                                 onClick={() =>
                                                     removeItem(
                                                         product,
-                                                        product.id
+                                                        product.id,
+                                                        product.quantity
                                                     )
                                                 }
                                             >
