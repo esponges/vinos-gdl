@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
-import { withRouter } from 'react-router';
+import { withRouter, Link } from 'react-router-dom';
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
@@ -13,7 +13,7 @@ const SingleProduct = (props) => {
         axios
             .get(`cart/${id}/add/${itemCount}`)
             .then((res) => {
-                props.cartCountUpdate(itemCount);
+                props.cartCountUpdate(parseInt(itemCount));
                 window.alert(res.data);
             })
             .catch((err) => {
@@ -34,10 +34,10 @@ const SingleProduct = (props) => {
     }, [])
 
     return (
-        <>
+        <div className="container" style={{ width: "32rem", marginTop: "5%", marginBottom: "10%" }}>
             {console.log(product)}
             {product != {} && (
-                <Card style={{ width: "32rem", marginTop: "10%", marginBottom: "10%" }}>
+                <Card>
                     <Card.Img
                         variant="top"
                         src={product.id && `/img/${product.id}.jpg`}
@@ -73,12 +73,20 @@ const SingleProduct = (props) => {
                                 >
                                     +
                                 </Button>
+                                <p><i>Añadir al carrito</i></p>
                             </div>
                         </div>
                     </Card.Body>
                 </Card>
             )}
-        </>
+            <div className="container mt-5">
+                <Link className="ml-2" to="/">
+                    <Button variant="outline-primary" size="lg">
+                        Regresar al inicio
+                    </Button>
+                </Link>
+            </div>
+        </div>
     );
 }
 

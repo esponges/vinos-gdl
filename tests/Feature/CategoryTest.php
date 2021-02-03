@@ -21,7 +21,7 @@ class CategoryTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_products_by_category_are_shown()
+    public function test_products_by_all_categories_are_shown()
     {
         $this->withoutExceptionHandling();
 
@@ -38,6 +38,18 @@ class CategoryTest extends TestCase
         // dd ($categoriesProducts[1]['products']);
 
         $this->assertEquals(json_encode($response->original), json_encode($categoriesProducts));
+    }
+
+    public function test_single_category_displayed()
+    {
+        $this->withoutExceptionHandling();
+        $categoryName = Category::find(2);
+
+        $response = $this->get(route('categories.show', $categoryName->name));
+
+        // $response->dump();
+
+        $response->assertOk();
     }
 
     public function test_category_is_shown()
