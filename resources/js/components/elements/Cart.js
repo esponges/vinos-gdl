@@ -14,48 +14,93 @@ const Cart = (props) => {
     const [total, setTotal] = useState([]);
 
     //add 1 item
-    const addOneMore = (i, id) => {
-        axios
-            .get(`cart/${id}/add/1`)
-            .then(() => {
-                // update count visibility
+    // const addOneMore = (i, id) => {
+    //     axios
+    //         .get(`cart/${id}/add/1`)
+    //         .then(() => {
+    //             // update count visibility
+    //             const updatedCart = [...cart];
+    //             updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
+
+    //             setCart(updatedCart);
+    //             // update cart total
+    //             setTotal(
+    //                 // map a subtotal array
+    //                 updatedCart
+    //                     .map((item) => item.price * item.quantity)
+    //                     //then sum mapped items for total
+    //                     .reduce((a, b) => a + b, 0)
+    //             );
+    //         })
+    //         .catch((err) => {
+    //             setError(err.message);
+    //         });
+    //     // call method from parent App.js
+    //     props.cartCountUpdate(1);
+    // };
+    const addOneMore = async (id, i) => {
+        try {
+            const res = await axios.get(`cart/${id}/add/1`);
+            // if res true
+            if (res) {
                 const updatedCart = [...cart];
                 updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
-
                 setCart(updatedCart);
-                // update cart total
                 setTotal(
-                    // map a subtotal array
                     updatedCart
-                        .map((item) => item.price * item.quantity)
-                        //then sum mapped items for total
+                        .map((item) => item.quantity * item.price)
                         .reduce((a, b) => a + b, 0)
                 );
-            })
-            .catch((err) => {
-                setError(err.message);
-            });
-        // call method from parent App.js
-        props.cartCountUpdate(1);
+                // update navbar +1 cart count
+                props.cartCountUpdate(1);
+            } else {
+                console.error("error fecthing add route");
+            }
+        } catch (err) {
+            console.error(err);
+        }
     };
 
-    // remove all items with given id
-    const removeItem = (productToRemove, productId, qty) => {
-        console.log('remove item')
-        axios
-        .get(`/cart/${productId}/destroy`)
-        .then(() => {
-            const updatedCart = cart.filter(
-                (product) => product !== productToRemove
-            );
-            setCart(updatedCart); // clear item from cart list
-            setTotal(updatedCart.map(item => item.quantity * item.price).reduce((a, b) => a + b, 0));
-            props.cartCountUpdate(qty * -1);
-        })
-        .catch( err => {
-            setCart( err.message );
-        });
-        console.log('end of removeitem')
+    // // remove all items with given id
+    // const removeItem = (productToRemove, productId, qty) => {
+    //     console.log('remove item')
+    //     axios
+    //     .get(`/cart/${productId}/destroy`)
+    //     .then(() => {
+    //         const updatedCart = cart.filter(
+    //             (product) => product !== productToRemove
+    //         );
+    //         setCart(updatedCart); // clear item from cart list
+    //         setTotal(updatedCart.map(item => item.quantity * item.price).reduce((a, b) => a + b, 0));
+    //         props.cartCountUpdate(qty * -1);
+    //     })
+    //     .catch( err => {
+    //         setCart( err.message );
+    //     });
+    //     console.log('end of removeitem')
+    // };
+
+    // remove all items from given id
+    const removeItem = async (productToRemove, productId, qty) => {
+        try {
+            const res = await axios.get(`/cart/${productId}/destroy`);
+            // positive response
+            if (res) {
+                const updatedCart = cart.filter(product => product !== productToRemove);
+                setCart(updatedCart);
+                // get total to pay
+                setTotal(updatedCart
+                .map(item => item.quantity * item.price)
+                .reduce((a,b) => a + b, 0));
+                // remove all item count from navbar counter
+                props.cartCountUpdate(qty * -1);
+            } else {
+                console.error("error fetching delete route");
+            }
+            // res not true
+        } catch (err) {
+            console.error(err, 'try failed, got catch');
+        }
     };
 
     // set cart items and total
@@ -83,16 +128,16 @@ const Cart = (props) => {
     return (
         <div>
             <div>
-                {console.log('rendering')}
+                {console.log("rendering")}
                 <h1>Tu vinos seleccionados</h1>
                 {cart.length == 0 ? (
-                    "No tienes vinos en el carrito"
+                    <p>"No tienes vinos en el carrito"</p>
                 ) : (
                     <Table striped bordered hover size="sm" className="mt-3">
                         <thead>
                             <tr>
+                                <th>Descripción</th>
                                 <th>Producto</th>
-                                <th></th>
                                 <th>Cantidad</th>
                                 <th>Sub-Total</th>
                             </tr>
@@ -120,7 +165,7 @@ const Cart = (props) => {
                                             <Button
                                                 variant="link"
                                                 onClick={() =>
-                                                    addOneMore(i, product.id, product.price)
+                                                    addOneMore(product.id, i)
                                                 }
                                             >
                                                 <b>&nbsp; ¡Una más!</b>
@@ -140,7 +185,7 @@ const Cart = (props) => {
                                             </Button>
                                         </td>
                                         <td>
-                                            {product.quantity * product.price}
+                                            $ {product.quantity * product.price}
                                         </td>
                                     </tr>
                                 </tbody>
@@ -148,16 +193,34 @@ const Cart = (props) => {
                         })}
                     </Table>
                 )}
-                <h5>Total {total}</h5>
-                {cart.length == 0 ? (
-                    <Link to="/">
-                        <Button> Regresar </Button>
-                    </Link>
-                ) : (
-                    <Link to="/cart/checkout">
-                        <Button> Pagar </Button>
-                    </Link>
-                )}
+                <div className="container mt-3">
+                    <h3 className="mb-3">
+                        Total <b>$ {total}</b>
+                    </h3>
+                    {cart.length == 0 ? (
+                        <Link to="/">
+                            <Button> Regresar </Button>
+                        </Link>
+                    ) : (
+                        <div className="row">
+                            <div className="col-3">
+                                <Link to="/cart/checkout">
+                                    <Button variant="outline-success" size="lg">
+                                        {" "}
+                                        Pagar{" "}
+                                    </Button>
+                                </Link>
+                            </div>
+                            <div className="col-3">
+                                <Link to="/">
+                                    <Button variant="outline-secondary">
+                                        Regresar
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
