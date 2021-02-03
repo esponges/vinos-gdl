@@ -15,13 +15,13 @@ class CartController extends Controller
     }
 
     //add item to cart
-    public function add(Product $product)
+    public function add(Product $product, $qty)
     {
         \Cart::add(array(
             'id' => $product->id, // inique row ID
             'name' => $product->name,
             'price' => $product->price,
-            'quantity' => 1,
+            'quantity' => $qty,
             'attributes' => array()
         ));
 

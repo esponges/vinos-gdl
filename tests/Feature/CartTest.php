@@ -44,7 +44,7 @@ class CartTest extends TestCase
         $this->withoutExceptionHandling();
         $product = Product::find(1);
 
-        $response = $this->get(route('cart.add', $product));
+        $response = $this->get(route('cart.add', ['product' => $product, 'qty' => 1]));
 
         $response->assertOk();
         // $response->dump();

@@ -48,7 +48,7 @@ class OrderTest extends TestCase
             'payment_mode' => 'paypal',
         ]);
 
-        $response->assertOk();
+        $response->assertStatus(302);
     }
 
     // public function test_paypal()

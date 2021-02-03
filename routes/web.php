@@ -32,7 +32,7 @@ Route::prefix('cart')->group( function () {
     Route::get('/', [CartController::class, 'index']);
     Route::get('/count', [CartController::class, 'count']);
     Route::get('/get-total', [CartController::class, 'getTotal']);
-    Route::get('/{product}/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/{product}/add/{qty}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
