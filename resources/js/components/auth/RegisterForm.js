@@ -1,57 +1,129 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import sanctumApi from "../../sanctum-api";
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
-    // const [address, setAddress] = useState("");
+    const [age, setAge] = useState(0);
     const [email, setEmail] = useState("");
+    const [emailValidationAlert, setEmailValidationAlert] = useState(null);
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordsMatch, setPasswordsMatch] = useState(false);
+    const [userDataIsValid, setUserDataIsValid] = useState(null);
+    const [isRegistered, setIsRegistered] = useState(null);
+    const [error, setError] = useState(false);
     // const [nameOk, setNameOk] = useState(false);
     // const [addressOk, setAddressOk] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submitting form");
-        sanctumApi
-            .get("sanctum/csrf-cookie")
+        // check if user is already registered
+        axios
+            .get(`/api/is-registered/${email}`)
             .then((res) => {
-                console.log("response is", res);
-                axios.post('register', {
-                    name: name,
-                    email: email,
-                    password: password
-                })
-                .then(res => {
-                    console.log('register is', res)
-                })
-                .catch(err => {
-                    console.error(err, 'ya existe usuario!!!')
-                })
+                console.log(res.data);
+                // alert user already registered
+                if (res.data.isRegistered) setIsRegistered(true);
+                else {
+                    setIsRegistered(false);
+                    // proceed registering
+                    sanctumApi
+                        .get("sanctum/csrf-cookie")
+                        .then((res) => {
+                            console.log("age is ", age);
+                            axios
+                                .post("register", {
+                                    name: name,
+                                    email: email,
+                                    password: password,
+                                    age: age,
+                                })
+                                .then(() => {
+                                    // if no error, log in user
+                                    axios
+                                        .post("/login", {
+                                            email: email,
+                                            password: password,
+                                        })
+                                        .then((res) => {
+                                            console.log(res.data);
+                                            props.history.push("/login");
+                                        })
+                                        .catch((err) => {
+                                            console.error(err);
+                                            setError(true);
+                                        });
+                                })
+                                .catch((err) => {
+                                    console.error(err, "error loging user in");
+                                    setError(true);
+                                });
+                        })
+                        .catch((err) => {
+                            console.error(
+                                err,
+                                "problem with csrf-cookie route"
+                            );
+                            setError(true);
+                        });
+                }
             })
             .catch((err) => {
-                console.error(err, 'problema con csrf');
+                console.error(err);
+                setError(true);
             });
     };
 
-    useEffect(() => {
+    // passwords
+    const validatePasswords = async () => {
         if (password === confirmPassword && password != "") {
-            setPasswordsMatch(true);
-        } else if (password != "" && password !== confirmPassword) {
-            setPasswordsMatch(false);
+            await setPasswordsMatch(true);
+        } else {
+            await setPasswordsMatch(false);
         }
-        // name.length > 8 ? setNameOk(true) : setNameOk(false);
-        // address.length > 10 ? setAddressOk(true) : setNameOk(false);
-        // }, [confirmPassword, name, address, passwordsMatch]);
-    }, [confirmPassword]);
+    };
+
+    //validate email and password
+    useEffect(() => {
+        // email
+        const pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        const emailRegExp = new RegExp(pattern);
+        if (email)
+            if (emailRegExp.test(email) && email != "") {
+                console.log(emailRegExp.test(email), "regexp is trueee");
+                setIsRegistered(false);
+                setEmailValidationAlert(false);
+            } else {
+                setEmailValidationAlert("Por favor ingresa un correo válido");
+            }
+
+        validatePasswords();
+
+        // both ok
+        if (
+            emailValidationAlert == false &&
+            name.length > 8 &&
+            password === confirmPassword &&
+            password != ""
+        ) {
+            console.log(
+                emailValidationAlert,
+                "email alert",
+                passwordsMatch,
+                "pw match",
+                password,
+                "passs"
+            );
+            setUserDataIsValid(true);
+        } else setUserDataIsValid(false);
+    }, [email, confirmPassword]);
 
     return (
-        <div className="container">
-            {/* {console.log(props)} */}
+        <div className="container" style={{ marginTop: "13%" }}>
             <Form>
                 <Form.Group controlId="formBasicName">
                     <Form.Label>Nombre Completo</Form.Label>
@@ -72,27 +144,9 @@ const RegisterForm = (props) => {
                         </Alert>
                     )}
                 </Form.Group>
-                {/* <Form.Group controlId="formBasicAddress">
-                    <Form.Label>Tu dirección de entrega</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Ingresa dirección"
-                        name="address"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                    />
-                    <Form.Text className="text-muted">
-                        ¿Dónde te entregamos?
-                    </Form.Text>
-                    {!addressOk && address != "" && (
-                        <Alert variant={"warning"} className="m-1">
-                            Ingresa correctamente la información
-                        </Alert>
-                    )}
-                </Form.Group> */}
+
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
+                    <Form.Label>Correo electrónico</Form.Label>
                     <Form.Control
                         type="email"
                         placeholder="Enter email"
@@ -102,10 +156,52 @@ const RegisterForm = (props) => {
                         required
                     />
                     <Form.Text className="text-muted">
-                        We'll never share your email with anyone else.
+                        Nunca compartiremos tu información
                     </Form.Text>
-                </Form.Group>
+                    {emailValidationAlert && (
+                        <Alert variant={"warning"} className="m-5">
+                            {emailValidationAlert}
+                        </Alert>
+                    )}
 
+                    <Form.Label>
+                        Tu edad <i>(opcional)</i>
+                    </Form.Label>
+                    <div className="row">
+                        <div className="col-3">
+                            <Form.Check
+                                type="radio"
+                                onClick={() => setAge(1)}
+                                label="18-25"
+                                name="age"
+                            />
+                        </div>
+                        <div className="col-3">
+                            <Form.Check
+                                type="radio"
+                                onClick={() => setAge(2)}
+                                label="26-35"
+                                name="age"
+                            />
+                        </div>
+                        <div className="col-3">
+                            <Form.Check
+                                type="radio"
+                                onClick={() => setAge(3)}
+                                label="36-45"
+                                name="age"
+                            />
+                        </div>
+                        <div className="col-3">
+                            <Form.Check
+                                type="radio"
+                                onClick={() => setAge(4)}
+                                label="+45"
+                                name="age"
+                            />
+                        </div>
+                    </div>
+                </Form.Group>
                 <Form.Group controlId="formBasicPassword">
                     <Form.Label>Contraseña</Form.Label>
                     <Form.Control
@@ -127,27 +223,43 @@ const RegisterForm = (props) => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </Form.Group>
-                {/* <Form.Group controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Recordar usuario" />
-                </Form.Group> */}
+
                 {!passwordsMatch && password != "" && confirmPassword != "" && (
                     <Alert variant={"warning"} className="m-5">
                         Las contraseñas no coinciden
                     </Alert>
                 )}
-                {passwordsMatch && email != "" && name.length > 8 && (
+
+                {isRegistered && (
+                    <Alert variant={"warning"} className="m-5">
+                        Este usuario ya está registrado
+                    </Alert>
+                )}
+
+                {/* server error */}
+                {error && (
+                    <Alert variant={"warning"} className="m-5">
+                        Error en el servidor intenta en un momento
+                    </Alert>
+                )}
+
+                {userDataIsValid && (
                     <Button
                         variant="primary"
                         type="submit"
                         onClick={handleSubmit}
                     >
+                        {/* {console.log(userDataIsValid)} */}
                         Regístrate
                     </Button>
                 )}
-                <Link to="/cart" className="btn btn-secondary">Regresar</Link>
+
+                <Link to="/cart" className="btn btn-secondary">
+                    Regresar
+                </Link>
             </Form>
         </div>
     );
 };
 
-export default RegisterForm;
+export default withRouter(RegisterForm);

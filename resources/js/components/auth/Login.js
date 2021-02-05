@@ -3,7 +3,7 @@ import { Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import sanctumApi from "../../sanctum-api";
-import { withRouter } from "react-router";
+import { withRouter, Link } from "react-router-dom";
 
 const Login = (props) => {
     const [email, setEmail] = useState("");
@@ -23,15 +23,15 @@ const Login = (props) => {
                         password: password,
                     })
                     .then((res) => {
-                        if (res.status === 204) {
+                        if (res.status === 204 || 200) {
                             props.login();
                             if (props.cartCount > 0) {
                                 props.history.push("/cart/checkout");
-                                console.log('redirecting to checkout')
+                                console.log('redirecting to checkout');
                             }
                             props.history.push("/cart");
                         } else {
-                            console.log("not 204, delete cookies", res);
+                            console.log("not 200 or 204, delete cookies");
                         }
                     })
                     .catch((err) => {
@@ -45,11 +45,11 @@ const Login = (props) => {
     };
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: "13%" }}>
             {/* {console.log(props.cartCount)} */}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
+                    <Form.Label>Corre electrónico</Form.Label>
                     <Form.Control
                         type="email"
                         placeholder="Enter email"
@@ -59,12 +59,12 @@ const Login = (props) => {
                         required
                     />
                     <Form.Text className="text-muted">
-                        We'll never share your email with anyone else.
+                        Nunca compartiremos tu información
                     </Form.Text>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label>Contraseña</Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Password"
@@ -80,9 +80,12 @@ const Login = (props) => {
                 {sessionError && (
                     <Alert variant={"warning"} className="m-5">Credenciales incorrectas</Alert>
                 )}
-                <Button variant="primary" type="submit">
-                    Submit
+                <Button variant="outline-primary" type="submit">
+                    Iniciar sesión
                 </Button>
+                <Link to="/register">
+                    <Button variant="primary" className="ml-5">Regístrate</Button>
+                </Link>
             </Form>
         </div>
     );
