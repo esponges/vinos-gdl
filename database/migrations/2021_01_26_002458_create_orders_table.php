@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->string('payment_mode')->default('paypal');
             $table->boolean('is_paid')->default(0);
             $table->string('address');
-
+            $table->string('address_details')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
