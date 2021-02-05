@@ -18,6 +18,7 @@ class OrderController extends Controller
             $order->user_id = Auth::user()->id;
             $order->payment_mode = $request->payment_mode;
             $order->address = $request->address;
+            $order->address_details = $request->address_details;
 
             $order->save();
 
