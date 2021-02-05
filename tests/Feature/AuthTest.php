@@ -25,11 +25,12 @@ class AuthTest extends TestCase
             'name' => $user['name'],
             'email' => $user['email'],
             'password' => Hash::make('123456'),
-            'password_confirmation' => Hash::make('123456')
+            'password_confirmation' => Hash::make('123456'),
+            'age' => Factory::create()->numberBetween(1, 4),
         ]);
 
-        // $response->dumpHeaders();
-        // $response->dump();
+        $response->dumpHeaders();
+        $response->dump();
 
         $response->assertStatus(302);
     }
@@ -75,5 +76,18 @@ class AuthTest extends TestCase
         // $response->dumpSession();
         // $response->dump();
         $response->assertOk();
+    }
+
+    public function test_if_user_exists()
+
+    {
+        $this->withoutExceptionHandling();
+        $email = User::first()->email;
+        // $email = 'an email';
+
+        $response = $this->get(route('userInfo.isRegistered', $email));
+
+        $response->assertOk();
+        $response->assertJsonFragment(['isRegistered' => true]);
     }
 }
