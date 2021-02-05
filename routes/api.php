@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GetUserInformation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,3 +29,5 @@ Route::get('/user-name', function () {
         return response()->json(auth()->user(), 200);
     }
 });
+
+Route::get('/is-registered/{email}', [GetUserInformation::class, 'isRegistered'])->name('userInfo.isRegistered');
