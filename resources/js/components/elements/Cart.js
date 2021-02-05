@@ -12,6 +12,7 @@ const Cart = (props) => {
     const [error, setError] = useState("");
     const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState([]);
+    const [payOrCheckout, setPayOrCheckout] = useState("Pagar");
 
     //add 1 item
     // const addOneMore = (i, id) => {
@@ -205,9 +206,12 @@ const Cart = (props) => {
                         <div className="row">
                             <div className="col-3">
                                 <Link to="/cart/checkout">
-                                    <Button variant="outline-success" size="lg">
+                                    {/* CheckOut displays below clicking here */}
+                                    <Button variant="outline-success" size="lg"
+                                        onClick={() => setPayOrCheckout("Continua el proceso abajo")}
+                                    >
                                         {" "}
-                                        Pagar{" "}
+                                        {payOrCheckout}{" "}
                                     </Button>
                                 </Link>
                             </div>

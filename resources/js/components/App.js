@@ -117,6 +117,8 @@ const App = (props) => {
                             style={{ marginTop: "15%" }}
                         ></div>
                         <Cart cartCountUpdate={cartCountUpdate} />
+
+                        {/* after clicking 'pay' button */}
                         <Route path="/cart/checkout">
                             <Checkout loggedIn={loggedIn} userInfo={userInfo} />
                         </Route>
