@@ -75,6 +75,7 @@ const IndexNavbar = (props) => {
                 variant="light"
                 fixed="top"
             >
+                <p>Some test inside</p>
                 <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
@@ -103,7 +104,12 @@ const IndexNavbar = (props) => {
                             style={{ marginRight: "10px" }}
                         >
                             <b>Carrito</b> &nbsp;&nbsp;&nbsp;
-                            <Badge pill variant="info" size="sm">
+                            <Badge
+                                pill
+                                variant="info"
+                                size="sm"
+                                id="item-count"
+                            >
                                 <FontAwesomeIcon icon={faShoppingBasket} />
                                 &nbsp;{props.cartCount ?? props.cartCount}
                             </Badge>
