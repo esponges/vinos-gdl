@@ -6,18 +6,8 @@ import { withRouter, Link } from 'react-router-dom';
 const Category = (props) => {
     const [products, setProducts] = useState({});
 
-    // useEffect (() => {
-    //     axios
-    //     .get(`/categories/${props.match.params.name}`)
-    //     .then( res => {
-    //         setProducts ( res.data );
-    //     })
-    //     .catch( err => {
-    //         console.error(err);
-    //     })
-    // }, []);
-
     useEffect(() => {
+        console.log('useeffect from Category.js')
         async function fetchData() {
             try {
                 const res = await axios.get(
@@ -37,7 +27,7 @@ const Category = (props) => {
 
     return (
         <section className="container mb-2">
-            {console.log(products, props.match.params.name)}
+            {console.log('rendering Category.js')}
             <h1 className="mt-5">{props.match.params.name}</h1>
             {products != {} ? (
                 <div className="row mt-3">

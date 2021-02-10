@@ -14,31 +14,6 @@ const Cart = (props) => {
     const [total, setTotal] = useState([]);
     const [payOrCheckout, setPayOrCheckout] = useState("Pagar");
 
-    //add 1 item
-    // const addOneMore = (i, id) => {
-    //     axios
-    //         .get(`cart/${id}/add/1`)
-    //         .then(() => {
-    //             // update count visibility
-    //             const updatedCart = [...cart];
-    //             updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
-
-    //             setCart(updatedCart);
-    //             // update cart total
-    //             setTotal(
-    //                 // map a subtotal array
-    //                 updatedCart
-    //                     .map((item) => item.price * item.quantity)
-    //                     //then sum mapped items for total
-    //                     .reduce((a, b) => a + b, 0)
-    //             );
-    //         })
-    //         .catch((err) => {
-    //             setError(err.message);
-    //         });
-    //     // call method from parent App.js
-    //     props.cartCountUpdate(1);
-    // };
     const addOneMore = async (id, i) => {
         try {
             const res = await axios.get(`cart/${id}/add/1`);
@@ -61,25 +36,6 @@ const Cart = (props) => {
             console.error(err);
         }
     };
-
-    // // remove all items with given id
-    // const removeItem = (productToRemove, productId, qty) => {
-    //     console.log('remove item')
-    //     axios
-    //     .get(`/cart/${productId}/destroy`)
-    //     .then(() => {
-    //         const updatedCart = cart.filter(
-    //             (product) => product !== productToRemove
-    //         );
-    //         setCart(updatedCart); // clear item from cart list
-    //         setTotal(updatedCart.map(item => item.quantity * item.price).reduce((a, b) => a + b, 0));
-    //         props.cartCountUpdate(qty * -1);
-    //     })
-    //     .catch( err => {
-    //         setCart( err.message );
-    //     });
-    //     console.log('end of removeitem')
-    // };
 
     // remove all items from given id
     const removeItem = async (productToRemove, productId, qty) => {
@@ -106,6 +62,7 @@ const Cart = (props) => {
 
     // set cart items and total
     useEffect(() => {
+        console.log('useEffect from Cart.js');
         axios
             .get("cart")
             .then((res) => {
@@ -129,7 +86,7 @@ const Cart = (props) => {
     return (
         <div>
             <div>
-                {console.log("rendering")}
+                {console.log("Rendering Cart.js")}
                 <h1>Tu vinos seleccionados</h1>
                 {cart.length == 0 ? (
                     <p>"No tienes vinos en el carrito"</p>

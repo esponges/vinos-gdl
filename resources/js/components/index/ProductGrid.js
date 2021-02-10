@@ -24,7 +24,7 @@ const ProductGrid = (props) => {
 
     return (
         <>
-            {categories && console.log(categories)}
+            {console.log('rendering ProductGrid.js')}
             {categories ? categories.map(category => {
                 return (
                     <div
