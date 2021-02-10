@@ -16,6 +16,8 @@ class CreateProductLinksTable extends Migration
         Schema::create('product_links', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->nullable()->constrained('products');
+            $table->string('provider')->nullable();
+            $table->integer('price')->nullable();
             $table->string('link');
             $table->timestamps();
         });
