@@ -75,7 +75,6 @@ const IndexNavbar = (props) => {
                 variant="light"
                 fixed="top"
             >
-                <p>Some test inside</p>
                 <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">

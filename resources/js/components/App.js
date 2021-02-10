@@ -72,6 +72,7 @@ const App = (props) => {
 
     //cleanup will cause reloading hook so will create one separated
     useEffect(() => {
+        console.log('useeffect from App.js - loggedIn state changed.')
         axios.get("api/is-auth").then((res) => {
             if (res.data) {
                 setLoggedIn(true);

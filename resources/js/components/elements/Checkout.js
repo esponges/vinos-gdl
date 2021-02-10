@@ -14,8 +14,9 @@ const Checkout = (props) => {
         props.userInfo[3] && setPhone(props.userInfo[3]);
     }, []);
 
-    // validate
+    // validations
     useEffect(() => {
+        useEffect('validations useEffect from Checkout.js');
         //validate phone
         const phonePattern = new RegExp(/^[0-9\b]+$/);
         if (phone) {
@@ -43,13 +44,6 @@ const Checkout = (props) => {
             setButtonIsActive(true);
         else setButtonIsActive(false);
     }, [address, phone]);
-
-
-    // validate phone
-    useEffect(() => {
-
-
-    }, [phone]);
 
     return (
         <div>
@@ -88,11 +82,11 @@ const Checkout = (props) => {
 
                         <Form.Label>Tu CP</Form.Label>
                         <Form.Control as="select">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
+                            <option>45689</option>
+                            <option>44630</option>
+                            <option>45879</option>
+                            <option>46025</option>
+                            <option>48792</option>
                         </Form.Control>
 
                         {/* address */}

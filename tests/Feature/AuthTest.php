@@ -29,8 +29,8 @@ class AuthTest extends TestCase
             'age' => Factory::create()->numberBetween(1, 4),
         ]);
 
-        $response->dumpHeaders();
-        $response->dump();
+        // $response->dumpHeaders();
+        // $response->dump();
 
         $response->assertStatus(302);
     }
