@@ -25,6 +25,7 @@ Route::get('/', function () {
 });
 
 Route::resource('products', ProductController::class);
+Route::get('/products/{id}/links', [ProductController::class, 'getCompetidorsLinks']);
 
 Route::resource('categories', CategoryController::class);
 

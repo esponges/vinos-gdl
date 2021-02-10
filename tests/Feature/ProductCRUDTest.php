@@ -78,4 +78,15 @@ class ProductCRUDTest extends TestCase
 
         $response->assertJsonFragment($product);
     }
+
+    public function test_get_competence_links()
+    {
+        $this->withoutExceptionHandling();
+        $product = Product::first();
+
+        $response = $this->get('/products/' . $product->id . '/links');
+
+        $response->assertOk();
+        $response->assertJsonFragment(["https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-tequila/tequila-don-julio-70-anejo-cristalino-700-ml/0500028105626"]);
+    }
 }
