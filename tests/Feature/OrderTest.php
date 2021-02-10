@@ -110,8 +110,8 @@ class OrderTest extends TestCase
 
         $response = $this->get('cart/get-total');
 
-        $response->dump();
-        $response->dumpHeaders();
+        // $response->dump();
+        // $response->dumpHeaders();
         $response->assertOk();
     }
 }

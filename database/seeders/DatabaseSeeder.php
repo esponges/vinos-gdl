@@ -7,6 +7,7 @@ use App\Models\Vap;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductLinks;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -54,193 +55,245 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => "Don Julio 70 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 650,
                 'img' => '1.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Don Julio Blanco 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 440,
                 'img' => '2.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Don Julio Reposado 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 510,
                 'img' => '3.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Maestro Dobel 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 530,
                 'img' => '4.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Tradicional Reposado 695ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 235,
                 'img' => '5.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Centenario Reposado 950 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 230,
                 'img' => '6.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Herradura Reposado 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 280,
                 'img' => '7.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Herradura Ultra 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 510,
                 'img' => '8.jpg',
                 'category_id' => 1,
             ],
             [
                 'name' => "Chivas 12YO 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 440,
                 'img' => '9.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Passport 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 110,
                 'img' => '10.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Black & White 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 150,
                 'img' => '11.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "William Lawsons 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 130,
                 'img' => '12.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Ballantines Finest 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 170,
                 'img' => '13.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Etiqueta Negra 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 540,
                 'img' => '14.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Etiqueta Roja 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 240,
                 'img' => '15.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Buchanan's 12YO 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 525,
                 'img' => '16.jpg',
                 'category_id' => 2,
             ],
             [
                 'name' => "Smirnoff Tamarindo 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 190,
                 'img' => '17.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Stolichnaya 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 205,
                 'img' => '18.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Absolut Pera 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 190,
                 'img' => '19.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Absolut Azul 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 180,
                 'img' => '20.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Absolut Raspberry 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 190,
                 'img' => '21.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Grey Goose 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 470,
                 'img' => '22.jpg',
                 'category_id' => 3,
             ],
             [
                 'name' => "Beefeater 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 330,
                 'img' => '23.jpg',
                 'category_id' => 4,
             ],
             [
                 'name' => "Tanqueray 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 360,
                 'img' => '24.jpg',
                 'category_id' => 4,
             ],
             [
                 'name' => "Hendricks 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 615,
                 'img' => '25.jpg',
                 'category_id' => 4,
             ],
             [
                 'name' => "Bombay Shappire 750ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 350,
                 'img' => '26.jpg',
                 'category_id' => 4,
             ],
             [
                 'name' => "Beefeater Pink 700ml",
                 'description' => Factory::create()->sentence(12),
-                'price' => Factory::create()->numberBetween(400, 700),
+                'price' => 430,
                 'img' => '27.jpg',
                 'category_id' => 4,
             ],
         ]);
         User::factory()->create();
+
+        DB::table('product_links')->insert([
+            [
+                'product_id' => 1,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-tequila/tequila-don-julio-70-anejo-cristalino-700-ml/0500028105626"
+            ],
+            [
+                'product_id' => 1,
+                'link' => "https://www.consuvino.com.mx/product-page/don-julio-70-cristalino-700ml"
+            ],
+            [
+                'product_id' => 2,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-tequila/tequila-don-julio-blanco-700-ml/0500028105627"
+            ],
+            [
+                'product_id' => 2,
+                'link' => "https://www.consuvino.com.mx/product-page/don-julio-blanco-700ml"
+            ],
+            [
+                'product_id' => 5,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-tequila/tequila-jose-cuervo-tradicional-reposado-695-ml/0750103501202"
+            ],
+            [
+                'product_id' => 5,
+                'link' => "https://www.consuvino.com.mx/product-page/bf-tequila-tradicional-reposado-950ml"
+            ],
+            [
+                'product_id' => 6,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-tequila/tequila-gran-centenario-reposado-950-ml/0750104881001"
+            ],
+            [
+                'product_id' => 6,
+                'link' => "https://www.consuvino.com.mx/product-page/don-julio-blanco-700ml"
+            ],
+            [
+                'product_id' => 11,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-whisky/whisky-black-white-escoces-700-ml/0000005019613"
+            ],
+            [
+                'product_id' => 11,
+                'link' => "https://www.consuvino.com.mx/product-page/whisky-black-white-700ml"
+            ],
+            [
+                'product_id' => 16,
+                'link' => "https://www.superama.com.mx/catalogo/d-vinos-y-licores/f-aperitivos/l-whisky/whisky-buchanan-s-de-luxe-12-anos-escoces-750-ml/0000005019638"
+            ],
+            [
+                'product_id' => 16,
+                'link' => "https://www.consuvino.com.mx/product-page/whisky-buchanans-12-a%C3%B1os-750ml"
+            ],
+
+        ]);
     }
 }
