@@ -98,7 +98,7 @@ const SingleProduct = (props) => {
                                                     target="_blank"
                                                     onClick={(e) => {
                                                         e.preventDefault;
-                                                        window.open(competidorsInfo[0].link);
+                                                        window.open(competidorsInfo[1].link);
                                                     }}
                                                 >
                                                     <img
