@@ -16,7 +16,7 @@ const Checkout = (props) => {
 
     // validations
     useEffect(() => {
-        useEffect('validations useEffect from Checkout.js');
+        console.log('validations useEffect from Checkout.js');
         //validate phone
         const phonePattern = new RegExp(/^[0-9\b]+$/);
         if (phone) {
