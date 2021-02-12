@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -89,5 +90,25 @@ class AuthTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment(['isRegistered' => true]);
+    }
+
+    public function test_is_registered_social_login()
+    {
+        $this->withoutExceptionHandling();
+
+        $userEmail = Factory::create()->email();
+        //if email not in db create new one
+        $user = User::firstOrCreate([
+            'email' => $userEmail,
+        ], [
+            'name' => Factory::create()->name(),
+            'password' => Hash::make(Str::random(12)),
+            'age' => Factory::create()->numberBetween(1, 4),
+        ]);
+        //confirm if new user in db
+        $newUser = User::where('email', $user->email)->get();
+
+        // assert user was created
+        $this->assertEquals($userEmail, $newUser[0]->email);
     }
 }
