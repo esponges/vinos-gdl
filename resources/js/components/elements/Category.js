@@ -1,33 +1,46 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
+import ReactPaginate from 'react-paginate';
 import { withRouter, Link } from 'react-router-dom';
 
 const Category = (props) => {
     const [products, setProducts] = useState({});
+    const [offset, setOffset] = useState(0);
+    const [perPage] = useState(3);
+    const [pageCount, setPageCount] = useState(0);
+
+    const getProducts = async () => {
+        try {
+            const res = await axios
+            .get(`/categories/${props.match.params.name}`);
+            const data = res.data;
+            console.log('res.data', data);
+            const slice = data.slice(offset, offset + perPage); // crop array
+            console.log(`slice from ${offset} to ${offset + perPage}`)
+            setProducts(slice);
+            console.log('slice length ', slice.length)
+            setPageCount(Math.ceil(res.data.length / perPage));
+            console.log("Page Count", Math.ceil(res.data.length / perPage));
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const handlePageClick = (e) => {
+        console.log("handlePageClick!!!");
+        const selectedPage = e.selected;
+        setOffset(Math.ceil(selectedPage * perPage));
+    };
 
     useEffect(() => {
-        console.log('useeffect from Category.js')
-        async function fetchData() {
-            try {
-                const res = await axios.get(
-                    `/categories/${props.match.params.name}`
-                );
-                if (res) {
-                    setProducts(res.data);
-                } else {
-                    console.log("route not working");
-                }
-            } catch (err) {
-                console.error(err);
-            }
-        }
-        fetchData();
-    }, []);
+        console.log('category useEffect!!')
+        getProducts();
+    }, [offset]); // changed by HandlePageClick
 
     return (
         <section className="container mb-2">
-            {console.log('rendering Category.js')}
+            {/* {console.log("rendering Category.js", products)} */}
             <h1 className="mt-5">{props.match.params.name}</h1>
             {products != {} ? (
                 <div className="row mt-3">
@@ -63,16 +76,6 @@ const Category = (props) => {
                                                                 name="quantity"
                                                                 defaultValue={1}
                                                                 className="form-control input-number"
-                                                                // onChange={async (
-                                                                //     e
-                                                                // ) =>
-                                                                //     await setItemCount(
-                                                                //         parseInt(
-                                                                //             e.target
-                                                                //                 .value
-                                                                //         )
-                                                                //     )
-                                                                // }
                                                                 style={{
                                                                     minWidth:
                                                                         "60px",
@@ -80,15 +83,7 @@ const Category = (props) => {
                                                             />
                                                         </div>
                                                         <div className="col-6">
-                                                            <Button
-                                                                variant="primary"
-                                                                // onClick={() =>
-                                                                //     addToCart(
-                                                                //         product.id,
-                                                                //         event
-                                                                //     )
-                                                                // }
-                                                            >
+                                                            <Button variant="primary">
                                                                 +
                                                             </Button>
                                                         </div>
@@ -124,6 +119,23 @@ const Category = (props) => {
                 "error con el servidor"
             )}
             <div className="container mt-5">
+                <ReactPaginate
+                    previousLabel={"previous"}
+                    nextLabel={"next"}
+                    breakLabel={"..."}
+                    breakClassName={"page-item"}
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2} // # last pages buttons displayed
+                    pageRangeDisplayed={5} // # total buttons displayed
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination"}
+                    pageLinkClassName={"page-link"}
+                    subContainerClassName={"pages pagination"}
+                    activeClassName={"active"}
+                    nextClassName={"page-item"}
+                    previousLinkClassName={"page-link"}
+                    nextLinkClassName={"page-link"}
+                />
                 <Link className="ml-5" to="/">
                     <Button variant="outline-primary" size="lg">
                         Regresar
