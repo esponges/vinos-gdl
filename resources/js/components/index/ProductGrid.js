@@ -39,6 +39,7 @@ const ProductGrid = (props) => {
                             <h1 className="mt-5">{category.category_name}</h1>
                             <div className="row mt-3">
                                 {category.products.map((product) => {
+                                    if (product.featured) { // filter only featured products
                                     return (
                                         <div key={product.id} className="col-lg-4 mt-3">
                                             <Card style={{ width: "18rem" }}>
@@ -104,7 +105,7 @@ const ProductGrid = (props) => {
                                                 </Card.Body>
                                             </Card>
                                         </div>
-                                    );
+                                    );}
                                 })}
                             </div>
                             <div className="container mt-5">
