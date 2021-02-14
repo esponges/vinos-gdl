@@ -15,28 +15,23 @@ const Category = (props) => {
             const res = await axios
             .get(`/categories/${props.match.params.name}`);
             const data = res.data;
-            console.log('res.data', data);
-            const slice = data.slice(offset, offset + perPage); // crop array
-            console.log(`slice from ${offset} to ${offset + perPage}`)
+            const slice = data.slice(offset, offset + perPage); // define item range of each page
             setProducts(slice);
-            console.log('slice length ', slice.length)
+
             setPageCount(Math.ceil(res.data.length / perPage));
-            console.log("Page Count", Math.ceil(res.data.length / perPage));
         } catch (err) {
             console.error(err);
         }
     }
 
     const handlePageClick = (e) => {
-        console.log("handlePageClick!!!");
         const selectedPage = e.selected;
-        setOffset(Math.ceil(selectedPage * perPage));
+        setOffset(Math.ceil(selectedPage * perPage)); // offset will set correctly the items displayed by page
     };
 
     useEffect(() => {
-        console.log('category useEffect!!')
         getProducts();
-    }, [offset]); // changed by HandlePageClick
+    }, [offset]); // updated every HandlePageClick(from Pagination)
 
     return (
         <section className="container mb-2">
@@ -123,11 +118,16 @@ const Category = (props) => {
                     previousLabel={"previous"}
                     nextLabel={"next"}
                     breakLabel={"..."}
-                    breakClassName={"page-item"}
+
                     pageCount={pageCount}
-                    marginPagesDisplayed={2} // # last pages buttons displayed
+
+                    marginPagesDisplayed={2} // # last pages buttons displayed - for long lists
                     pageRangeDisplayed={5} // # total buttons displayed
+
                     onPageChange={handlePageClick}
+
+                    // bootstrap class for every item
+                    breakClassName={"page-item"}
                     containerClassName={"pagination"}
                     pageLinkClassName={"page-link"}
                     subContainerClassName={"pages pagination"}
@@ -136,6 +136,7 @@ const Category = (props) => {
                     previousLinkClassName={"page-link"}
                     nextLinkClassName={"page-link"}
                 />
+
                 <Link className="ml-5" to="/">
                     <Button variant="outline-primary" size="lg">
                         Regresar
