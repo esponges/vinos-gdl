@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
-import Checkout from "./elements/checkout/Checkout.js";
+import Checkout from "./checkout/Checkout.js";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";

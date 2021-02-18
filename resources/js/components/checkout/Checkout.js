@@ -3,7 +3,7 @@ import { cssHooks } from "jquery";
 import { ceil } from "lodash";
 import React, { useEffect, useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
-import LoginOrRegister from '../../auth/LoginOrRegister';
+import LoginOrRegister from '../auth/LoginOrRegister';
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
