@@ -53,7 +53,7 @@ const SingleProduct = (props) => {
     return (
         <div
             className="container"
-            style={{ width: "32rem", marginTop: "5%", marginBottom: "10%" }}
+            style={{ maxWidth: "32rem", marginTop: "5%", marginBottom: "10%" }}
         >
             {console.log("SingleProduct.js rendering")}
 
