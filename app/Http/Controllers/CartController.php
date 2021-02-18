@@ -40,6 +40,28 @@ class CartController extends Controller
         return response()->json(\Cart::getTotal());
     }
 
+    //cart subtotal
+    //for 7% on delivery payment
+    public function getSubTotal()
+    {
+        $cart = \Cart::getContent();
+
+        $cartItems = array_map(function ($item) {
+            return [
+                'name' => "anticipo " . $item['name'],
+                'price' => ceil($item['price'] * 0.07),
+                'qty' => $item['quantity']
+            ];
+        }, $cart->toArray());
+
+        $subtotal = 0;
+        foreach ($cartItems as $item) {
+            $subtotal += $item['price'] * $item['qty'];
+        }
+
+        return response()->json($subtotal);
+    }
+
     //remove item from cart
     public function destroy(Product $product)
     {
