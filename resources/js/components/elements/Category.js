@@ -31,7 +31,7 @@ const Category = (props) => {
 
     useEffect(() => {
         getProducts();
-    }, [offset]); // updated every HandlePageClick(from Pagination)
+    }, [offset]); // updated every pagination click
 
     return (
         <section className="container mb-2">

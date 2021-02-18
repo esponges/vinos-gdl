@@ -5,23 +5,15 @@ const MainJumbo = () => {
         <div>
             <div className="jumbotron center">
                 <div className="row">
-                    <div className="col-md-8">
-                        <h1>VINOREO</h1>
-                        <p className="lead">
-                            Consigue el vino  gratis a domicilio para tu evento o
-                            consumo en casa sin salir de tu casa*.
-                        </p>
-                        <p className="lead">Precios <i><u>siempre</u></i> de mayoreo**</p>
-                    </div>
-                    <div className="col-md-4">
-                        <img src="img/delivery.png" style={{ textAlign: 'center'}}/>
-                    </div>
+                        <img src="/img/vinoreologo.png" alt="" style={{ maxWidth: "100%" }}/>
                 </div>
 
                 <hr className="my-4" />
-                <p>*Compra mínima 2,000 pesos.</p>
-                <p>**En comparación con competencia</p>
-                <p className="lead"></p>
+                <p className="lead mt-4">Precios <i><u>siempre</u></i> de mayoreo</p>
+                <div className="mt-2 text-md-right" style={{ fontSize : "0.8rem" }}>
+                    <p>*Adquiere nuestros precios a partir de 1,500 mxn de compra.</p>
+                </div>
+
             </div>
         </div>
     );
