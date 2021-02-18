@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
-import Checkout from "./elements/Checkout.js";
+import Checkout from "./elements/checkout/Checkout.js";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";
@@ -66,13 +66,12 @@ const App = (props) => {
         axios.get("/cart/get-total").then((res) => {
             setCartTotal(res.data);
         });
-        if (`${location.host}/#/home`)
-            setStyle(3);
+        if (`${location.host}/#/home`) setStyle(3);
     }, []);
 
     //cleanup will cause reloading hook so will create one separated
     useEffect(() => {
-        console.log('useeffect from App.js - loggedIn state changed.')
+        console.log("useeffect from App.js - loggedIn state changed.");
         axios.get("api/is-auth").then((res) => {
             if (res.data) {
                 setLoggedIn(true);
@@ -112,18 +111,19 @@ const App = (props) => {
                         ></div>
                         <Category />
                     </Route>
+
+                    <Route path="/cart/checkout">
+                        <Checkout loggedIn={loggedIn} userInfo={userInfo} />
+                    </Route>
+
                     <Route path="/cart">
                         <div
                             className="container"
                             style={{ marginTop: "15%" }}
                         ></div>
                         <Cart cartCountUpdate={cartCountUpdate} />
-
-                        {/* after clicking 'pay' button */}
-                        <Route path="/cart/checkout">
-                            <Checkout loggedIn={loggedIn} userInfo={userInfo} />
-                        </Route>
                     </Route>
+
                     <Route path="/login">
                         <Login
                             loggedIn={loggedIn}
@@ -131,18 +131,18 @@ const App = (props) => {
                             cartCount={cartCount}
                         />
                     </Route>
+
                     <Route path="/register">
                         <RegisterForm />
                     </Route>
+
                     <Route path="/">
-                        <div className="index-page">
-                            <MainJumbo />
-                            <MastHead />
-                            <ProductGrid
-                                products={products}
-                                cartCountUpdate={cartCountUpdate}
-                            />
-                        </div>
+                        <MainJumbo />
+                        <MastHead />
+                        <ProductGrid
+                            products={products}
+                            cartCountUpdate={cartCountUpdate}
+                        />
                     </Route>
                 </Switch>
             </div>
