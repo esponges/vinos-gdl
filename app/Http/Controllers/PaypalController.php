@@ -5,15 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PaypalController extends Controller
 {
-    public function checkout($orderId)
+    public function checkout($orderId, $paymentMode)
     {
         $this->provider = new ExpressCheckout();
-        $cart = $this->getCheckoutData($orderId);
+        $cart = $this->getCheckoutData($orderId, $paymentMode);
 
         try {
             $response = $this->provider->setExpressCheckout($cart, false);
@@ -28,37 +30,52 @@ class PaypalController extends Controller
         }
     }
 
-    public function getCheckoutData($orderId)
+    public function getCheckoutData($orderId, $paymentMode = null)
     {
         $cart = \Cart::getContent();
 
-        $cartItems = array_map(function ($item) {
-            return [
-                'name' => $item['name'],
-                'price' => $item['price'],
-                'qty' => $item['quantity']
-            ];
-        }, $cart->toArray());
-
-        // dd($cartItems);
+        if ($paymentMode == "paypal") {
+            $cartItems = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'price' => $item['price'],
+                    'qty' => $item['quantity']
+                ];
+            }, $cart->toArray());
+        } else {
+            // if payment on_delivery only charge 7% and change item name
+            $cartItems = array_map(function ($item) {
+                return [
+                    'name' => "anticipo " . $item['name'],
+                    'price' => ceil($item['price'] * 0.07),
+                    'qty' => $item['quantity']
+                ];
+            }, $cart->toArray());
+        }
+        $cartTotal = 0;
+        foreach ($cartItems as $item) {
+            $cartTotal += $item['price'] * $item['qty'];
+        }
+        // dd($cartTotal, \Cart::getTotal() * 0.07);
+        // dd($cartItems, $cartTotal);
 
         $checkoutData = [
             'items' => $cartItems,
-            'return_url' => route('paypal.success', $orderId),
+            'return_url' => route('paypal.success', [$orderId, $paymentMode, $cartTotal]),
             'cancel_url' => route('paypal.fail', $orderId),
-            'invoice_id' => $orderId,
+            'invoice_id' => uniqid() . "-" .  $orderId,
             'invoice_description' => "Recibo de orden # $orderId ",
-            'total' => \Cart::getTotal()
+            'total' => $cartTotal
         ];
 
         return $checkoutData;
     }
 
-    public function getExpressCheckoutSuccess(Request $request, $orderId)
+    public function getExpressCheckoutSuccess(Request $request, $orderId, $paymentMode, $cartTotal)
     {
         $token = $request->get('token');
         $PayerID = $request->get('PayerID');
-        $checkoutData = $this->getCheckoutData($orderId);
+        $checkoutData = $this->getCheckoutData($orderId, $paymentMode);
 
         $this->provider = new ExpressCheckout();
         $response = $this->provider->getExpressCheckoutDetails($token);
@@ -76,15 +93,27 @@ class PaypalController extends Controller
                 // order content info
                 $products = \Cart::getContent();
                 $grandTotal = \Cart::getTotal();
-                $user = auth()->user()->name;
+                $balanceToPay = $grandTotal - $cartTotal; // if user chose on_delivery ?? is 0
+                $user = auth()->user();
 
-                //send success email
+                // send success email
+                // customer
+                Mail::to($user->email)->send(new ConfirmationEmail(
+                    $cartTotal,
+                    $products,
+                    $grandTotal,
+                    $balanceToPay,
+                    $order,
+                    $user
+                ));
+
+                // staff email
+
 
                 \Cart::clear();
 
-                // dd($products, $grandTotal, $order);
 
-                return view('order.success', compact('order', 'products', 'grandTotal', 'user'));
+                return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
             };
         }
         dd('oh no, something went wrong!!!');
