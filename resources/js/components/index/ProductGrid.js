@@ -118,14 +118,6 @@ const ProductGrid = (props) => {
                                                                 <Link
                                                                     to={{
                                                                         pathname: `/products/${product.id}`,
-                                                                        state: {
-                                                                            name:
-                                                                                product.name,
-                                                                            description:
-                                                                                product.description,
-                                                                            price:
-                                                                                product.price,
-                                                                        },
                                                                     }}
                                                                 >
                                                                     <Button variant="secondary">

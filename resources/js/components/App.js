@@ -16,9 +16,7 @@ import Category from "./elements/Category";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
-    const [cart, setCart] = useState([]);
     const [cartCount, setCartCount] = useState(0);
-    const [cartTotal, setCartTotal] = useState(null);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
     const [style, setStyle] = useState(15);
@@ -52,20 +50,11 @@ const App = (props) => {
             .catch((err) => {
                 setError(err.message);
             });
-        axios
-            .get("/cart")
-            .then((res) => {
-                setCart(Object.values(res.data));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+
         axios.get("/cart/count").then((res) => {
             setCartCount(res.data[0]);
         });
-        axios.get("/cart/get-total").then((res) => {
-            setCartTotal(res.data);
-        });
+
         if (`${location.host}/#/home`) setStyle(3);
     }, []);
 
@@ -89,64 +78,67 @@ const App = (props) => {
 
     return (
         <HashRouter>
-            <IndexNavbar
-                cartCount={cartCount}
-                userLogged={loggedIn}
-                userInfo={userInfo}
-                logout={logout}
-            />
-            <div className="container mb-5" style={{ marginTop: `${style}%` }}>
-                <Switch>
-                    <Route path="/products/:id">
-                        <div
-                            className="container"
-                            style={{ marginTop: "18%" }}
-                        ></div>
-                        <SingleProduct cartCountUpdate={cartCountUpdate} />
-                    </Route>
-                    <Route path="/categories/:name">
-                        <div
-                            className="container"
-                            style={{ marginTop: "18%" }}
-                        ></div>
-                        <Category />
-                    </Route>
+                <IndexNavbar
+                    cartCount={cartCount}
+                    userLogged={loggedIn}
+                    userInfo={userInfo}
+                    logout={logout}
+                />
+                <div
+                    className="container mb-5"
+                    style={{ marginTop: `${style}%` }}
+                >
+                    <Switch>
+                        <Route path="/products/:id">
+                            <div
+                                className="container"
+                                style={{ marginTop: "18%" }}
+                            ></div>
+                            <SingleProduct cartCountUpdate={cartCountUpdate} />
+                        </Route>
+                        <Route path="/categories/:name">
+                            <div
+                                className="container"
+                                style={{ marginTop: "18%" }}
+                            ></div>
+                            <Category />
+                        </Route>
 
-                    <Route path="/cart/checkout">
-                        <Checkout loggedIn={loggedIn} userInfo={userInfo} />
-                    </Route>
+                        <Route path="/cart/checkout">
+                            <Checkout loggedIn={loggedIn} userInfo={userInfo} />
+                        </Route>
 
-                    <Route path="/cart">
-                        <div
-                            className="container"
-                            style={{ marginTop: "15%" }}
-                        ></div>
-                        <Cart cartCountUpdate={cartCountUpdate} />
-                    </Route>
+                        <Route path="/cart">
+                            <div
+                                className="container"
+                                style={{ marginTop: "15%" }}
+                            ></div>
+                            <Cart cartCountUpdate={cartCountUpdate} />
+                        </Route>
 
-                    <Route path="/login">
-                        <Login
-                            loggedIn={loggedIn}
-                            login={login}
-                            cartCount={cartCount}
-                        />
-                    </Route>
+                        <Route path="/login">
+                            <Login
+                                loggedIn={loggedIn}
+                                login={login}
+                                cartCount={cartCount}
+                            />
+                        </Route>
 
-                    <Route path="/register">
-                        <RegisterForm />
-                    </Route>
+                        <Route path="/register">
+                            <RegisterForm />
+                        </Route>
 
-                    <Route path="/">
-                        <MainJumbo />
-                        <MastHead />
-                        <ProductGrid
-                            products={products}
-                            cartCountUpdate={cartCountUpdate}
-                        />
-                    </Route>
-                </Switch>
-            </div>
-            <Footer />
+                        <Route path="/">
+                            <MainJumbo />
+                            <MastHead />
+                            <ProductGrid
+                                products={products}
+                                cartCountUpdate={cartCountUpdate}
+                            />
+                        </Route>
+                    </Switch>
+                </div>
+                <Footer />
         </HashRouter>
     );
 };

@@ -23,26 +23,32 @@ const SingleProduct = (props) => {
     };
 
     useEffect(() => {
+        let isMounted = true; // avoid unmounted item warning
+
         // get product info
-        console.log('useEffect from SingleProduct.js');
+        console.log("useEffect from SingleProduct.js");
         axios
-        .get(`/products/${props.match.params.id}`)
-        .then(res => {
-            setProduct(res.data);
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+            .get(`/products/${props.match.params.id}`)
+            .then((res) => {
+                if (isMounted) setProduct(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
         // get competidors info (links & price)
         axios
-        .get(`/products/${props.match.params.id}/links`)
-        .then(res => {
-            setCompetidorsInfo( res.data );
-        })
-        .catch(err => {
-            console.error( err );
-        });
-    }, []);
+            .get(`/products/${props.match.params.id}/links`)
+            .then((res) => {
+                if (isMounted) setCompetidorsInfo(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
+        return () => {
+            isMounted = false;
+        };
+    }, [props.match.params.id]);
 
     return (
         <div
