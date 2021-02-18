@@ -1,10 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
-import Footer from "../index/Footer";
-import IndexNavbar from "../index/IndexNavbar";
-import Loader from "../../loader.gif";
-import { Card } from "react-bootstrap";
+import { Button, Table, Alert } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Cart = (props) => {
@@ -12,7 +8,9 @@ const Cart = (props) => {
     const [error, setError] = useState("");
     const [subTotal, setSubTotal] = useState(0);
     const [total, setTotal] = useState([]);
+    const [totalAlert, setTotalAlert] = useState(null);
     const [payOrCheckout, setPayOrCheckout] = useState("Pagar");
+    const [addOrRemoveDisabled, setAddOrRemoveDisabled] = useState(false);
 
     const addOneMore = async (id, i) => {
         try {
@@ -22,11 +20,14 @@ const Cart = (props) => {
                 const updatedCart = [...cart];
                 updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
                 setCart(updatedCart);
-                setTotal(
-                    updatedCart
-                        .map((item) => item.quantity * item.price)
-                        .reduce((a, b) => a + b, 0)
-                );
+
+                //set new total
+                const newCartTotal = updatedCart
+                    .map((item) => item.quantity * item.price)
+                    .reduce((a, b) => a + b, 0);
+                setTotal(newCartTotal);
+                isTotalAboveMin(newCartTotal);
+
                 // update navbar +1 cart count
                 props.cartCountUpdate(1);
             } else {
@@ -43,12 +44,18 @@ const Cart = (props) => {
             const res = await axios.get(`/cart/${productId}/destroy`);
             // positive response
             if (res) {
-                const updatedCart = cart.filter(product => product !== productToRemove);
+                const updatedCart = cart.filter(
+                    (product) => product !== productToRemove
+                );
                 setCart(updatedCart);
                 // get total to pay
-                setTotal(updatedCart
-                .map(item => item.quantity * item.price)
-                .reduce((a,b) => a + b, 0));
+                const newCartTotal = updatedCart
+                    .map((item) => item.quantity * item.price)
+                    .reduce((a, b) => a + b, 0);
+                setTotal(
+                    newCartTotal
+                );
+                isTotalAboveMin(newCartTotal);
                 // remove all item count from navbar counter
                 props.cartCountUpdate(qty * -1);
             } else {
@@ -56,13 +63,27 @@ const Cart = (props) => {
             }
             // res not true
         } catch (err) {
-            console.error(err, 'try failed, got catch');
+            console.error(err, "try failed, got catch");
         }
+    };
+
+    //check if total > 1,500 mxn
+    const isTotalAboveMin = (cartTotal, e) => {
+        // e.preventDefault();
+        if (cartTotal < 1500) {
+            console.log('cart total is ', cartTotal)
+            setTotalAlert(true);
+        } else {
+            console.log("cart total is ", cartTotal);
+            setTotalAlert(false);
+        }
+
+
     };
 
     // set cart items and total
     useEffect(() => {
-        console.log('useEffect from Cart.js');
+        console.log("useEffect from Cart.js");
         axios
             .get("cart")
             .then((res) => {
@@ -71,11 +92,12 @@ const Cart = (props) => {
                 // cart total
                 setTotal(
                     // map a subtotal array
-                    Object.values(res.data).map((item) => {
-                        return item.price * item.quantity;
-                    })
-                    //then sum mapped item
-                    .reduce((a, b) => a + b, 0)
+                    Object.values(res.data)
+                        .map((item) => {
+                            return item.price * item.quantity;
+                        })
+                        //then sum mapped item
+                        .reduce((a, b) => a + b, 0)
                 );
             })
             .catch((err) => {
@@ -138,6 +160,7 @@ const Cart = (props) => {
                                                         product.quantity
                                                     )
                                                 }
+                                                disabled={addOrRemoveDisabled}
                                             >
                                                 Eliminar
                                             </Button>
@@ -155,6 +178,11 @@ const Cart = (props) => {
                     <h3 className="mb-3">
                         Total <b>$ {total}</b>
                     </h3>
+                    {total < 1500 && (
+                        <Alert variant={"warning"}>
+                            Adquiere un mínimo de 1500mxn en compra para poderte dar nuestros precios de mayoreo
+                        </Alert>
+                    )}
                     {cart.length == 0 ? (
                         <Link to="/">
                             <Button> Regresar </Button>
@@ -162,15 +190,19 @@ const Cart = (props) => {
                     ) : (
                         <div className="row">
                             <div className="col-3">
-                                <Link to="/cart/checkout">
-                                    {/* CheckOut displays below clicking here */}
-                                    <Button variant="outline-success" size="lg"
-                                        onClick={() => setPayOrCheckout("Continua el proceso abajo")}
-                                    >
-                                        {" "}
-                                        {payOrCheckout}{" "}
-                                    </Button>
-                                </Link>
+                                {/* check if client can pay */}
+                                {total > 1500 && (
+                                    <Link to="/cart/checkout">
+                                        <Button
+                                            variant="outline-success"
+                                            size="lg"
+                                            disabled={total < 1500 ? true : false}
+                                        >
+                                            {" "}
+                                            {payOrCheckout}{" "}
+                                        </Button>
+                                    </Link>
+                                )}
                             </div>
                             <div className="col-3">
                                 <Link to="/">
