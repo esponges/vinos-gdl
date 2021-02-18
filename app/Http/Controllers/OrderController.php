@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfirmationEmail;
+use Faker\Factory;
+use App\Models\User;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -19,6 +23,8 @@ class OrderController extends Controller
             $order->payment_mode = $request->payment_mode;
             $order->address = $request->address;
             $order->address_details = $request->address_details;
+            $order->phone = $request->phone;
+            $order->cp = $request->cp;
 
             $order->save();
 
@@ -33,10 +39,37 @@ class OrderController extends Controller
                 ]);
             }
 
-            if ($request->payment_mode == 'paypal') {
-                return redirect()->route('paypal.checkout', $order->id);
-            }
+            return redirect()->route('paypal.checkout', [$order->id, $order->payment_mode]);
+
         }
         return response()->json('session timed out', 408);
+    }
+
+    // testing purposes
+    public function sendConfirmationEmail()
+    {
+        $cart = \Cart::getContent();
+        $products = array_map(function ($item) {
+            return [
+                'name' => "anticipo " . $item['name'],
+                'price' => $item['price'] * 0.07,
+                'qty' => $item['quantity']
+            ];
+        }, $cart->toArray());
+
+        $cartTotal = \Cart::getTotal() * 0.07;
+        $grandTotal = \Cart::getTotal();
+        $balanceToPay = $grandTotal - $cartTotal;
+        $order = Factory::create()->numberBetween(1000, 2000);
+        $user = User::first();
+
+        Mail::to($user->email)->send(new ConfirmationEmail(
+            $cartTotal,
+            $products,
+            $grandTotal,
+            $balanceToPay,
+            $order,
+            $user
+        ));
     }
 }
