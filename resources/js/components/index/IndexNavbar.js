@@ -13,6 +13,7 @@ import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
 import sanctumApi from "../../sanctum-api";
+import DownShiftSearch from './DownShiftSearch';
 
 const IndexNavbar = (props) => {
     const [navbar, setNavbar] = useState(false);
@@ -49,19 +50,6 @@ const IndexNavbar = (props) => {
         handleScroll();
         window.addEventListener("scroll", handleScroll);
 
-        //get user name if logged in
-        // if (props.userLogged) {
-        //     axios
-        //         .get("user-name")
-        //         .then((res) => {
-        //             console.log(res);
-        //             setUserName(res);
-        //         })
-        //         .catch((err) => {
-        //             console.err(err);
-        //         });
-        // }
-
         //remove event listener
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -97,6 +85,7 @@ const IndexNavbar = (props) => {
                         </NavDropdown>
                     </Nav>
                     <Nav>
+
                         <Link
                             to="/cart"
                             className="nav-link"
@@ -115,13 +104,9 @@ const IndexNavbar = (props) => {
                         </Link>
 
                         <Form inline>
-                            <FormControl
-                                type="text"
-                                placeholder="¿Qué buscas?"
-                                className="mr-sm-2"
-                            />
-                            <Button variant="outline-primary">Buscar</Button>
+                            <DownShiftSearch />
                         </Form>
+
                         {props.userLogged && (
                             <NavDropdown
                                 title={`${props.userInfo[1]}`}
@@ -132,6 +117,7 @@ const IndexNavbar = (props) => {
                                 </NavDropdown.Item>
                             </NavDropdown>
                         )}
+
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
