@@ -32,18 +32,21 @@ Route::resource('categories', CategoryController::class);
 Route::prefix('cart')->group( function () {
     Route::get('/', [CartController::class, 'index']);
     Route::get('/count', [CartController::class, 'count']);
-    Route::get('/get-total', [CartController::class, 'getTotal']);
+    Route::get('/get-total', [CartController::class, 'getTotal']); // cart total
+    Route::get('/get-subtotal', [CartController::class, 'getSubTotal']);
+
     Route::get('/{product}/add/{qty}', [CartController::class, 'add'])->name('cart.add');
     Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
 Route::prefix('order')->group( function () {
     Route::post('create', [OrderController::class, 'create']);
+    Route::get('email', [OrderController::class, 'sendConfirmationEmail']);
 });
 
 Route::prefix('paypal')->group( function () {
-    Route::get('/checkout/{orderId}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
-    Route::get('/success/{orderId}', [PaypalController::class, 'getExpressCheckoutSuccess'])->name('paypal.success');
+    Route::get('/checkout/{orderId}/{paymentMode}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
+    Route::get('/success/{orderId}/{paymentMode}/{cartTotal}', [PaypalController::class, 'getExpressCheckoutSuccess'])->name('paypal.success');
     Route::get('/fail/{orderId}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');
 });
 
