@@ -35,9 +35,13 @@
                     @endforeach
                 </tbody>
             </table>
-            <p class="card-text"><b>Total $ </b> {{ $grandTotal }}</p>
-            <p class="card-text"><b>Nombre </b> {{ $user }}</p>
+            <p class="card-text"><b>Total de tu orden $ {{ $grandTotal }}</b></p>
+            <p class="card-text"><b>Total Pagado $ </b> {{ $cartTotal }}</p>
+            <p class="card-text mt-3"><b>Total a pagar en la entrega $ <u>{{ $balanceToPay }}</u></b> </p>
+            <p class="card-text"><b>Orden N° </b> {{ $orderId }}</p>
+            <p class="card-text"><b>Nombre </b> {{ $user->name }}</p>
             <p class="card-text"><b>Dirección de envio </b> {{ $order->address }}</p>
+            <p class="card-text"><b>Detalles de la dirección </b> {{ $order->address_details ? $order->address_details : "n/d" }}</p>
             <a href="/" class="btn btn-primary">Ir a la página principal</a>
         </div>
     </div>
