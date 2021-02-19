@@ -11,6 +11,8 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.setPublicPath('html/')
+    .js("resources/js/app.js", "js")
+    .sass("resources/sass/app.scss", "css")
     .react();
     // .sass('resources/sass/app.scss', 'public/css'); //avoid losing changes canceling css compiling
