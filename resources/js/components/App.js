@@ -13,9 +13,12 @@ import axios from "axios";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
 import Category from "./elements/Category";
+import { Context } from "./Context";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
+    const [productsCategories, setProductsCategories] = useState("");
+    const [prods, setProds] = useState("");
     const [cartCount, setCartCount] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
@@ -39,6 +42,7 @@ const App = (props) => {
 
     const logout = () => {
         setLoggedIn(false);
+        setCartCount(0);
     };
 
     useEffect(() => {
@@ -50,6 +54,15 @@ const App = (props) => {
             .catch((err) => {
                 setError(err.message);
             });
+
+        axios
+            .get('/products')
+            .then(res => {
+                setProds(res.data);
+            })
+            .catch(err => {
+                console.error(err);
+            })
 
         axios.get("/cart/count").then((res) => {
             setCartCount(res.data[0]);
@@ -78,6 +91,7 @@ const App = (props) => {
 
     return (
         <HashRouter>
+            <Context.Provider value={prods}>
                 <IndexNavbar
                     cartCount={cartCount}
                     userLogged={loggedIn}
@@ -139,6 +153,7 @@ const App = (props) => {
                     </Switch>
                 </div>
                 <Footer />
+            </Context.Provider>
         </HashRouter>
     );
 };

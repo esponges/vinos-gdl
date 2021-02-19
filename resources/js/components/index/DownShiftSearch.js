@@ -1,32 +1,15 @@
 import Downshift from "downshift";
-import React, { useEffect, useState, useContext } from "react";
-import { withRouter, useHistory } from "react-router";
+import React, { useContext } from "react";
+import { withRouter } from "react-router";
+import { Context } from "../Context";
 
 const DownShiftSearch = (props) => {
-    const [products, setProducts] = useState("");
+    const products = useContext(Context);
 
     const onChange = (selectedProduct) => {
         console.log("redirecting to ", selectedProduct.id);
         props.history.push(`/products/${selectedProduct.id}`);
     };
-
-    useEffect(() => {
-        let isMounted = true; // bug in downshift when mounting. Fixed by isMounted variable.
-
-        console.log('useEffect from DownshiftSearch')
-        axios
-            .get("/products")
-            .then((res) => {
-                if (isMounted) setProducts(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-        return () => {
-            isMounted = false;
-        };
-    }, []);
 
     return (
         <Downshift
@@ -53,6 +36,7 @@ const DownShiftSearch = (props) => {
                     </div>
                     <ul {...getMenuProps()}>
                         <div>
+                            {/* {console.log(products)} */}
                             {isOpen
                                 ? products
                                     .filter(
