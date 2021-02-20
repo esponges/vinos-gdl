@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GetUserInformation;
+use App\Models\Cp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,11 @@ Route::get('/user-name', function () {
     if (Auth::check()) {
         return response()->json(auth()->user(), 200);
     }
+});
+
+Route::get('get-CP', function () {
+    $cp = Cp::all()->toArray();
+    return response()->json($cp);
 });
 
 Route::get('/is-registered/{email}', [GetUserInformation::class, 'isRegistered'])->name('userInfo.isRegistered');
