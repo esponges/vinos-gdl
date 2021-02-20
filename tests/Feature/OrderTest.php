@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Cp;
 use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
@@ -113,5 +114,17 @@ class OrderTest extends TestCase
         // $response->dump();
         // $response->dumpHeaders();
         $response->assertOk();
+    }
+
+    public function test_get_CP()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->get('/api/get-CP');
+
+        $response->assertOk();
+
+        $cp = Cp::all()->toArray();
+        $response->assertJson($cp);
     }
 }
