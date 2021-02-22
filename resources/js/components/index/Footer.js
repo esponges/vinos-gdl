@@ -16,9 +16,9 @@ const Footer = () => {
                 <Nav className="mr-auto">
                     <Nav.Link href="#home">TyC</Nav.Link>
                     <Nav.Link href="#features">KmxDesign</Nav.Link>
-                    <Nav.Link>
+                    <Nav.Item>
                         <Link to="/login">Inicia Sesión</Link>
-                    </Nav.Link>
+                    </Nav.Item>
                 </Nav>
                 <Nav>
                     <a href="#">
