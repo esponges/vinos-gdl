@@ -45,14 +45,14 @@ const Login = (props) => {
     };
 
     return (
-        <div className="container" style={{ marginTop: "13%" }}>
+        <div className="container" style={{ marginTop: "15%" }}>
             {/* {console.log(props.cartCount)} */}
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Corre electrónico</Form.Label>
+                    <Form.Label>Correo electrónico</Form.Label>
                     <Form.Control
                         type="email"
-                        placeholder="Enter email"
+                        placeholder="Ingresa to correo"
                         name="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -67,7 +67,7 @@ const Login = (props) => {
                     <Form.Label>Contraseña</Form.Label>
                     <Form.Control
                         type="password"
-                        placeholder="Password"
+                        placeholder="Ingresa tu contraseña"
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

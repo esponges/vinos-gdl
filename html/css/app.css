@@ -9979,11 +9979,6 @@ h3 {
 }
 
 .navbar {
-  position: fixed;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
   padding: 0.5rem 10%;
 }
 
@@ -10023,7 +10018,6 @@ h3 {
   padding: 2rem rem;
   /* margin-bottom: 2rem; */
   background-color: white;
-  border-radius: 0.3rem;
 }
 
 @media (min-width: 576px) {
@@ -10034,5 +10028,93 @@ h3 {
 @media (max-width: 750px) {
   .carousel {
     display: none;
+  }
+}
+.downshift-dropdown {
+  margin: 0 auto;
+  max-width: 20rem;
+  border: 1px;
+  border-bottom: none;
+}
+
+.dropdown-item {
+  cursor: pointer;
+  border-bottom: 1px solid whitesmoke;
+  font-size: 1rem;
+  text-align: left;
+}
+
+.floating-btn-cart {
+  width: 85px;
+  height: 85px;
+  background: #fec503;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  box-shadow: 2px 2px 5px black;
+  position: fixed;
+  right: 56px;
+  bottom: 62px;
+  transition: background 0.25s;
+}
+
+@media (max-width: 991.98px) {
+  .floating-btn-cart {
+    width: 60px;
+    height: 60px;
+    background: #fec503;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    box-shadow: 2px 2px 5px black;
+    position: fixed;
+    right: 10px;
+    bottom: 65px;
+    transition-duration: background 0.25s;
+  }
+}
+.floating-btn-whats {
+  width: 60px;
+  height: 60px;
+  background-color: green;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  box-shadow: 2px 2px 5px black;
+  position: fixed;
+  right: 71px;
+  bottom: 170px;
+  transition: background 0.25s;
+}
+
+@media (max-width: 991.98px) {
+  .floating-btn-whats {
+    width: 50px;
+    height: 50px;
+    background: green;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    box-shadow: 2px 2px 5px black;
+    position: fixed;
+    right: 16px;
+    bottom: 135px;
+    transition-duration: background 0.25s;
   }
 }

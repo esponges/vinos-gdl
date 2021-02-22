@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const ProductGrid = (props) => {
@@ -24,7 +24,6 @@ const ProductGrid = (props) => {
 
     return (
         <>
-            {console.log('rendering ProductGrid.js')}
             {categories ? categories.map(category => {
                 return (
                     <div
@@ -32,13 +31,18 @@ const ProductGrid = (props) => {
                         id={category.category_name}
                         key={category.id}
                     >
+                        {/* {console.log("rendering ProductGrid.js  ", categories)} */}
+
                         <section
                             className="container mb-2"
                             id={category.category_name}
                         >
                             <h1
                                 className="mt-5 center"
-                                style={{ textAlign: "center", fontSize: "3rem" }}
+                                style={{
+                                    textAlign: "center",
+                                    fontSize: "3rem",
+                                }}
                             >
                                 <span className="badge badge-secondary">
                                     {category.category_name}
@@ -139,7 +143,8 @@ const ProductGrid = (props) => {
                                     to={`/categories/${category.category_name}`}
                                 >
                                     <Button variant="outline-primary" size="lg">
-                                        ¿Quieres más? ¡Checa todo el surtido de {category.category_name}!
+                                        ¿Quieres más? ¡Checa todo el surtido de{" "}
+                                        {category.category_name}!
                                     </Button>
                                 </Link>
                             </div>

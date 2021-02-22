@@ -35,17 +35,18 @@ const DownShiftSearch = (props) => {
                         <input {...getInputProps()} />
                     </div>
                     <ul {...getMenuProps()}>
-                        <div>
+                        <div className="downshift-dropdown">
                             {/* {console.log(products)} */}
                             {isOpen
                                 ? products
                                     .filter(
                                         (item) =>
                                             !inputValue ||
-                                            item.name.includes(inputValue)
+                                            item.name.toLowerCase().includes(inputValue.toLowerCase())
                                     )
                                     .map((item, index) => (
                                         <li
+                                            className="dropdown-item"
                                             {...getItemProps({
                                                 key: item.id,
                                                 index,

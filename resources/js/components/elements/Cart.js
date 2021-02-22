@@ -84,25 +84,32 @@ const Cart = (props) => {
     // set cart items and total
     useEffect(() => {
         console.log("useEffect from Cart.js");
+        let isMounted = true;
+
         axios
             .get("cart")
             .then((res) => {
-                // cart items
-                setCart(Object.values(res.data));
-                // cart total
-                setTotal(
-                    // map a subtotal array
-                    Object.values(res.data)
-                        .map((item) => {
-                            return item.price * item.quantity;
-                        })
-                        //then sum mapped item
-                        .reduce((a, b) => a + b, 0)
-                );
+                if (isMounted) {
+                    // cart items
+                    setCart(Object.values(res.data));
+                    // cart total
+                    setTotal(
+                        // map a subtotal array
+                        Object.values(res.data)
+                            .map((item) => {
+                                return item.price * item.quantity;
+                            })
+                            //then sum mapped item
+                            .reduce((a, b) => a + b, 0)
+                    );
+                }
             })
             .catch((err) => {
                 setError(err.message);
             });
+
+            //unmount
+            return () => isMounted = false;
     }, []);
 
     return (
