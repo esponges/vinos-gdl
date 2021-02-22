@@ -1,12 +1,12 @@
 import axios from "axios";
-import { cssHooks } from "jquery";
-import { ceil } from "lodash";
-import React, { useEffect, useState } from "react";
-import { Form, Button, Alert } from "react-bootstrap";
+import React, { useEffect, useState, useRef } from "react";
+import { Form, Button, Alert, OverlayTrigger, Popover, Overlay, Tooltip } from "react-bootstrap";
 import LoginOrRegister from '../auth/LoginOrRegister';
+import CheckCP from "./CheckCP";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
+    const [CP, setCP] = useState("");
     const [cartTotal, setCartTotal] = useState("");
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
     const [address, setAddress] = useState("");
@@ -15,11 +15,18 @@ const Checkout = (props) => {
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
+    const [show, setShow] = useState(false); // for overlay
+    const target = useRef(null); // for overlay
 
     // from payment type radio input
     const handleInputChange = (e) => {
         setPaymentMode(e.target.value);
     }
+
+    // validate CP
+    const getCP = (cpData) => {
+        setCP(cpData);
+    };
 
     // get user info and cart total-subtotal
     useEffect(() => {
@@ -72,10 +79,10 @@ const Checkout = (props) => {
         }
 
         // activate proceed button
-        if (address.length > 8 && phonePattern.test(phone) && phone.length == 10)
+        if (address.length > 8 && phonePattern.test(phone) && phone.length == 10 && CP)
             setButtonIsActive(true);
         else setButtonIsActive(false);
-    }, [address, phone]);
+    }, [address, phone, CP]);
 
     return (
         <div className="container">
@@ -155,15 +162,21 @@ const Checkout = (props) => {
                             )}
                         </Form.Group>
 
-                        <Form.Label>Tu CP</Form.Label>
-                        <select className="custom-select" name="cp">
-                            <option>Elige cp</option>
-                            <option>45689</option>
-                            <option>44630</option>
-                            <option>45879</option>
-                            <option>46025</option>
-                            <option>48792</option>
-                        </select>
+                        {/* Pop Over */}
+                        <Form.Group>
+                            <Form.Label>Tu CP</Form.Label>
+                                <CheckCP getCP={getCP} />
+                                <Button variant="link" ref={target} onClick={() => setShow(!show)}>
+                                    ¿No encuentras tu código postal?
+                                </Button>
+                                <Overlay target={target.current} show={show} placement="top">
+                                    {(props) => (
+                                        <Tooltip id="overlay-cp" {...props}>
+                                            Significa que aún no llegamos a tu ubicación :(
+                                        </Tooltip>
+                                    )}
+                                </Overlay>
+                        </Form.Group>
 
                         {/* address */}
                         <Form.Group className="mt-2">

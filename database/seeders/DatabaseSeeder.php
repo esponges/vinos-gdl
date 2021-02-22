@@ -7,6 +7,7 @@ use App\Models\Vap;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Cp;
 use App\Models\ProductLinks;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -324,5 +325,7 @@ class DatabaseSeeder extends Seeder
             ],
 
         ]);
+
+        Cp::factory(50)->create();
     }
 }

@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
+use Faker\Factory;
 use Tests\TestCase;
 use App\Models\Product;
-use Faker\Factory;
+use App\Models\Category;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -32,10 +33,16 @@ class ProductCRUDTest extends TestCase
         $response->assertOk();
 
         $products = Product::all()->toArray();
+        $productsWithCategories = [];
 
-        // dd ($products);
+        foreach ($products as $prod) {
+            $id = $prod['id'];
+            $product = Product::find($id);
+            $productCategory['category'] = $product->category->name;
+            array_push($productsWithCategories, array_merge($productCategory, $prod));
+        }
 
-        $response->assertJson($products);
+        $response->assertJson($productsWithCategories);
     }
 
     public function test_single_product()
@@ -77,6 +84,16 @@ class ProductCRUDTest extends TestCase
         // $response->dump();
 
         $response->assertJsonFragment($product);
+    }
+
+    public function test_get_categories_names()
+    {
+        $this->withoutExceptionHandling();
+        Category::all()->toArray();
+
+        $response = $this->get('/categories');
+
+        $response->assertOk();
     }
 
     public function test_get_competence_links()
