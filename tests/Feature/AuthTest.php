@@ -70,12 +70,16 @@ class AuthTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->actingAs(User::first())
+        $user = User::first();
+
+        $response = $this->actingAs($user)
             ->get('/api/user-name');
 
         // $response->dumpSession();
         // $response->dump();
+
         $response->assertOk();
+        $response->assertJsonFragment([$user->name]);
     }
 
     public function test_if_user_exists()
