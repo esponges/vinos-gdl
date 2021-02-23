@@ -33,7 +33,7 @@ const App = (props) => {
         axios
             .get("api/user-name")
             .then((res) => {
-                setUserInfo(Object.values(res.data));
+                setUserInfo(res.data);
             })
             .catch((err) => {
                 console.error(err, " in login method");
@@ -80,7 +80,7 @@ const App = (props) => {
                 axios
                     .get("api/user-name")
                     .then((res) => {
-                        setUserInfo(Object.values(res.data));
+                        setUserInfo(res.data);
                     })
                     .catch((err) => {
                         console.error(err, " in login method");

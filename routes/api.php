@@ -29,7 +29,8 @@ Route::get('/is-auth', function () {
 
 Route::get('/user-name', function () {
     if (Auth::check()) {
-        return response()->json(auth()->user(), 200);
+        $userName = auth()->user()->name;
+        return response()->json($userName, 200);
     }
 });
 
