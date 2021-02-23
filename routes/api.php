@@ -4,6 +4,7 @@ use App\Http\Controllers\GetUserInformation;
 use App\Models\Cp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,7 +23,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/is-auth', function () {
-    return response()->json(Auth::check());
+    return Response::json(Auth::check(), 200);
+    // return response()->json(Auth::check());
 })->name('is-auth');
 
 Route::get('/user-name', function () {
