@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/is-auth', function () {
-    return response()->json(Auth::check());
+    return response()->json(['auth_check' => Auth::check()]);
 })->name('is-auth');
 
 Route::get('/user-name', function () {
