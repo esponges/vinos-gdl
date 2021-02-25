@@ -8,7 +8,7 @@ const CheckCP = (props) => {
 
     const onChange = (selectedCP) => { // will be passed by selectedItem - no need to pass as param in onChange method
         console.log('get your cp!!! ', selectedCP);
-        props.getCP(selectedCP); // pass cp to parent Checkout.js
+        props.getCpInfo(selectedCP); // pass cp to parent Checkout.js
     };
 
     useEffect(() => {
@@ -45,47 +45,46 @@ const CheckCP = (props) => {
                 getRootProps,
             }) => (
                 <div>
-                    <div
-                        style={{ display: "inline-blockblock", maxWidth: "30rem" }}
-                        {...getRootProps({}, { suppressRefError: true })}
-                    >
-                        <input {...getInputProps()} />
+                    <div {...getRootProps({}, { suppressRefError: true })}>
+                        <input {...getInputProps()} id="get-cp-input" />
                     </div>
-                    <ul {...getMenuProps()}>
+                    <ul {...getMenuProps()} style={{ width: "35%" }}>
                         <div className="downshift-dropdown">
                             {isOpen
-                                ?
-                                CP
-                                    .filter(
-                                        (item) =>
-                                            !inputValue ||
-                                            item.cp.includes(inputValue) || // if only cp is inserted
-                                            item.name.toLowerCase().includes(inputValue.toLowerCase()) // if name is inserted
-                                    )
-                                    .map((item, index) => (
-                                        <li
-                                            className="dropdown-item"
-                                            {...getItemProps({
-                                                key: item.id,
-                                                index,
-                                                item,
-                                                style: {
-                                                    backgroundColor:
-                                                        highlightedIndex ===
-                                                        index
-                                                            ? "lightgray"
-                                                            : "white",
-                                                    fontWeight:
-                                                        selectedItem === item
-                                                            ? "bold"
-                                                            : "normal",
-                                                },
-                                            })}
-                                        >
-                                            {item.name}{"  "}{item.cp}
-                                        </li>
-                                    ))
-                                : null}
+                                ? CP.filter(
+                                    (item) =>
+                                        !inputValue ||
+                                        item.cp.includes(inputValue) || // if only cp is inserted
+                                        item.name
+                                            .toLowerCase()
+                                            .includes(
+                                                inputValue.toLowerCase()
+                                            ) // if name is inserted
+                                ).map((item, index) => (
+                                    <li
+                                        className="dropdown-item"
+                                        {...getItemProps({
+                                            key: item.id,
+                                            index,
+                                            item,
+                                            style: {
+                                                backgroundColor:
+                                                    highlightedIndex === index
+                                                        ? "lightgray"
+                                                        : "white",
+                                                fontWeight:
+                                                    selectedItem === item
+                                                        ? "bold"
+                                                        : "normal",
+                                            },
+                                        })}
+                                    >
+                                        {item.name}
+                                        {"  "}
+                                        {item.cp}
+                                    </li>
+                                ))
+                            : null}
                         </div>
                     </ul>
                 </div>
