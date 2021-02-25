@@ -101,7 +101,7 @@ const IndexNavbar = (props) => {
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
-                    <Nav>
+                    <Nav style={{ paddingTop: "15px" }}>
                         <Link
                             to="/cart"
                             className="nav-link"
@@ -125,7 +125,7 @@ const IndexNavbar = (props) => {
 
                         {props.userLogged && (
                             <NavDropdown
-                                title={`${props.userInfo}`}
+                                title={`${props.userInfo['userName']}`}
                                 id="collasible-nav-dropdown"
                             >
                                 <NavDropdown.Item onClick={logout}>

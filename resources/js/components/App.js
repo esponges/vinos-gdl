@@ -31,7 +31,7 @@ const App = (props) => {
     const login = () => {
         setLoggedIn(true);
         axios
-            .get("api/user-name")
+            .get("api/user-info")
             .then((res) => {
                 setUserInfo(res.data);
             })
@@ -78,7 +78,7 @@ const App = (props) => {
             if (res.data) {
                 setLoggedIn(true);
                 axios
-                    .get("api/user-name")
+                    .get("api/user-info")
                     .then((res) => {
                         setUserInfo(res.data);
                     })

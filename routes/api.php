@@ -25,10 +25,11 @@ Route::get('/is-auth', function () {
     return response()->json(Auth::check());
 })->name('is-auth');
 
-Route::get('/user-name', function () {
+Route::get('/user-info', function () {
     if (Auth::check()) {
         $userName = auth()->user()->name;
-        return response()->json($userName, 200);
+        $userPhone = auth()->user()->phone_number;
+        return response()->json(['userName' => $userName, 'userPhone' => $userPhone], 200);
     }
 });
 
