@@ -61,7 +61,7 @@ const SingleProduct = (props) => {
                 <Card>
                     <Card.Img
                         variant="top"
-                        src={product.id && `/img/${product.id}.jpg`}
+                        src={product.id && `/img/singleProduct/${product.id}hd.jpg`}
                     />
                     <Card.Body>
                         <Card.Title>{product.name}</Card.Title>

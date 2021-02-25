@@ -20,11 +20,15 @@ class OrderController extends Controller
             $order->total = \Cart::getTotal();
             $order->total_items = \Cart::getTotalQuantity();
             $order->user_id = Auth::user()->id;
+            $order->order_name = $request->order_name;
             $order->payment_mode = $request->payment_mode;
             $order->address = $request->address;
             $order->address_details = $request->address_details;
+            $order->delivery_day = $request->delivery_day;
+            $order->delivery_schedule = $request->delivery_schedule;
             $order->phone = $request->phone;
             $order->cp = $request->cp;
+            $order->neighborhood = $request->neighborhood;
 
             $order->save();
 

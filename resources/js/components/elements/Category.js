@@ -45,7 +45,7 @@ const Category = (props) => {
                                 <Card style={{ width: "18rem" }}>
                                     <Card.Img
                                         variant="top"
-                                        src={`/img/${product.id}.jpg`}
+                                        src={`/img/productGrid/${product.id}.jpg`}
                                     />
                                     <Card.Body>
                                         <Card.Title>

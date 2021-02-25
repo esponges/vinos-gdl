@@ -18,11 +18,16 @@ Tu pago por Paypal: <b>{{$cartTotal}}</b>
 Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
 
 <br>
-Detalles de entrega:
+Detalles de entrega <br>
 
-Nombre del pedido: <b>{{$user->name}}</b><br>
+Nombre del pedido: <b>{{$order->order_name}}</b><br>
 Dirección de entrega: <b>{{$order->address}}</b><br>
 Detalles de la dirección: <b>{{$order->address_details}}</b><br>
+Colonia: <b>{{$order->neighborhood . " " . $order->cp}}</b><br>
+
+<br>
+Día de entrega: <b>{{$order->delivery_day}}</b><br>
+Horario aproximado de entrega: <b>{{$order->delivery_schedule}}</b>
 
 {{-- @component('mail::button', ['url' => ''])
 Button Text

@@ -66,14 +66,14 @@ class AuthTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_get_user_name()
+    public function test_get_user_info()
     {
         $this->withoutExceptionHandling();
 
         $user = User::first();
 
         $response = $this->actingAs($user)
-            ->get('/api/user-name');
+            ->get('/api/user-info');
 
         // $response->dumpSession();
         // $response->dump();

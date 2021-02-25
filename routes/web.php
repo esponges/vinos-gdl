@@ -39,7 +39,7 @@ Route::prefix('cart')->group( function () {
 });
 
 Route::prefix('order')->group( function () {
-    Route::post('create', [OrderController::class, 'create']);
+    Route::post('create', [OrderController::class, 'create'])->middleware('auth:sanctum');
     Route::get('email', [OrderController::class, 'sendConfirmationEmail']);
 });
 

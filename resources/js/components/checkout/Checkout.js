@@ -1,61 +1,87 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
-import { Form, Button, Alert, OverlayTrigger, Popover, Overlay, Tooltip } from "react-bootstrap";
-import LoginOrRegister from '../auth/LoginOrRegister';
+import {
+    Form,
+    Button,
+    Alert,
+    OverlayTrigger,
+    Popover,
+    Overlay,
+    Tooltip,
+} from "react-bootstrap";
+import { fab, faPaypal } from "@fortawesome/free-brands-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+library.add(fab);
+
+import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DevilerySchedule from "./DevilerySchedule";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
+    const [orderName, setOrderName] = useState("");
     const [CP, setCP] = useState("");
+    const [neighborhood, setNeighborhood] = useState("");
     const [cartTotal, setCartTotal] = useState("");
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
     const [address, setAddress] = useState("");
-    const [paymentMode, setPaymentMode] = useState('paypal');
+    const [paymentMode, setPaymentMode] = useState("paypal");
     const [addressDetails, setAddressDetails] = useState("");
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
-    const [show, setShow] = useState(false); // for overlay
-    const target = useRef(null); // for overlay
+    const [deliveryDay, setDeliveryDay] = useState("")
+    const [deliverySchedule, setDeliverySchedule] = useState("");
+    const [show, setShow] = useState(false); // for Overlay Bootstrap element
+    const target = useRef(null); // for Overlay Bootstrap element
 
     // from payment type radio input
     const handleInputChange = (e) => {
         setPaymentMode(e.target.value);
-    }
+    };
 
     // validate CP
-    const getCP = (cpData) => {
-        setCP(cpData);
+    const getCpInfo = (cpData) => {
+        setCP(cpData.cp);
+        setNeighborhood(cpData.name);
     };
+
+    const getDeliveryInfo = (day, schedule) => {
+        console.log(day, schedule);
+        setDeliveryDay(day);
+        setDeliverySchedule(schedule);
+    }
+
 
     // get user info and cart total-subtotal
     useEffect(() => {
-
-        props.userInfo[3] && setPhone(props.userInfo[3]);
-
-        axios
-        .get("/cart/get-total")
-        .then(res => {
-            setCartTotal(res.data);
-        })
-        .catch(err => {
-            console.error(err);
-        });
+        props.userInfo['userPhone'] && setPhone(parseInt(props.userInfo['userPhone']));
 
         axios
-        .get('/cart/get-subtotal')
-        .then(res => {
-            setUpfrontPayPalPayment(res.data); // 7% comission
-        })
-        .catch(err => {
-            console.error(err);
-        });
+            .get("/cart/get-total")
+            .then((res) => {
+                setCartTotal(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
 
+        axios
+            .get("/cart/get-subtotal")
+            .then((res) => {
+                setUpfrontPayPalPayment(res.data); // 7% comission
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     }, []);
 
     // validations
     useEffect(() => {
-        console.log('validations useEffect from Checkout.js');
+        console.log("validations useEffect from Checkout.js");
+
         //validate phone
         const phonePattern = new RegExp(/^[0-9\b]+$/);
         if (phone) {
@@ -79,13 +105,21 @@ const Checkout = (props) => {
         }
 
         // activate proceed button
-        if (address.length > 8 && phonePattern.test(phone) && phone.length == 10 && CP)
+        if (
+            address.length > 8 &&
+            phonePattern.test(phone) &&
+            phone.length == 10 &&
+            CP &&
+            deliveryDay &&
+            deliverySchedule
+        )
             setButtonIsActive(true);
         else setButtonIsActive(false);
-    }, [address, phone, CP]);
+    }, [address, phone, CP, deliveryDay, deliverySchedule]);
 
     return (
         <div className="container">
+            {console.log(props.userInfo["userPhone"])}
             {props.loggedIn ? (
                 <div style={{ marginTop: "18%" }}>
                     {/* prompt user for payment method */}
@@ -95,6 +129,7 @@ const Checkout = (props) => {
                             : `Subtotal ${upfrontPayPalPayment}`}{" "}
                         mxn
                     </h3>
+
                     <Alert variant={"success"}>
                         ¿Cómo deseas pagar?
                         <div className="row">
@@ -105,7 +140,8 @@ const Checkout = (props) => {
                                     name="payment_mode"
                                     onClick={handleInputChange}
                                 />
-                                El total (100%) con PayPal
+                                El total (100%) con <b>PayPal</b> &nbsp;
+                                <FontAwesomeIcon icon={faPaypal} />
                             </div>
                             <div className="col-6">
                                 <input
@@ -115,11 +151,14 @@ const Checkout = (props) => {
                                     onClick={handleInputChange}
                                 />
                                 Paga un pequeño anticipo de{" "}
-                                {Math.ceil(upfrontPayPalPayment)}mxn y paga el
-                                restante en efectivo cuando recibas
+                                {Math.ceil(upfrontPayPalPayment)}mxn con{" "}
+                                <b>PayPal</b> &nbsp;
+                                <FontAwesomeIcon icon={faPaypal} /> y paga el
+                                resto en efectivo cuando te entreguemos
                             </div>
                         </div>
                     </Alert>
+
                     {/* if user choses on_delivery */}
                     {paymentMode == "on_delivery" && (
                         <Alert variant={"warning"}>
@@ -141,8 +180,9 @@ const Checkout = (props) => {
                             <Form.Label>Tu nombre</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder={`${props.userInfo[1]}`}
-                                disabled
+                                value={`${props.userInfo["userName"]}`}
+                                onChange={(e) => setOrderName(e.target.value)}
+                                name="order_name"
                             />
 
                             <Form.Label className="mt-2">
@@ -162,20 +202,35 @@ const Checkout = (props) => {
                             )}
                         </Form.Group>
 
-                        {/* Pop Over */}
                         <Form.Group>
+
                             <Form.Label>Tu CP</Form.Label>
-                                <CheckCP getCP={getCP} />
-                                <Button variant="link" ref={target} onClick={() => setShow(!show)}>
-                                    ¿No encuentras tu código postal?
-                                </Button>
-                                <Overlay target={target.current} show={show} placement="top">
-                                    {(props) => (
-                                        <Tooltip id="overlay-cp" {...props}>
-                                            Significa que aún no llegamos a tu ubicación :(
-                                        </Tooltip>
-                                    )}
-                                </Overlay>
+                            <CheckCP getCpInfo={getCpInfo} />
+                            <input type="hidden" name="cp" value={CP}/>
+                            <input type="hidden" name="neighborhood" value={neighborhood}/>
+
+
+                            {/* Pop Over */}
+                            <Button
+                                variant="link"
+                                ref={target}
+                                onClick={() => setShow(!show)}
+                            >
+                                ¿No encuentras tu código postal?
+                            </Button>
+                            <Overlay
+                                target={target.current}
+                                show={show}
+                                placement="top"
+                            >
+                                {(props) => (
+                                    <Tooltip id="overlay-cp" {...props}>
+                                        Significa que aún no llegamos a tu
+                                        ubicación :(
+                                    </Tooltip>
+                                )}
+                            </Overlay>
+
                         </Form.Group>
 
                         {/* address */}
@@ -200,6 +255,18 @@ const Checkout = (props) => {
                             </Alert>
                         )}
 
+                        <DevilerySchedule getDeliveryInfo={getDeliveryInfo} />
+                        <input
+                            type="hidden"
+                            name="delivery_day"
+                            value={deliveryDay}
+                        />
+                        <input
+                            type="hidden"
+                            name="delivery_schedule"
+                            value={deliverySchedule}
+                        />
+
                         {/* more address info */}
                         <Form.Group className="mt-2">
                             <Form.Label>
@@ -218,15 +285,14 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         {/* let user pay if all information is set */}
-                        {buttonIsActive && (
-                            <Button
-                                className="mb-5"
-                                variant="primary"
-                                type="submit"
-                            >
-                                Proceder a pago
-                            </Button>
-                        )}
+                        <Button
+                            className="mb-5"
+                            variant="primary"
+                            type="submit"
+                            disabled={buttonIsActive ? false : true}
+                        >
+                            Proceder a pago
+                        </Button>
                     </Form>
                 </div>
             ) : (

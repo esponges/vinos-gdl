@@ -6,15 +6,19 @@ import { Link } from "react-router-dom";
 const ProductGrid = (props) => {
     const [itemCount, setItemCount] = useState(1);
     const categories = props.products;
+    const [productAddMsg, setProductAddMsg] = useState(false);
+    const [productAddId, setProductAddId] = useState("");
 
     const addToCart = (id, event) => {
         event.preventDefault();
         console.log(`item ${id}, cantidad ${itemCount}`);
         axios.get(`cart/${id}/add/${itemCount}`)
-        .then(res => {
+        .then(() => {
             // console.log(res.data, 'added to cart!!!');
             props.cartCountUpdate(itemCount);
-            window.alert(res.data);
+            // window.alert(res.data);
+            setProductAddMsg("Añadido");
+            setProductAddId(id);
         })
         .catch((err) => {
             console.error(err);
@@ -60,7 +64,7 @@ const ProductGrid = (props) => {
                                                 <Card>
                                                     <Card.Img
                                                         variant="top"
-                                                        src={`/img/${product.id}.jpg`}
+                                                        src={`/img/productGrid/${product.id}.jpg`}
                                                     />
                                                     <Card.Body>
                                                         <Card.Title>
@@ -130,6 +134,13 @@ const ProductGrid = (props) => {
                                                                 </Link>
                                                             </div>
                                                         </div>
+                                                        {productAddMsg && product.id == productAddId &&
+                                                        <Card.Text>
+                                                            <p style={{ color: "red" }}>
+                                                                {productAddMsg}
+                                                            </p>
+                                                        </Card.Text>
+                                                        }
                                                     </Card.Body>
                                                 </Card>
                                             </div>
