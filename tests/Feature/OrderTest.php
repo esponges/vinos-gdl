@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,10 +47,50 @@ class OrderTest extends TestCase
 
         $response = $this->actingAs(User::first())->post('order/create', [
             'address' => Factory::create()->sentence(6),
-            'payment_mode' => 'paypal',
+            'payment_mode' => 'on_delivery',
+            'order_name' => Factory::create()->name(),
+            'phone' => "1258245689",
+            'neighborhood' => 'Barrio Bravo',
+            'cp' => '25678',
+            'delivery_day' => "lunes",
+            'delivery_schedule' => '10am a 12pm',
         ]);
 
         $response->assertStatus(302);
+    }
+
+    public function test_if_unauth_user_cant_create_order_with_postman()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->expectException(AuthenticationException::class);
+
+        $this->postJson('/order/create');
+    }
+
+
+    public function test_get_cart_total()
+    {
+        $this->withoutExceptionHandling();
+        $this->addItems();
+
+        $response = $this->get('cart/get-total');
+
+        // $response->dump();
+        // $response->dumpHeaders();
+        $response->assertOk();
+    }
+
+    public function test_get_CP()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->get('/api/get-CP');
+
+        $response->assertOk();
+
+        $cp = Cp::all()->toArray();
+        $response->assertJson($cp);
     }
 
     // public function test_paypal()
@@ -104,27 +145,4 @@ class OrderTest extends TestCase
     //     dd (\Cart::getContent(), \Cart::getTotal());
     // }
 
-    public function test_get_cart_total()
-    {
-        $this->withoutExceptionHandling();
-        $this->addItems();
-
-        $response = $this->get('cart/get-total');
-
-        // $response->dump();
-        // $response->dumpHeaders();
-        $response->assertOk();
-    }
-
-    public function test_get_CP()
-    {
-        $this->withoutExceptionHandling();
-
-        $response = $this->get('/api/get-CP');
-
-        $response->assertOk();
-
-        $cp = Cp::all()->toArray();
-        $response->assertJson($cp);
-    }
 }
