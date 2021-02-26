@@ -50,7 +50,7 @@ const CheckCP = (props) => {
                     </div>
                     <ul {...getMenuProps()} style={{ width: "35%" }}>
                         <div className="downshift-dropdown">
-                            {isOpen
+                            {isOpen && inputValue.length > 2
                                 ? CP.filter(
                                     (item) =>
                                         !inputValue ||

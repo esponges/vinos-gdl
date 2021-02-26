@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ConfirmationEmail;
-use Faker\Factory;
-use App\Models\User;
+use App\Mail\AdminOrderConfirmationEmail;
+use App\Mail\TransferOrderConfirmation;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +33,7 @@ class OrderController extends Controller
 
             $cartItems = \Cart::getContent();
 
-            foreach ($cartItems as $item ) {
+            foreach ($cartItems as $item) {
                 DB::table('order_items')->insert([
                     'product_id' => $item->id,
                     'unit_price' => $item->price,
@@ -43,37 +42,58 @@ class OrderController extends Controller
                 ]);
             }
 
-            return redirect()->route('paypal.checkout', [$order->id, $order->payment_mode]);
+            if ($order->payment_mode == "transfer") {
+                return $this->transferPaymentMode($order);
+            };
 
+            return redirect()->route('paypal.checkout', [$order->id, $order->payment_mode]);
         }
         return response()->json('session timed out', 408);
     }
 
-    // testing purposes
-    public function sendConfirmationEmail()
+    public function transferPaymentMode($order)
     {
-        $cart = \Cart::getContent();
-        $products = array_map(function ($item) {
-            return [
-                'name' => "anticipo " . $item['name'],
-                'price' => $item['price'] * 0.07,
-                'qty' => $item['quantity']
-            ];
-        }, $cart->toArray());
-
-        $cartTotal = \Cart::getTotal() * 0.07;
+        // prepare content
+        $products = \Cart::getContent();
         $grandTotal = \Cart::getTotal();
+        $cartTotal = 0;
         $balanceToPay = $grandTotal - $cartTotal;
-        $order = Factory::create()->numberBetween(1000, 2000);
-        $user = User::first();
+        $user = auth()->user();
+        $orderId = $order->id;
 
-        Mail::to($user->email)->send(new ConfirmationEmail(
-            $cartTotal,
+        \Cart::clear();
+
+        //send email
+        $this->prepareConfirmationEmails($user, $order, $products, $grandTotal, $cartTotal, $balanceToPay);
+
+        return view('order.success', compact('order', 'orderId', 'products', 'grandTotal', 'cartTotal', 'balanceToPay'));
+    }
+
+    public function prepareConfirmationEmails($user, $order, $products, $grandTotal, $cartTotal,$balanceToPay)
+    {
+        // to user
+        Mail::to($user->email)->send(new TransferOrderConfirmation(
+            $order,
             $products,
             $grandTotal,
+            $cartTotal,
             $balanceToPay,
-            $order,
-            $user
         ));
+
+        // to admin
+        $adminEmails = [
+            'vinoreomx@gmail.com',
+            'ventas@vinosdivisa.com'
+        ];
+
+        foreach ($adminEmails as $email) {
+            Mail::to($email)->send(new AdminOrderConfirmationEmail(
+                $order,
+                $products,
+                $grandTotal,
+                $cartTotal,
+                $balanceToPay
+            ));
+        }
     }
 }
