@@ -29,8 +29,8 @@ class AuthTest extends TestCase
             'age' => Factory::create()->numberBetween(1, 4),
         ]);
 
-        // $response->dumpHeaders();
-        // $response->dump();
+        $response->dumpHeaders();
+        $response->dump();
 
         $response->assertStatus(302);
     }
@@ -46,6 +46,7 @@ class AuthTest extends TestCase
         $response = $this->post('/login', [
             'email' => $user->email,
             'password' => '123456',
+            'remember' => 'on'
         ]);
 
         // $response->getStatusCode();
