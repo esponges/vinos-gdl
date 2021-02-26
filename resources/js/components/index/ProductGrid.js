@@ -135,11 +135,9 @@ const ProductGrid = (props) => {
                                                             </div>
                                                         </div>
                                                         {productAddMsg && product.id == productAddId &&
-                                                        <Card.Text>
-                                                            <p style={{ color: "red" }}>
+                                                            <p style={{ color: "red", marginTop: "10px" }}>
                                                                 {productAddMsg}
                                                             </p>
-                                                        </Card.Text>
                                                         }
                                                     </Card.Body>
                                                 </Card>

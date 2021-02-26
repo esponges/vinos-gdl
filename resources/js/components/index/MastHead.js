@@ -1,6 +1,8 @@
 import React from "react";
+import { Container, Jumbotron } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import { Link } from "react-router-dom";
 
 const MastHead = () => {
     const carouselData = {
@@ -13,73 +15,91 @@ const MastHead = () => {
         ],
     };
 
-    const images = ["masthead1.png", "masthead2.png", "masthead3.png"];
+    const images = ["carrusel1.png", "carrusel2.png", "carrusel3.png"];
 
     return (
         <>
-            <Carousel
-                additionalTransfrom={0}
-                arrows
-                autoPlay
-                autoPlaySpeed={2100}
-                centerMode={false}
-                classNameName=""
-                containerclassName="container-with-dots"
-                dotListclassName=""
-                draggable
-                focusOnSelect={false}
-                infinite
-                itemclassName=""
-                keyBoardControl
-                minimumTouchDrag={80}
-                renderButtonGroupOutside={false}
-                renderDotsOutside={false}
-                responsive={{
-                    desktop: {
-                        breakpoint: {
-                            max: 3000,
-                            min: 1024,
+            <div className="container mb-4" style={{ textAlign: "center" }}>
+                <img
+                    src="/img/vinoreologo.png"
+                    alt=""
+                    id="vinoreo-logo-header"
+                />
+            </div>
+            <div className="container">
+                <Carousel
+                    additionalTransfrom={0}
+                    arrows
+                    autoPlay
+                    autoPlaySpeed={3000}
+                    centerMode={false}
+                    classNameName=""
+                    containerclassName="container-with-dots"
+                    dotListclassName=""
+                    draggable
+                    focusOnSelect={false}
+                    infinite
+                    itemclassName=""
+                    keyBoardControl
+                    minimumTouchDrag={80}
+                    renderButtonGroupOutside={true}
+                    renderDotsOutside={false}
+                    responsive={{
+                        desktop: {
+                            breakpoint: {
+                                max: 3000,
+                                min: 1024,
+                            },
+                            items: 1,
+                            partialVisibilityGutter: 40,
                         },
-                        items: 1,
-                        partialVisibilityGutter: 40,
-                    },
-                    mobile: {
-                        breakpoint: {
-                            max: 464,
-                            min: 0,
+                        mobile: {
+                            breakpoint: {
+                                max: 464,
+                                min: 0,
+                            },
+                            items: 1,
+                            partialVisibilityGutter: 30,
                         },
-                        items: 1,
-                        partialVisibilityGutter: 30,
-                    },
-                    tablet: {
-                        breakpoint: {
-                            max: 1024,
-                            min: 464,
+                        tablet: {
+                            breakpoint: {
+                                max: 1024,
+                                min: 464,
+                            },
+                            items: 1,
+                            partialVisibilityGutter: 30,
                         },
-                        items: 1,
-                        partialVisibilityGutter: 30,
-                    },
-                }}
-                showDots={true}
-                sliderclassName=""
-                slidesToSlide={1}
-                swipeable
-            >
-                {images.map((imageName, i) => {
-                    return (
-                        <img
-                            src={`img/${imageName}`}
-                            key={i}
-                            style={{
-                                display: "block",
-                                height: "100%",
-                                margin: "auto",
-                                width: "100%",
-                            }}
-                        />
-                    );
-                })}
-            </Carousel>
+                    }}
+                    showDots={true}
+                    sliderclassName=""
+                    slidesToSlide={1}
+                    swipeable
+                >
+                    {images.map((imageName, i) => {
+                        return (
+                            <img
+                                src={`img/${imageName}`}
+                                key={i}
+                                style={{
+                                    display: "block",
+                                    maxHeight: "350px",
+                                    margin: "auto",
+                                    maxWidth: "100%",
+                                }}
+                            />
+                        );
+                    })}
+                </Carousel>
+                <Jumbotron id="ship_pay_banner">
+                    <Container>
+                        <h5 style={{ textAlign: "center" }}>
+                            <Link to="/">
+                                <b>Más info sobre pagos y envíos</b>
+                            </Link>
+                        </h5>
+                    </Container>
+                </Jumbotron>
+            </div>
         </>
     );
 };

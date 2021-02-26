@@ -81,6 +81,14 @@ const IndexNavbar = (props) => {
                 fixed="top"
             >
                 <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
+
+                {/* search products */}
+                <Navbar.Text>
+                    <Form inline>
+                        <DownShiftSearch />
+                    </Form>
+                </Navbar.Text>
+
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
@@ -119,13 +127,9 @@ const IndexNavbar = (props) => {
                             </Badge>
                         </Link>
 
-                        <Form inline>
-                            <DownShiftSearch />
-                        </Form>
-
                         {props.userLogged && (
                             <NavDropdown
-                                title={`${props.userInfo['userName']}`}
+                                title={`${props.userInfo["userName"]}`}
                                 id="collasible-nav-dropdown"
                             >
                                 <NavDropdown.Item onClick={logout}>
@@ -147,7 +151,6 @@ const IndexNavbar = (props) => {
                         {props.cartCount && props.cartCount}
                     </Badge>
                 </Link>
-
             </Navbar>
         </>
     );
