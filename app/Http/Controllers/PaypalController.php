@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\AdminOrderConfirmationEmail;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PaypalController extends Controller
@@ -93,30 +94,47 @@ class PaypalController extends Controller
                 // order content info
                 $products = \Cart::getContent();
                 $grandTotal = \Cart::getTotal();
-                $balanceToPay = $grandTotal - $cartTotal; // if user chose on_delivery ?? is 0
+                $balanceToPay = $grandTotal - $cartTotal; // if user chooses paypal ?? is 0
                 $user = auth()->user();
 
                 // send success email
-                // customer
-                Mail::to($user->email)->send(new ConfirmationEmail(
-                    $cartTotal,
-                    $products,
-                    $grandTotal,
-                    $balanceToPay,
-                    $order,
-                    $user
-                ));
-
-                // staff email
-
+                $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
 
                 \Cart::clear();
-
 
                 return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
             };
         }
         dd('oh no, something went wrong!!!');
+    }
+
+    public function preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user)
+    {
+        // customer email
+        Mail::to($user->email)->send(new ConfirmationEmail(
+            $cartTotal,
+            $products,
+            $grandTotal,
+            $balanceToPay,
+            $order,
+            $user
+        ));
+
+        // staff email
+        $adminEmails = [
+            'vinoreomx@gmail.com',
+            'ventas@vinosdivisa.com'
+        ];
+
+        foreach ($adminEmails as $email) {
+            Mail::to($email)->send(new AdminOrderConfirmationEmail(
+                $order,
+                $products,
+                $grandTotal,
+                $cartTotal,
+                $balanceToPay
+            ));
+        }
     }
 
     public function paypalFail($orderId)

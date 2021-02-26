@@ -143,7 +143,6 @@ const App = (props) => {
                         </Route>
 
                         <Route path="/">
-                            <MainJumbo />
                             <MastHead />
                             <ProductGrid
                                 products={products}

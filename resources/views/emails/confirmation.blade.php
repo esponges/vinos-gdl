@@ -15,7 +15,14 @@ El total de tu compra fue: <b>{{$grandTotal}}</b>
 
 Tu pago por Paypal: <b>{{$cartTotal}}</b>
 
+@if ($order->payment_mode == "on_delivery")
+
 Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
+
+<u>Recuerda que el repartidor sólo recibe efectivo</u>
+
+@endif
+
 
 <br>
 Detalles de entrega <br>

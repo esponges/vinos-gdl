@@ -18,6 +18,7 @@ import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DevilerySchedule from "./DevilerySchedule";
+import PaymentMode from './PaymentMode';
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -26,8 +27,9 @@ const Checkout = (props) => {
     const [neighborhood, setNeighborhood] = useState("");
     const [cartTotal, setCartTotal] = useState("");
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
+    const [totalToPay, setTotalToPay] = useState(false);
     const [address, setAddress] = useState("");
-    const [paymentMode, setPaymentMode] = useState("paypal");
+    const [paymentMode, setPaymentMode] = useState("on_delivery");
     const [addressDetails, setAddressDetails] = useState("");
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
@@ -38,8 +40,12 @@ const Checkout = (props) => {
     const target = useRef(null); // for Overlay Bootstrap element
 
     // from payment type radio input
-    const handleInputChange = (e) => {
+    const handlePaymentChange = (e) => {
+        console.log(e.target.value);
         setPaymentMode(e.target.value);
+        if (e.target.value === "paypal") setTotalToPay(`Total ${cartTotal} mxn`);
+        else if (e.target.value === "transfer") setTotalToPay(`Total ${cartTotal} mxn`);
+        else setTotalToPay(`Sub-total ${upfrontPayPalPayment} mxn`);
     };
 
     // validate CP
@@ -118,52 +124,22 @@ const Checkout = (props) => {
     }, [address, phone, CP, deliveryDay, deliverySchedule]);
 
     return (
-        <div className="container">
-            {console.log(props.userInfo["userPhone"])}
+        <div className="container mb-5">
             {props.loggedIn ? (
                 <div style={{ marginTop: "18%" }}>
                     {/* prompt user for payment method */}
                     <h3>
-                        {paymentMode == "paypal"
-                            ? `Total ${cartTotal}`
-                            : `Subtotal ${upfrontPayPalPayment}`}{" "}
-                        mxn
+                        {!totalToPay ? `Total ${cartTotal} mxn` : totalToPay}
                     </h3>
 
-                    <Alert variant={"success"}>
-                        ¿Cómo deseas pagar?
-                        <div className="row">
-                            <div className="col-6">
-                                <input
-                                    type="radio"
-                                    value={"paypal"}
-                                    name="payment_mode"
-                                    onClick={handleInputChange}
-                                />
-                                El total (100%) con <b>PayPal</b> &nbsp;
-                                <FontAwesomeIcon icon={faPaypal} />
-                            </div>
-                            <div className="col-6">
-                                <input
-                                    type="radio"
-                                    value={"on_delivery"}
-                                    name="payment_mode"
-                                    onClick={handleInputChange}
-                                />
-                                Paga un pequeño anticipo de{" "}
-                                {Math.ceil(upfrontPayPalPayment)}mxn con{" "}
-                                <b>PayPal</b> &nbsp;
-                                <FontAwesomeIcon icon={faPaypal} /> y paga el
-                                resto en efectivo cuando te entreguemos
-                            </div>
-                        </div>
-                    </Alert>
+                    <PaymentMode handlePaymentChange={handlePaymentChange} upfrontPayPalPayment={upfrontPayPalPayment} />
+
 
                     {/* if user choses on_delivery */}
                     {paymentMode == "on_delivery" && (
                         <Alert variant={"warning"}>
-                            Si eliges liquidar tu pago en la entrega recuerda
-                            que nuestro repartidor <u>sólo acepta efectivo</u>
+                            Si eliges liquidar el saldo restante al recibir recuerda
+                            que nuestro repartidor <u>sólo acepta efectivo</u>.
                         </Alert>
                     )}
 

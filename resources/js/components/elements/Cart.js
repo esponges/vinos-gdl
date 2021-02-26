@@ -138,7 +138,7 @@ const Cart = (props) => {
                                         </td>
                                         <td className="center">
                                             <img
-                                                src={`/img/${product.id}.jpg`}
+                                                src={`/img/productGrid/${product.id}.jpg`}
                                                 style={{
                                                     width: "85px",
                                                     height: "85px",
