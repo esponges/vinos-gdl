@@ -16,16 +16,16 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::all()->toArray();
-        $productsWithCategories = [];
+        // $productsWithCategories = [];
 
-        foreach ($products as $prod) {
-            $id = $prod['id'];
-            $product = Product::find($id);
-            $productCategory['category'] = $product->category->name;
-            array_push($productsWithCategories, array_merge($productCategory, $prod));
-        }
+        // foreach ($products as $prod) {
+        //     $id = $prod['id'];
+        //     $product = Product::find($id);
+        //     $productCategory['category'] = $product->category->name;
+        //     array_push($productsWithCategories, array_merge($productCategory, $prod));
+        // }
 
-        return response()->json($productsWithCategories, 200);
+        return response()->json($products, 200);
     }
 
     /**

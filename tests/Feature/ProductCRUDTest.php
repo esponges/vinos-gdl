@@ -33,16 +33,17 @@ class ProductCRUDTest extends TestCase
         $response->assertOk();
 
         $products = Product::all()->toArray();
-        $productsWithCategories = [];
+        // $productsWithCategories = [];
 
-        foreach ($products as $prod) {
-            $id = $prod['id'];
-            $product = Product::find($id);
-            $productCategory['category'] = $product->category->name;
-            array_push($productsWithCategories, array_merge($productCategory, $prod));
-        }
+        // foreach ($products as $prod) {
+        //     $id = $prod['id'];
+        //     $product = Product::find($id);
+        //     $productCategory['category'] = $product->category->name;
+        //     dd ($product->category->name);
+        //     array_push($productsWithCategories, array_merge($productCategory, $prod));
+        // }
 
-        $response->assertJson($productsWithCategories);
+        $response->assertJson($products);
     }
 
     public function test_single_product()
