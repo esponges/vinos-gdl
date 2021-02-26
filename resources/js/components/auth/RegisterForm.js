@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter } from "react-router-dom";
 import sanctumApi from "../../sanctum-api";
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
+    const [familyName, setFamilyName] = useState("");
     const [age, setAge] = useState(0);
     const [email, setEmail] = useState("");
     const [emailValidationAlert, setEmailValidationAlert] = useState(null);
@@ -21,6 +22,7 @@ const RegisterForm = (props) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submitting form");
+        const fullName = name + " " + familyName;
         // check if user is already registered
         axios
             .get(`/api/is-registered/${email}`)
@@ -37,7 +39,7 @@ const RegisterForm = (props) => {
                             console.log("age is ", age);
                             axios
                                 .post("register", {
-                                    name: name,
+                                    name: fullName,
                                     email: email,
                                     password: password,
                                     age: age,
@@ -105,8 +107,9 @@ const RegisterForm = (props) => {
 
         // both ok
         if (
-            emailValidationAlert == false &&
-            name.length > 8 &&
+            !emailValidationAlert &&
+            name.length > 2 &&
+            familyName.length > 4 &&
             password === confirmPassword &&
             password != ""
         ) {
@@ -116,17 +119,20 @@ const RegisterForm = (props) => {
                 passwordsMatch,
                 "pw match",
                 password,
-                "passs"
+                "passs",
+                "name length > 8"
             );
             setUserDataIsValid(true);
         } else setUserDataIsValid(false);
-    }, [email, confirmPassword]);
+    }, [email, confirmPassword, name]);
 
     return (
         <div className="container" style={{ marginTop: "13%" }}>
             <Form>
                 <Form.Group controlId="formBasicName">
-                    <Form.Label>Nombre Completo</Form.Label>
+                    <Form.Label>
+                        <b>Nombre Completo </b>
+                    </Form.Label>
                     <Form.Control
                         type="text"
                         placeholder="Tu nombre completo"
@@ -136,17 +142,35 @@ const RegisterForm = (props) => {
                         required
                     />
                     <Form.Text className="text-muted">
-                        El nombre con el que te ubican
+                        <b>El nombre con el que te ubican</b>
                     </Form.Text>
-                    {name != "" && name.length < 8 && (
+                    {name != "" && name.length < 3 && (
                         <Alert variant={"warning"} className="m-1">
                             Ingresa correctamente la información
                         </Alert>
                     )}
                 </Form.Group>
-
+                <Form.Group controlId="formBasicFamilyName">
+                    <Form.Label>
+                        <b>Apellido(s)</b>
+                    </Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder="Tu(s) apellido(s)"
+                        value={familyName}
+                        onChange={(e) => setFamilyName(e.target.value)}
+                        required
+                    />
+                    {familyName != "" && familyName.length < 6 && (
+                        <Alert variant={"warning"} className="m-1">
+                            Ingresa correctamente la información
+                        </Alert>
+                    )}
+                </Form.Group>
                 <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Correo electrónico</Form.Label>
+                    <Form.Label>
+                        <b>Correo electrónico</b>{" "}
+                    </Form.Label>
                     <Form.Control
                         type="email"
                         placeholder="Enter email"
@@ -155,17 +179,17 @@ const RegisterForm = (props) => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
-                    <Form.Text className="text-muted">
-                        Nunca compartiremos tu información
-                    </Form.Text>
+
                     {emailValidationAlert && (
                         <Alert variant={"warning"} className="m-5">
                             {emailValidationAlert}
                         </Alert>
                     )}
 
-                    <Form.Label>
-                        Tu edad <i>(opcional)</i>
+                    <Form.Label className="mt-4">
+                        <b>
+                            Tu edad <i>(opcional)</i>
+                        </b>
                     </Form.Label>
                     <div className="row">
                         <div className="col-3">
@@ -203,7 +227,9 @@ const RegisterForm = (props) => {
                     </div>
                 </Form.Group>
                 <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Contraseña</Form.Label>
+                    <Form.Label>
+                        <b> Contraseña</b>
+                    </Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Ingresa contraseña"
@@ -214,7 +240,9 @@ const RegisterForm = (props) => {
                     />
                 </Form.Group>
                 <Form.Group controlId="confirmPassword">
-                    <Form.Label>Confirma contraseña</Form.Label>
+                    <Form.Label>
+                        <b>Confirma contraseña</b>
+                    </Form.Label>
                     <Form.Control
                         type="password"
                         placeholder="Confirma contraseña"
@@ -223,40 +251,38 @@ const RegisterForm = (props) => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </Form.Group>
-
                 {!passwordsMatch && password != "" && confirmPassword != "" && (
                     <Alert variant={"warning"} className="m-5">
                         Las contraseñas no coinciden
                     </Alert>
                 )}
-
                 {isRegistered && (
                     <Alert variant={"warning"} className="m-5">
                         Este usuario ya está registrado
                     </Alert>
                 )}
-
                 {/* server error */}
                 {error && (
                     <Alert variant={"warning"} className="m-5">
                         Error en el servidor intenta en un momento
                     </Alert>
                 )}
-
-                {userDataIsValid && (
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        onClick={handleSubmit}
-                    >
-                        {/* {console.log(userDataIsValid)} */}
-                        Regístrate
-                    </Button>
-                )}
-
-                <Link to="/cart" className="btn btn-secondary">
+                <Button
+                    variant="success"
+                    type="submit"
+                    onClick={handleSubmit}
+                    disabled={userDataIsValid ? false : true}
+                >
+                    {/* {console.log(userDataIsValid)} */}
+                    Regístrate
+                </Button>
+                <Link to="/cart" className="btn btn-secondary ml-3">
                     Regresar
-                </Link>
+                </Link>{" "}
+                <br />
+                <Form.Text className="text-muted success">
+                    Nunca compartiremos tu información
+                </Form.Text>
             </Form>
         </div>
     );

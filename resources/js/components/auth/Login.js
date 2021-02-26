@@ -9,10 +9,14 @@ const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [sessionError, setSessionError] = useState(false);
+    const [rememberMe, setRememberMe] = useState("off");
+    const [checked, setChecked] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // console.log(email, password, 'avedaaaa');
+
+        let rememberMe = checked ? 'on' : '';
+
         setSessionError(false);
         sanctumApi
             .get("sanctum/csrf-cookie")
@@ -21,13 +25,14 @@ const Login = (props) => {
                     .post("login", {
                         email: email,
                         password: password,
+                        remember: rememberMe,
                     })
                     .then((res) => {
                         if (res.status === 204 || 200) {
                             props.login();
                             if (props.cartCount > 0) {
                                 props.history.push("/cart/checkout");
-                                console.log('redirecting to checkout');
+                                console.log("redirecting to checkout");
                             }
                             props.history.push("/cart");
                         } else {
@@ -76,7 +81,12 @@ const Login = (props) => {
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="Recordar usuario" />
+                        <Form.Check
+                            type="checkbox"
+                            label="Recordar usuario"
+                            defaultChecked={checked}
+                            onChange={() => setChecked(!checked)}
+                        />
                     </Form.Group>
                     {sessionError && (
                         <Alert variant={"warning"} className="m-5">
