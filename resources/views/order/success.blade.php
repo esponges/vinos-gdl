@@ -58,7 +58,7 @@
                             <li>N° de tarjeta <b>4152 3137 5497 2623</b></li>
                             <li>Banco <b>BBVA</b></li>
                         </ul>
-                        <p>Por favor envía tu comprobante de pago al Whatsapp
+                        <p>Por favor envía tu comprobante de pago junto a tu número de orden al Whatsapp
                             <b>33 31 67 31 50</b>
                             o al correo electrónico
                             <b>hola@vinoreo.mx</b>
