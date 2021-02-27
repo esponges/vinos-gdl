@@ -64,7 +64,7 @@ const ProductGrid = (props) => {
                                                 <Card>
                                                     <Card.Img
                                                         variant="top"
-                                                        src={`/img/productGrid/${product.id}.jpg`}
+                                                        src={`/img/products/${product.id}.jpg`}
                                                     />
                                                     <Card.Body>
                                                         <Card.Title>
