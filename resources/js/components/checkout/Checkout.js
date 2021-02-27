@@ -16,9 +16,8 @@ library.add(fab);
 
 import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DevilerySchedule from "./DevilerySchedule";
-import PaymentMode from './PaymentMode';
+import PaymentMode from "./PaymentMode";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -34,7 +33,7 @@ const Checkout = (props) => {
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
-    const [deliveryDay, setDeliveryDay] = useState("")
+    const [deliveryDay, setDeliveryDay] = useState("");
     const [deliverySchedule, setDeliverySchedule] = useState("");
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
@@ -43,8 +42,10 @@ const Checkout = (props) => {
     const handlePaymentChange = (e) => {
         console.log(e.target.value);
         setPaymentMode(e.target.value);
-        if (e.target.value === "paypal") setTotalToPay(`Total ${cartTotal} mxn`);
-        else if (e.target.value === "transfer") setTotalToPay(`Total ${cartTotal} mxn`);
+        if (e.target.value === "paypal")
+            setTotalToPay(`Total ${cartTotal} mxn`);
+        else if (e.target.value === "transfer")
+            setTotalToPay(`Total ${cartTotal} mxn`);
         else setTotalToPay(`Sub-total ${upfrontPayPalPayment} mxn`);
     };
 
@@ -58,30 +59,37 @@ const Checkout = (props) => {
         console.log(day, schedule);
         setDeliveryDay(day);
         setDeliverySchedule(schedule);
-    }
-
+    };
 
     // get user info and cart total-subtotal
     useEffect(() => {
-        props.userInfo['userPhone'] && setPhone(parseInt(props.userInfo['userPhone']));
+        let isMounted = true;
 
-        axios
-            .get("/cart/get-total")
-            .then((res) => {
-                setCartTotal(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        // if phone info available set it
+        props.userInfo["userPhone"] &&
+            setPhone(parseInt(props.userInfo["userPhone"]));
 
-        axios
-            .get("/cart/get-subtotal")
-            .then((res) => {
-                setUpfrontPayPalPayment(res.data); // 7% comission
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        if (isMounted) {
+            axios
+                .get("/cart/get-total")
+                .then((res) => {
+                    setCartTotal(res.data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+
+            axios
+                .get("/cart/get-subtotal")
+                .then((res) => {
+                    setUpfrontPayPalPayment(res.data); // 7% comission
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+
+        return () => (isMounted = false);
     }, []);
 
     // validations
@@ -124,27 +132,30 @@ const Checkout = (props) => {
     }, [address, phone, CP, deliveryDay, deliverySchedule]);
 
     return (
-        <div className="container mb-5">
+        <div className="container">
             {props.loggedIn ? (
-                <div style={{ marginTop: "18%" }}>
+                <div style={{ marginTop: "18%", marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
                     <h3>
                         {!totalToPay ? `Total ${cartTotal} mxn` : totalToPay}
                     </h3>
 
-                    <PaymentMode handlePaymentChange={handlePaymentChange} upfrontPayPalPayment={upfrontPayPalPayment} />
-
+                    <PaymentMode
+                        handlePaymentChange={handlePaymentChange}
+                        upfrontPayPalPayment={upfrontPayPalPayment}
+                    />
 
                     {/* if user choses on_delivery */}
                     {paymentMode == "on_delivery" && (
                         <Alert variant={"warning"}>
-                            Si eliges liquidar el saldo restante al recibir recuerda
-                            que nuestro repartidor <u>sólo acepta efectivo</u>.
+                            Si eliges liquidar el saldo restante al recibir
+                            recuerda que nuestro repartidor{" "}
+                            <u>sólo acepta efectivo</u>.
                         </Alert>
                     )}
 
                     {/* use laravel form method */}
-                    <Form className="mt-3" action="/order/create" method="post">
+                    <Form className="mt-3 mb-5" action="/order/create" method="post">
                         {/* place csrf token */}
                         <input type="hidden" value={csrf_token} name="_token" />
                         <input
@@ -161,6 +172,16 @@ const Checkout = (props) => {
                                 name="order_name"
                             />
 
+                            <Form.Label className="mt-2">Email</Form.Label>
+                            <Form.Control
+                                type="text"
+                                disabled={true}
+                                value={`${props.userInfo["userEmail"]}`}
+                            />
+                            <Form.Text className="text-muted success">
+                                A este correo te enviaremos la confirmación
+                            </Form.Text>
+
                             <Form.Label className="mt-2">
                                 Tu teléfono
                             </Form.Label>
@@ -171,6 +192,9 @@ const Checkout = (props) => {
                                 name="phone"
                                 onChange={(e) => setPhone(e.target.value)}
                             />
+                            <Form.Text className="text-muted success">
+                                Sólo lo usaremos para mantenerte informado sobre tu orden
+                            </Form.Text>
                             {phoneAlertMessage && (
                                 <Alert variant={"warning"} className="m-1">
                                     {phoneAlertMessage}
@@ -179,12 +203,14 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         <Form.Group>
-
                             <Form.Label>Tu CP</Form.Label>
                             <CheckCP getCpInfo={getCpInfo} />
-                            <input type="hidden" name="cp" value={CP}/>
-                            <input type="hidden" name="neighborhood" value={neighborhood}/>
-
+                            <input type="hidden" name="cp" value={CP} />
+                            <input
+                                type="hidden"
+                                name="neighborhood"
+                                value={neighborhood}
+                            />
 
                             {/* Pop Over */}
                             <Button
@@ -206,7 +232,6 @@ const Checkout = (props) => {
                                     </Tooltip>
                                 )}
                             </Overlay>
-
                         </Form.Group>
 
                         {/* address */}

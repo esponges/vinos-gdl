@@ -29,9 +29,13 @@ Route::get('/is-auth', function () {
 
 Route::get('/user-info', function () {
     if (Auth::check()) {
-        $userName = auth()->user()->name;
-        $userPhone = auth()->user()->phone_number;
-        return response()->json(['userName' => $userName, 'userPhone' => $userPhone], 200);
+        $userInfo = [];
+
+        $userInfo['userName'] = auth()->user()->name;
+        $userInfo['userPhone'] = auth()->user()->phone;
+        $userInfo['userEmail'] = auth()->user()->email;
+
+        return response()->json($userInfo, 200);
     }
 });
 
