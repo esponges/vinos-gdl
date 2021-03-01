@@ -43,38 +43,38 @@ const DownShiftSearch = (props) => {
                             {/* {console.log(products)} */}
                             {isOpen && inputValue.length > 3
                                 ? products
-                                      .filter(
-                                          (item) =>
-                                              !inputValue ||
-                                              item.name
-                                                  .toLowerCase()
-                                                  .includes(
-                                                      inputValue.toLowerCase()
-                                                  )
-                                      )
-                                      .map((item, index) => (
-                                          <li
-                                              className="dropdown-item"
-                                              {...getItemProps({
-                                                  key: item.id,
-                                                  index,
-                                                  item,
-                                                  style: {
-                                                      backgroundColor:
-                                                          highlightedIndex ===
-                                                          index
-                                                              ? "lightgray"
-                                                              : "white",
-                                                      fontWeight:
-                                                          selectedItem === item
-                                                              ? "bold"
-                                                              : "normal",
-                                                  },
-                                              })}
-                                          >
-                                              {item.name}
-                                          </li>
-                                      ))
+                                    .filter(
+                                        (item) =>
+                                            !inputValue ||
+                                            item.name
+                                                .toLowerCase()
+                                                .includes(
+                                                    inputValue.toLowerCase()
+                                                )
+                                    )
+                                    .map((item, index) => (
+                                        <li
+                                            className="dropdown-item"
+                                            {...getItemProps({
+                                                key: item.id,
+                                                index,
+                                                item,
+                                                style: {
+                                                    backgroundColor:
+                                                        highlightedIndex ===
+                                                        index
+                                                            ? "lightgray"
+                                                            : "white",
+                                                    fontWeight:
+                                                        selectedItem === item
+                                                            ? "bold"
+                                                            : "normal",
+                                                },
+                                            })}
+                                        >
+                                            {item.name}
+                                        </li>
+                                    ))
                                 : null}
                         </div>
                     </ul>

@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
+
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
+import Category from "./elements/Category";
 import Checkout from "./checkout/Checkout.js";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";
-import MainJumbo from "./index/MainJumbo";
 import Footer from "./index/Footer";
+
 import axios from "axios";
+
 import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
-import Category from "./elements/Category";
+
 import { Context } from "./Context";
+import About from "./elements/About";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -140,6 +144,10 @@ const App = (props) => {
 
                         <Route path="/register">
                             <RegisterForm />
+                        </Route>
+
+                        <Route path="/about">
+                            <About />
                         </Route>
 
                         <Route path="/">

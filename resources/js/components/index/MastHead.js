@@ -93,8 +93,8 @@ const MastHead = () => {
                 <Jumbotron id="ship_pay_banner">
                     <Container>
                         <h5 style={{ textAlign: "center" }}>
-                            <Link to="/">
-                                <b>Más info sobre pagos y envíos</b>
+                            <Link to="/about">
+                                <b>Más información sobre pagos y envíos</b>
                             </Link>
                         </h5>
                     </Container>
