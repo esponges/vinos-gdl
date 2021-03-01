@@ -15,18 +15,20 @@ const Footer = () => {
                 {/* <Navbar.Brand href="#home">Vinoreo</Navbar.Brand> */}
                 <Nav className="mr-auto">
                     <Nav.Link href="#home">TyC</Nav.Link>
-                    <Nav.Link href="#features">KmxDesign</Nav.Link>
+                    <Nav.Item>
+                        <Link to="/about">Nosotros</Link> &nbsp;
+                    </Nav.Item>
                     <Nav.Item>
                         <Link to="/login">Inicia Sesión</Link>
                     </Nav.Item>
                 </Nav>
                 <Nav>
-                    <a href="#">
-                        <em>Síguenos</em> {"       "}
-                        <FontAwesomeIcon icon={faInstagram} />
+                    <a href="https://www.instagram.com/vinoreomx/">
+                        <em>Síguenos</em> &nbsp;
+                        <FontAwesomeIcon icon={faInstagram}  color={"red"}/>
                     </a>
-                    <a href="#">
-                        <em>{"        "} </em>
+                    <a href="https://www.facebook.com/vinoreomx">
+                        &nbsp;
                         <FontAwesomeIcon icon={faFacebook} />
                     </a>
                 </Nav>

@@ -12,16 +12,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faShoppingBasket,
-    faShoppingCart,
     fas,
 } from "@fortawesome/free-solid-svg-icons";
 import {
     fab,
     faInstagram,
-    faFacebook,
 } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-library.add(fas, faShoppingCart, fab, faInstagram);
+library.add(fas, fab);
 
 import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
@@ -30,7 +28,6 @@ import DownShiftSearch from "./DownShiftSearch";
 
 const IndexNavbar = (props) => {
     const [navbar, setNavbar] = useState(false);
-    const [products, setProducts] = useState("");
 
     const handleScroll = (e) => {
         if (window.scrollY >= 780) {
@@ -103,10 +100,10 @@ const IndexNavbar = (props) => {
                             </NavDropdown.Item>
                             <NavDropdown.Item href="#Gin">Gin</NavDropdown.Item>
                             <NavDropdown.Item href="#Ron">Ron</NavDropdown.Item>
-                            <NavDropdown.Divider />
+                            {/* <NavDropdown.Divider />
                             <NavDropdown.Item href="#action/3.4">
                                 Separated link
-                            </NavDropdown.Item>
+                            </NavDropdown.Item> */}
                         </NavDropdown>
                     </Nav>
                     <Nav style={{ paddingTop: "15px" }}>

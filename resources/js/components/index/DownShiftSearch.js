@@ -1,7 +1,17 @@
 import Downshift from "downshift";
+
 import React, { useContext } from "react";
-import { withRouter } from "react-router";
 import { Context } from "../Context";
+
+import { withRouter } from "react-router";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+    fas, faSearch,
+} from "@fortawesome/free-solid-svg-icons";
+library.add(fab, fas);
 
 const DownShiftSearch = (props) => {
     const products = useContext(Context);
@@ -32,15 +42,15 @@ const DownShiftSearch = (props) => {
                         style={{ display: "inline-block" }}
                         {...getRootProps({}, { suppressRefError: true })}
                     >
+                        <FontAwesomeIcon icon={faSearch} color={"blue"}/> &nbsp;
                         <input
                             {...getInputProps()}
-                            placeholder="buscar vino"
+                            placeholder={`Busca tu  vino`}
                             id="product-search-input"
                         />
                     </div>
                     <ul {...getMenuProps()}>
                         <div className="downshift-dropdown">
-                            {/* {console.log(products)} */}
                             {isOpen && inputValue.length > 3
                                 ? products
                                     .filter(
