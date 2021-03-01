@@ -21,11 +21,8 @@ class CreateOrdersTable extends Migration
             $table->boolean('is_paid')->default(0);
             $table->string('address');
             $table->string('address_details')->nullable();
-            $table->string('delivery_day');
-            $table->string('delivery_schedule');
             $table->string('phone');
             $table->integer('cp');
-            $table->string('neighborhood');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
