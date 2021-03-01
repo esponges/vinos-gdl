@@ -27,7 +27,6 @@ class CreateOrdersTable extends Migration
             $table->integer('cp');
             $table->string('neighborhood');
             $table->foreignId('user_id')->constrained('users');
-            $table->string('order_name');
             $table->timestamps();
         });
     }
