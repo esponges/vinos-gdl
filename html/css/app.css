@@ -10161,6 +10161,11 @@ h3 {
   border-radius: 0.25rem;
 }
 
+@media (max-width: 381px) {
+  #product-search-input {
+    width: 65%;
+  }
+}
 #vinoreo-logo-header {
   max-height: 100px;
   margin-top: 5%;
