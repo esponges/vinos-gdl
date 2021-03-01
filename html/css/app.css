@@ -10197,3 +10197,7 @@ h3 {
 #transfer-success-blade-jumbo {
   padding: 2rem 4rem;
 }
+
+#about-ul {
+  list-style: none;
+}

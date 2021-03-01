@@ -141,7 +141,10 @@ const IndexNavbar = (props) => {
                 </Navbar.Collapse>
 
                 {/* floating btns */}
-                <a href="#" className="material-icons floating-btn-whats">
+                <a
+                    href="https://www.instagram.com/vinoreomx/"
+                    className="material-icons floating-btn-whats"
+                >
                     <FontAwesomeIcon icon={faInstagram} />
                 </a>
                 <Link to="/cart" className="material-icons floating-btn-cart">
