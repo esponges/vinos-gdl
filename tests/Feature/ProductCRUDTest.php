@@ -67,13 +67,15 @@ class ProductCRUDTest extends TestCase
             'description' => Factory::create()->sentence(10),
             'price' => Factory::create()->numberBetween(400, 700),
             'category_id' => Factory::create()->numberBetween(1, 4),
+            'score' => 0,
         ];
 
         $response = $this->post('/products', [
             'name' => $product['name'],
             'description' => $product['description'],
             'price' => $product['price'],
-            'category_id' => $product['category_id']
+            'category_id' => $product['category_id'],
+            'score' => $product['score'],
         ]);
 
         $response->assertOk();

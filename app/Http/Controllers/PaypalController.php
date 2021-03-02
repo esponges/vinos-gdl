@@ -94,7 +94,7 @@ class PaypalController extends Controller
                 // order content info
                 $products = \Cart::getContent();
                 $grandTotal = \Cart::getTotal();
-                $balanceToPay = $grandTotal - $cartTotal; // if user chooses paypal ?? is 0
+                $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
                 $user = auth()->user();
 
                 // send success email
@@ -105,7 +105,7 @@ class PaypalController extends Controller
                 return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
             };
         }
-        dd('oh no, something went wrong!!!');
+        dd('Something went wrong');
     }
 
     public function preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user)
@@ -139,6 +139,9 @@ class PaypalController extends Controller
 
     public function paypalFail($orderId)
     {
-        dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
+        // dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
+        $order = Order::find($orderId);
+
+        return view('order.fail', ['order' => $order]);
     }
 }

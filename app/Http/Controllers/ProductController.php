@@ -51,6 +51,7 @@ class ProductController extends Controller
         $product['description'] = $request['description'];
         $product['price'] = $request['price'];
         $product['category_id'] = $request['category_id'];
+        $product['score'] = $request['score'];
         $product->save();
 
         return response()->json($product, 200);

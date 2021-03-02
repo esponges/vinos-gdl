@@ -6,7 +6,7 @@
 
 
 return [
-    'mode'    => env('PAYPAL_MODE', $_SERVER['SERVER_NAME'] == "127.0.0.1" ? 'sandbox' : 'live'), // Can only be 'sandbox' Or 'live'. If empty or invalid, 'live' will be used.
+    'mode'    => env('PAYPAL_MODE', ""), // Can only be 'sandbox' Or 'live'. If empty or invalid, 'live' will be used.
     'sandbox' => [
         'username'    => env('PAYPAL_SANDBOX_API_USERNAME', ''),
         'password'    => env('PAYPAL_SANDBOX_API_PASSWORD', ''),

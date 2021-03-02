@@ -14,7 +14,7 @@ class AddScoreToProductsTable extends Migration
     public function up()
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->float('score');
+            $table->float('score')->default(0);
         });
     }
 
