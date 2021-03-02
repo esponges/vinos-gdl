@@ -65,7 +65,7 @@ const SingleProduct = (props) => {
                     />
                     <Card.Body>
                         <Card.Title>{product.name}</Card.Title>
-                        <Card.Text>{product.description}</Card.Text>
+                        {/* <Card.Text>{product.description}</Card.Text> */}
                     </Card.Body>
                     <ListGroup className="list-group-flush">
                         <ListGroupItem>Precio: $ {product.price}</ListGroupItem>
