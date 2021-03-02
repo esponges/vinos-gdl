@@ -14,13 +14,23 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $categories = Category::orderBy('score', 'desc')->get();
         $categoriesProducts = [];
 
         for ($i = 0; $i < sizeOf($categories); $i++) {
-            array_push($categoriesProducts, ['id' => $categories[$i]->id, 'category_name' => $categories[$i]->name, 'products' => $categories[$i]->products]);
+
+            $category = $categories[$i];
+            $productsFromCategory = $category
+                ->products()
+                ->orderBy('score', 'desc')
+                ->get(); // call relationship
+
+            array_push($categoriesProducts, array(
+                'id' => $category->id,
+                'category_name' => $category->name,
+                'products' => $productsFromCategory->toArray()
+            ));
         }
-        // dd ($categoriesProducts[0]['category_name']);
 
         return response()->json($categoriesProducts, 200);
     }
