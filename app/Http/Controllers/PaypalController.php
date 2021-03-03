@@ -20,12 +20,10 @@ class PaypalController extends Controller
 
         try {
             $response = $this->provider->setExpressCheckout($cart, false);
-            // dd($response);
 
             return redirect($response['paypal_link']);
         } catch (\Exception $e) {
             $invoice = $this->createInvoice($cart, 'Invalid');
-            dd($invoice);
 
             session()->put(['code' => 'danger', 'message' => "Error processing PayPal payment for Order $invoice->id!"]);
         }
@@ -48,7 +46,7 @@ class PaypalController extends Controller
             $cartItems = array_map(function ($item) {
                 return [
                     'name' => "anticipo " . $item['name'],
-                    'price' => ceil($item['price'] * 0.07),
+                    'price' => ceil($item['price'] - ($item['price'] / 1.07)),
                     'qty' => $item['quantity']
                 ];
             }, $cart->toArray());
