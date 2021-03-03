@@ -51,6 +51,7 @@ Saldo por cobrar en la entrega: <b>{{$balanceToPay}}</b>
 <br>
 Detalles de entrega: <br>
 
+Orden: <b>{{$order->id}}</b><br>
 Nombre del pedido: <b>{{$order->order_name}}</b><br>
 Dirección de entrega: <b>{{$order->address}}</b><br>
 Detalles de la dirección: <b>{{$order->address_details}}</b><br>
