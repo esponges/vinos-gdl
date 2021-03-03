@@ -14,8 +14,8 @@
         <h1 class="mb-2">Tuvimos problemas con tu compra</h4>
         <p class="mt-4"><b>Tu carrito sigue disponible</b></p>
         <p class="mt-4">Puedes volver a intentarlo</p>
-        <a class="btn btn-primary mt-2 mb-2" href="vinoreo.mx/#/cart">Regresa al carrito</a>
-        <a class="btn btn-primary mt2 mb-2 ml-2" href="vinoreo.mx">Regresar al inicio</a>
+        <a class="btn btn-primary mt-2 mb-2" href="/#/cart">Regresa al carrito</a>
+        <a class="btn btn-primary mt2 mb-2 ml-2" href="/">Regresar al inicio</a>
 
 </div>
 
