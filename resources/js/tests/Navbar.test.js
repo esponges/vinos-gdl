@@ -51,9 +51,9 @@ describe('badge shows badge number', () => {
             <IndexNavbar items={props} />
         </Router>
     );
-    console.log(wrapper.find(<Badge />).first().text());
+    // console.log(wrapper.find(<Badge />).first().text());
     expect(wrapper.find(<Badge />)).toBeTruthy();
-})
+});
 
 // describe('navbar toggles', () => {
 //     it('toggles from light to dark', () => {
