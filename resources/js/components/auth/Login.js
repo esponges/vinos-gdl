@@ -54,7 +54,7 @@ const Login = (props) => {
 
     return (
         <div className="container" style={{ marginTop: "15%" }}>
-            {console.log(localhost)}
+            {/* {console.log(localhost)} */}
             {!props.loggedIn ? (
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail">
@@ -96,11 +96,11 @@ const Login = (props) => {
                             Credenciales incorrectas
                         </Alert>
                     )}
-                    <Button variant="outline-primary" type="submit">
+                    <Button variant="primary" type="submit">
                         Iniciar sesión
                     </Button>
                     <Link to="/register">
-                        <Button variant="primary" className="ml-5">
+                        <Button variant="outline-primary" className="ml-5">
                             Regístrate
                         </Button>
                     </Link>

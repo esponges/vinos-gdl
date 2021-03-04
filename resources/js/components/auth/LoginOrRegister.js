@@ -18,10 +18,10 @@ const loginOrRegister = () => {
                 </ListGroup>
                 <div className="container mt-3">
                     <Link to="/register">
-                        <Button>Regístrate</Button> &nbsp;&nbsp;&nbsp;
+                        <Button variant={"primary"}>Regístrate</Button> &nbsp;&nbsp;&nbsp;
                     </Link>
                     <Link to="/login">
-                        <Button variant={"secondary"} size="sm">
+                        <Button variant={"outline-primary"} size="sm">
                             Inicia sesión
                         </Button>
                     </Link>
