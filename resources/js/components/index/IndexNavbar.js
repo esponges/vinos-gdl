@@ -80,8 +80,8 @@ const IndexNavbar = (props) => {
                 <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
 
                 {/* search products */}
-                <Navbar.Text>
-                    <Form inline>
+                <Navbar.Text id="#product-search-form">
+                    <Form inline id="product-search-form">
                         <DownShiftSearch />
                     </Form>
                 </Navbar.Text>

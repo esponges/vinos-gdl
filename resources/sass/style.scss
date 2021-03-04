@@ -195,7 +195,11 @@
 
 @media (max-width: 381px) {
     #product-search-input {
-        width: 65%;
+        width: 100px;
+    }
+
+    #product-search-form {
+        margin-left: -22%;
     }
 }
 
