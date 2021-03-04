@@ -1,7 +1,9 @@
 import axios from "axios";
 
+    const localhost = window.location.protocol + "//" + window.location.host;
+
 const sanctumApi = axios.create({
-    // baseURL: location.host,
+    baseURL: localhost,
     withCredentials: true,
 });
 // const sanctumApi = (axios.defaults.withCredentials = true);
