@@ -34,6 +34,7 @@ const App = (props) => {
 
     const login = () => {
         setLoggedIn(true);
+        console.log('props.login')
         axios
             .get("api/user-info")
             .then((res) => {
@@ -143,7 +144,7 @@ const App = (props) => {
                         </Route>
 
                         <Route path="/register">
-                            <RegisterForm />
+                            <RegisterForm  login={login}/>
                         </Route>
 
                         <Route path="/about">

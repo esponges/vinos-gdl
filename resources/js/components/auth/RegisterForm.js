@@ -4,6 +4,7 @@ import { Button, Form, Alert } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
 import sanctumApi from "../../sanctum-api";
 import axiosAuth from '../../axios-config';
+import { method } from "lodash";
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
@@ -19,14 +20,18 @@ const RegisterForm = (props) => {
     const [error, setError] = useState(false);
     // const [nameOk, setNameOk] = useState(false);
     // const [addressOk, setAddressOk] = useState(false);
+    const localhost = window.location.protocol + "//" + window.location.host;
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submitting form");
         const fullName = name + " " + familyName;
         // check if user is already registered
-        axiosAuth
-            .get(`/api/is-registered/${email}`)
+        axios({
+            baseURL: localhost,
+            method: 'GET',
+            url: `/api/is-registered/${email}`
+        })
             .then((res) => {
                 console.log(res.data);
                 // alert user already registered
@@ -38,22 +43,30 @@ const RegisterForm = (props) => {
                         .get("sanctum/csrf-cookie")
                         .then((res) => {
                             console.log("age is ", age);
-                            axiosAuth
-                                .post("register", {
-                                    name: fullName,
-                                    email: email,
-                                    password: password,
-                                    age: age,
-                                })
+                            axios({ baseURL: localhost,
+                                    method: 'POST',
+                                    url: '/register',
+                                    data: {
+                                        name: fullName,
+                                        email: email,
+                                        password: password,
+                                        age: age,
+                                    }
+                            })
                                 .then(() => {
                                     // if no error, log in user
-                                    axiosAuth
-                                        .post("/login", {
+                                    axios({
+                                        baseURL: localhost,
+                                        method: "POST",
+                                        url: "/login",
+                                        data: {
                                             email: email,
                                             password: password,
-                                        })
+                                        },
+                                    })
                                         .then((res) => {
                                             console.log(res.data);
+                                            props.login()
                                             props.history.push("/login");
                                         })
                                         .catch((err) => {

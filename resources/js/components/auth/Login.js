@@ -6,6 +6,12 @@ import sanctumApi from "../../sanctum-api";
 import axiosAuth from '../../axios-config';
 import { withRouter, Link } from "react-router-dom";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingBasket, fas } from "@fortawesome/free-solid-svg-icons";
+import { fab, faInstagram } from "@fortawesome/free-brands-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+library.add(fas, fab);
+
 const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -13,7 +19,7 @@ const Login = (props) => {
     const [rememberMe, setRememberMe] = useState("off");
     const [checked, setChecked] = useState(false);
 
-    // const localhost = window.location.protocol + "//" + window.location.host;
+    const localhost = window.location.protocol + "//" + window.location.host;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,12 +31,16 @@ const Login = (props) => {
         sanctumApi
             .get("sanctum/csrf-cookie")
             .then(() => {
-                axiosAuth
-                    .post("login", {
+                axios({
+                    baseURL: localhost,
+                    method: "POST",
+                    url: "/login",
+                    data: {
                         email: email,
                         password: password,
                         remember: rememberMe,
-                    })
+                    },
+                })
                     .then((res) => {
                         if (res.status === 204 || 200) {
                             props.login();
@@ -110,12 +120,12 @@ const Login = (props) => {
                 <Card style={{ maxWidth: "50%" }}>
                     <Card.Body>
                         <Card.Title className="mb-5">
-                            Bienvenido a Vinoreo
+                            <h2>Bienvenido a Vinoreo</h2>
                         </Card.Title>
                         <img
                             src="/img/check.jpg"
                             placeholder="session check"
-                            style={{ maxWidth: "50%" }}
+                            style={{ maxWidth: "25%" }}
                         />
                         <Card.Text>Tu sesión está activa</Card.Text>
                         <Link to="/">
