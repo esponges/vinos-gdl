@@ -16,8 +16,8 @@ library.add(fab);
 
 import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
-import DevilerySchedule from "./DevilerySchedule";
 import PaymentMode from "./PaymentMode";
+import DeliverySchedule from "./DeliverySchedule";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -94,42 +94,49 @@ const Checkout = (props) => {
 
     // validations
     useEffect(() => {
+        let isMounted = true;
+
         console.log("validations useEffect from Checkout.js");
 
-        //validate phone
-        const phonePattern = new RegExp(/^[0-9\b]+$/);
-        if (phone) {
-            if (phonePattern.test(phone)) {
-                if (phone.length === 10) {
-                    setPhoneAlertMessage(false);
+        if (isMounted) {
+
+            //validate phone
+            const phonePattern = new RegExp(/^[0-9\b]+$/);
+            if (phone) {
+                if (phonePattern.test(phone)) {
+                    if (phone.length === 10) {
+                        setPhoneAlertMessage(false);
+                    } else {
+                        setPhoneAlertMessage(
+                            "Por favor ingresa número de 10 dígitos"
+                        );
+                    }
                 } else {
-                    setPhoneAlertMessage(
-                        "Por favor ingresa número de 10 dígitos"
-                    );
+                    setPhoneAlertMessage("Por favor sólo ingresa números");
                 }
-            } else {
-                setPhoneAlertMessage("Por favor sólo ingresa números");
             }
-        }
-        //validate address
-        if (address.length < 8 && address != "") {
-            setAddressAlertMessage("Por favor ingresa dirección correcta");
-        } else {
-            setAddressAlertMessage(false);
+            //validate address
+            if (address.length < 8 && address != "") {
+                setAddressAlertMessage("Por favor ingresa dirección correcta");
+            } else {
+                setAddressAlertMessage(false);
+            }
+
+            // activate proceed button
+            if (
+                address.length > 8 &&
+                phonePattern.test(phone) &&
+                phone.length == 10 &&
+                CP &&
+                deliveryDay &&
+                deliverySchedule
+            )
+                setButtonIsActive(true);
+            else setButtonIsActive(false);
         }
 
-        // activate proceed button
-        if (
-            address.length > 8 &&
-            phonePattern.test(phone) &&
-            phone.length == 10 &&
-            CP &&
-            deliveryDay &&
-            deliverySchedule
-        )
-            setButtonIsActive(true);
-        else setButtonIsActive(false);
-    }, [address, phone, CP, deliveryDay, deliverySchedule]);
+        return () => isMounted = false;
+    }, [address,  phone, CP, deliveryDay, deliverySchedule]);
 
     return (
         <div className="container">
@@ -256,7 +263,7 @@ const Checkout = (props) => {
                             </Alert>
                         )}
 
-                        <DevilerySchedule getDeliveryInfo={getDeliveryInfo} />
+                        <DeliverySchedule getDeliveryInfo={getDeliveryInfo} />
                         <input
                             type="hidden"
                             name="delivery_day"
