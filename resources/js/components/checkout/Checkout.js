@@ -4,12 +4,10 @@ import {
     Form,
     Button,
     Alert,
-    OverlayTrigger,
-    Popover,
     Overlay,
     Tooltip,
 } from "react-bootstrap";
-import { fab, faPaypal } from "@fortawesome/free-brands-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 library.add(fab);
@@ -131,7 +129,9 @@ const Checkout = (props) => {
                 deliveryDay &&
                 deliverySchedule
             )
+            {
                 setButtonIsActive(true);
+            }
             else setButtonIsActive(false);
         }
 
