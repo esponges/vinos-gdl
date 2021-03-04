@@ -3,14 +3,7 @@ import { Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { Form, Button, Card } from "react-bootstrap";
 import sanctumApi from "../../sanctum-api";
-import axiosAuth from '../../axios-config';
 import { withRouter, Link } from "react-router-dom";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShoppingBasket, fas } from "@fortawesome/free-solid-svg-icons";
-import { fab, faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { library } from "@fortawesome/fontawesome-svg-core";
-library.add(fas, fab);
 
 const Login = (props) => {
     const [email, setEmail] = useState("");
@@ -65,7 +58,7 @@ const Login = (props) => {
 
     return (
         <div className="container" style={{ marginTop: "15%" }}>
-            {/* {console.log(localhost)} */}
+            {console.log(localhost)}
             {!props.loggedIn ? (
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail">
