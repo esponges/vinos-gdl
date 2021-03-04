@@ -7,7 +7,7 @@ import { withRouter, Link } from 'react-router-dom';
 const Category = (props) => {
     const [products, setProducts] = useState({});
     const [offset, setOffset] = useState(0);
-    const [perPage] = useState(3);
+    const [perPage] = useState(6);
     const [pageCount, setPageCount] = useState(0);
 
     const getProducts = async () => {
