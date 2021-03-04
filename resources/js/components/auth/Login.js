@@ -12,12 +12,15 @@ const Login = (props) => {
     const [rememberMe, setRememberMe] = useState("off");
     const [checked, setChecked] = useState(false);
 
+    // const localhost = window.location.protocol + "//" + window.location.host;
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
         let rememberMe = checked ? 'on' : '';
 
         setSessionError(false);
+
         sanctumApi
             .get("sanctum/csrf-cookie")
             .then(() => {
@@ -51,7 +54,7 @@ const Login = (props) => {
 
     return (
         <div className="container" style={{ marginTop: "15%" }}>
-            {console.log(props.loggedIn)}
+            {console.log(localhost)}
             {!props.loggedIn ? (
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail">
