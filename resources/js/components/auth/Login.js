@@ -3,6 +3,7 @@ import { Alert } from "react-bootstrap";
 import React, { useState } from "react";
 import { Form, Button, Card } from "react-bootstrap";
 import sanctumApi from "../../sanctum-api";
+import axiosAuth from '../../axios-config';
 import { withRouter, Link } from "react-router-dom";
 
 const Login = (props) => {
@@ -24,7 +25,7 @@ const Login = (props) => {
         sanctumApi
             .get("sanctum/csrf-cookie")
             .then(() => {
-                axios
+                axiosAuth
                     .post("login", {
                         email: email,
                         password: password,

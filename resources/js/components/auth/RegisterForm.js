@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
 import sanctumApi from "../../sanctum-api";
+import axiosAuth from '../../axios-config';
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
@@ -24,7 +25,7 @@ const RegisterForm = (props) => {
         console.log("submitting form");
         const fullName = name + " " + familyName;
         // check if user is already registered
-        axios
+        axiosAuth
             .get(`/api/is-registered/${email}`)
             .then((res) => {
                 console.log(res.data);
@@ -37,7 +38,7 @@ const RegisterForm = (props) => {
                         .get("sanctum/csrf-cookie")
                         .then((res) => {
                             console.log("age is ", age);
-                            axios
+                            axiosAuth
                                 .post("register", {
                                     name: fullName,
                                     email: email,
@@ -46,7 +47,7 @@ const RegisterForm = (props) => {
                                 })
                                 .then(() => {
                                     // if no error, log in user
-                                    axios
+                                    axiosAuth
                                         .post("/login", {
                                             email: email,
                                             password: password,
@@ -96,7 +97,6 @@ const RegisterForm = (props) => {
         const emailRegExp = new RegExp(pattern);
         if (email)
             if (emailRegExp.test(email) && email != "") {
-                console.log(emailRegExp.test(email), "regexp is trueee");
                 setIsRegistered(false);
                 setEmailValidationAlert(false);
             } else {
@@ -113,15 +113,6 @@ const RegisterForm = (props) => {
             password === confirmPassword &&
             password != ""
         ) {
-            console.log(
-                emailValidationAlert,
-                "email alert",
-                passwordsMatch,
-                "pw match",
-                password,
-                "passs",
-                "name length > 8"
-            );
             setUserDataIsValid(true);
         } else setUserDataIsValid(false);
     }, [email, confirmPassword, name]);
