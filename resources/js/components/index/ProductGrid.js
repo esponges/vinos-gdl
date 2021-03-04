@@ -59,7 +59,8 @@ const ProductGrid = (props) => {
                                         return (
                                             <div
                                                 key={product.id}
-                                                className="col-lg-3 col-md-4 col-sm-6 mt-3"
+                                                className="col-lg-3 col-md-4 mt-3"
+                                                id="product-card-mobile"
                                             >
                                                 <Card>
                                                     <Card.Img
@@ -68,79 +69,85 @@ const ProductGrid = (props) => {
                                                     />
                                                     <Card.Body>
                                                         <Card.Title>
-                                                            <b>
-                                                                {product.name}
-                                                            </b>
+                                                            {product.name}
                                                         </Card.Title>
                                                         <Card.Text>
-                                                            $ {product.price}{" "}
-                                                            mxn
+                                                            <b>
+                                                                $ {product.price}{" "}
+                                                                mxn
+                                                            </b>
                                                         </Card.Text>
                                                         <div className="row">
-                                                            <div className="col-6">
-                                                                <Card.Link>
-                                                                    <div className="row">
-                                                                        <div className="col-6">
-                                                                            <input
-                                                                                type="number"
-                                                                                name="quantity"
-                                                                                defaultValue={
-                                                                                    1
-                                                                                }
-                                                                                className="form-control input-number"
-                                                                                onChange={async (
+                                                                <div className="col-3 d-none d-sm-block">
+                                                                    <input
+                                                                        type="number"
+                                                                        min="1"
+                                                                        name="quantity"
+                                                                        defaultValue={
+                                                                            1
+                                                                        }
+                                                                        className="form-control input-number"
+                                                                        onChange={async (
+                                                                            e
+                                                                        ) =>
+                                                                            await setItemCount(
+                                                                                parseInt(
                                                                                     e
-                                                                                ) =>
-                                                                                    await setItemCount(
-                                                                                        parseInt(
-                                                                                            e
-                                                                                                .target
-                                                                                                .value
-                                                                                        )
-                                                                                    )
-                                                                                }
-                                                                                style={{
-                                                                                    minWidth:
-                                                                                        "60px",
-                                                                                }}
-                                                                            />
-                                                                        </div>
-                                                                        <div className="col-6">
-                                                                            <Button
-                                                                                variant="primary"
-                                                                                onClick={() =>
-                                                                                    addToCart(
-                                                                                        product.id,
-                                                                                        event
-                                                                                    )
-                                                                                }
-                                                                            >
-                                                                                {" "}
-                                                                                +{" "}
-                                                                            </Button>
-                                                                        </div>
-                                                                    </div>
-                                                                </Card.Link>
-                                                            </div>
-                                                            <div className="col-6">
-                                                                <Link
-                                                                    to={{
-                                                                        pathname: `/products/${product.id}`,
-                                                                    }}
-                                                                >
-                                                                    <Button variant="secondary">
-                                                                        Detalles
+                                                                                        .target
+                                                                                        .value
+                                                                                )
+                                                                            )
+                                                                        }
+                                                                        style={{
+                                                                            minWidth:
+                                                                                "60px",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="col-3">
+                                                                    <Button
+                                                                        variant="primary"
+                                                                        onClick={() =>
+                                                                            addToCart(
+                                                                                product.id,
+                                                                                event
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        {" "}
+                                                                        +{" "}
                                                                     </Button>
-                                                                </Link>
-                                                            </div>
+                                                                </div>
+                                                                <div className="col-6">
+                                                                    <Link
+                                                                        to={{
+                                                                            pathname: `/products/${product.id}`,
+                                                                        }}
+                                                                    >
+                                                                        <Button variant="secondary">
+                                                                            Detalles
+                                                                        </Button>
+                                                                    </Link>
+                                                                </div>
                                                         </div>
-                                                        {productAddMsg && product.id == productAddId &&
-                                                            <div>
-                                                                <Card.Text style={{ color: "red", marginTop: "10px" }}>
-                                                                    {productAddMsg}
-                                                                </Card.Text>
-                                                            </div>
-                                                        }
+                                                        {productAddMsg &&
+                                                            product.id ==
+                                                                productAddId && (
+                                                                <div>
+                                                                    <Card.Text
+                                                                        style={{
+                                                                            color:
+                                                                                "red",
+                                                                            marginTop:
+                                                                                "10px",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            productAddMsg
+                                                                        }
+                                                                    </Card.Text>
+                                                                </div>
+                                                            )}
                                                     </Card.Body>
                                                 </Card>
                                             </div>
