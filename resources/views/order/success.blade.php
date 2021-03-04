@@ -53,10 +53,10 @@
                     <div class="container">
                         <h3>Información de depósito/transferencia</h3>
                         <ul style="list-style: none">
-                            <li>CLABE interbancaria <b>0123 2001 5371 445882</b></li>
-                            <li>N° de cuenta <b>153 714 4588</b></li>
-                            <li>N° de tarjeta <b>4152 3137 5497 2623</b></li>
-                            <li>Banco <b>BBVA</b></li>
+                        <li>CLABE interbancaria <b>0723 2000 3244 528134</b><br></li>
+                        <li>Nombre <b>Licoret Occidental SA de CV</b></li>
+                        <li>N° de cuenta <b>032 445 2813</b><br></li>
+                        <li>Banco <b>Banorte</b><br><br></li>
                         </ul>
                         <p>Por favor envía tu comprobante de pago junto a tu número de orden al Whatsapp
                             <b>33 31 67 31 50</b>

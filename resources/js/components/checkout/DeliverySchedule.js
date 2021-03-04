@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 
@@ -6,22 +6,24 @@ import Select from "react-select";
 
 const DeliverySchedule = (props) => {
     const [selectedDay, setSelectedDay] = useState(null);
-    const [selectedSchedule, setSelectedSchedule] = useState(null);
     const [schedule, setSchedule] = useState(null);
+    const [depDropIsSelected, setDepDropIsSelected] = useState(null)
 
     const handleDayChange = (day) => {
-        console.log(day.value);
+        if(depDropIsSelected) { // avoid submit btn = active
+            props.getDeliveryInfo(false, false);
+        }
+
         setSelectedDay(day.value);
         if (day.value === "Sabado") {
-            setSchedule(saturdaySchedule);
+            setSchedule(saturdayHourSchedule);
         } else {
-            setSchedule(weekdaySchedule);
+            setSchedule(weekdayHourSchedule);
         }
     };
 
     const handleScheduleChange = (schedule) => {
-        console.log(schedule.value);
-        setSelectedSchedule(schedule);
+        setDepDropIsSelected(true);
         props.getDeliveryInfo(selectedDay, schedule.value);
     };
 
@@ -34,14 +36,14 @@ const DeliverySchedule = (props) => {
         { value: "Sabado", label: "Sabado" },
     ];
 
-    const weekdaySchedule = [
+    const weekdayHourSchedule = [
         { value: "10am a 12pm", label: "10am a 12pm" },
         { value: "12pm a 2pm", label: "12pm a 2pm" },
         { value: "2pm a 4pm", label: "2pm a 4pm" },
         { value: "4pm a 6pm", label: "4pm a 6pm" },
     ];
 
-    const saturdaySchedule = [{ value: "10am a 3pm", label: "10am a 3pm" }];
+    const saturdayHourSchedule = [{ value: "10am a 3pm", label: "10am a 3pm" }];
 
     return (
         <Form.Group>
@@ -49,16 +51,15 @@ const DeliverySchedule = (props) => {
             <div style={{ marginBottom: "1rem" }}>
                 <Select
                     options={days}
-                    defaultValue={selectedDay}
                     onChange={handleDayChange}
                 />
             </div>
-            {schedule && (
+            {schedule && selectedDay && (
                 <div>
+                    {console.log(schedule, ' has changed!!')}
                     <Form.Label>¿En qué horario?</Form.Label>
                     <Select
                         options={schedule}
-                        defaultValue={selectedSchedule}
                         onChange={handleScheduleChange}
                     />
                 </div>

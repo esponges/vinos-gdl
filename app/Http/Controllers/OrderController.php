@@ -83,7 +83,9 @@ class OrderController extends Controller
         // to admin
         $adminEmails = [
             'vinoreomx@gmail.com',
-            // 'ventas@vinosdivisa.com'
+            'ventas@vinosdivisa.com',
+            'spalafox@vinosdivisa.com',
+            'jrodriguez@vinosdivisa.com',
         ];
 
         foreach ($adminEmails as $email) {

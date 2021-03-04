@@ -244,4 +244,12 @@
     list-style: none;
 }
 
+@media (max-width: 415px) {
+    #product-card-mobile {
+        width: 50%;
+        padding: 5px 5px;
+    }
+}
+
+
 
