@@ -14,7 +14,6 @@ class ConfirmationEmail extends Mailable
     public $grandTotal;
     public $balanceToPay;
     public $order;
-    public $user;
 
     use Queueable, SerializesModels;
 
@@ -28,16 +27,14 @@ class ConfirmationEmail extends Mailable
         $products,
         $grandTotal,
         $balanceToPay,
-        $order,
-        $user
-    )
+        $order
+        )
     {
         $this->cartTotal = $cartTotal;
         $this->products = $products;
         $this->grandTotal = $grandTotal;
         $this->balanceToPay = $balanceToPay;
         $this->order = $order;
-        $this->user = $user;
     }
 
     /**

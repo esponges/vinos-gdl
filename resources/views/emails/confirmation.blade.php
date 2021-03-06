@@ -28,8 +28,9 @@ Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
 Detalles de entrega <br>
 
 Nombre del pedido: <b>{{$order->order_name}}</b><br>
+Teléfono del comprador <b>{{$order->phone ? $order->phone : ""}}</b>
 Dirección de entrega: <b>{{$order->address}}</b><br>
-Detalles de la dirección: <b>{{$order->address_details}}</b><br>
+Detalles de la dirección: <b>{{ $order->address_details ? $order->address_details : 'No proporcionados' }}</b><br>
 Colonia: <b>{{$order->neighborhood . " " . $order->cp}}</b><br>
 
 <br>

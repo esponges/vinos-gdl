@@ -39,7 +39,8 @@ Route::prefix('cart')->group( function () {
 });
 
 Route::prefix('order')->group( function () {
-    Route::post('create', [OrderController::class, 'create'])->middleware('auth:sanctum');
+    Route::post('/create', [OrderController::class, 'create'])->middleware('auth:sanctum');
+    Route::get('/success/{orderId}/{cartTotal}', [OrderController::class, 'orderSuccess'])->name('order.success');
 });
 
 Route::prefix('paypal')->group( function () {

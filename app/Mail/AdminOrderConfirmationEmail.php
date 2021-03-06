@@ -27,7 +27,8 @@ class AdminOrderConfirmationEmail extends Mailable
         $products,
         $grandTotal,
         $cartTotal,
-        $balanceToPay)
+        $balanceToPay
+        )
     {
         $this->order = $order;
         $this->products = $products;
@@ -46,6 +47,6 @@ class AdminOrderConfirmationEmail extends Mailable
         return $this
         ->from('confirmation@vinoreomx.com')
         ->subject('Vinoreo: confirmación de orden')
-        ->markdown('order.adminOrderConfirmation');
+        ->markdown('emails.adminOrderConfirmation');
     }
 }

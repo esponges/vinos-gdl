@@ -98,4 +98,16 @@ class OrderController extends Controller
             ));
         }
     }
+
+    public function orderSuccess(Request $request, $orderId, $cartTotal)
+    {
+        $order = Order::find($orderId);
+        $products = \Cart::getContent();
+        $grandTotal = \Cart::getTotal();
+        $balanceToPay = $grandTotal - $cartTotal;
+
+        \Cart::clear();
+
+        return view('order.paypalSuccess', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal'));
+    }
 }

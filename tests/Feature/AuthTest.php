@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Cp;
 use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
@@ -95,4 +96,71 @@ class AuthTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['isRegistered' => true]);
     }
+
+    public function test_isAuth_truthy()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->actingAs(User::first())->get('/api/is-auth');
+
+        $this->assertEquals($response->original, true);
+    }
+
+    public function test_isAuth_falsy()
+    {
+        $this->withExceptionHandling();
+
+        $response = $this->get('/api/is-auth');
+
+        $this->assertEquals($response->original, false);
+    }
+
+    public function test_get_userInfo()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->actingAs(User::first())->get('/api/user-info');
+
+        $userInfo = [];
+
+        $userInfo['userName'] = auth()->user()->name;
+        $userInfo['userPhone'] = auth()->user()->phone;
+        $userInfo['userEmail'] = auth()->user()->email;
+
+        $response->assertOk();
+        $response->assertJsonFragment($userInfo);
+    }
+
+    public function test_get_userInfo_not_auth()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->get('/api/user-info');
+
+        $response->assertOk();
+        $this->assertEquals($response->original, ['error' => 'user not logged in']);
+    }
+
+    public function test_get_CP()
+    {
+        $this->withoutExceptionHandling();
+
+        $response = $this->get('/api/get-CP');
+
+        $response->assertOk();
+
+        $cp = Cp::all()->toArray();
+        $response->assertJson($cp);
+    }
+
+    public function test_getCSRFToken()
+    {
+        $this->withoutExceptionHandling();
+        $this->withoutMiddleware();
+
+        $response = $this->actingAs(User::first())->get(route('csrf-token'));
+
+        $response->assertOk();
+    }
+
 }
