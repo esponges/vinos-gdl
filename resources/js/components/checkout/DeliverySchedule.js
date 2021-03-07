@@ -14,17 +14,21 @@ const DeliverySchedule = (props) => {
         { value: "6", label: "Próximo Sábado" },
     ]);
     const [selectedDay, setSelectedDay] = useState(null);
-    const [schedule, setSchedule] = useState(null);
+    const [schedule, setSchedule] = useState([]);
+    const [selectedHours, setSelectedHours] = useState(null)
     const [depDropIsSelected, setDepDropIsSelected] = useState(null);
     const date = new Date();
 
     const handleDayChange = (day) => {
 
+        setSelectedDay(day);
+        setSelectedHours(null);
+        console.log('setting hours to null!!');
+        console.log('setting day to ', day.value);
         if(depDropIsSelected) { // avoid submit btn = active
             props.getDeliveryInfo(false, false);
         }
 
-        setSelectedDay(day.value);
         if (day.value === "6") {
             setSchedule(saturdayHourSchedule);
         } else {
@@ -34,7 +38,9 @@ const DeliverySchedule = (props) => {
 
     const handleScheduleChange = (schedule) => {
         setDepDropIsSelected(true);
-        props.getDeliveryInfo(selectedDay, schedule.value);
+        setSelectedHours(schedule);
+
+        props.getDeliveryInfo(selectedDay.label, schedule.value);
     };
 
     const weekdayHourSchedule = [
@@ -49,10 +55,10 @@ const DeliverySchedule = (props) => {
     useEffect(() => {
         let isMounted = true;
 
-        const removeToday = days.filter((day) => day.value != date.getDay());
-        console.log(removeToday);
-
-        setDays(removeToday);
+        if (isMounted) {
+            const removeToday = days.filter((day) => day.value != date.getDay());
+            setDays(removeToday);
+        }
 
         return () => isMounted = false;
     }, []);
@@ -64,6 +70,7 @@ const DeliverySchedule = (props) => {
                 <Select
                     options={days}
                     onChange={handleDayChange}
+                    value={selectedDay}
                 />
             </div>
             {schedule && selectedDay && (
@@ -72,6 +79,7 @@ const DeliverySchedule = (props) => {
                     <Select
                         options={schedule}
                         onChange={handleScheduleChange}
+                        value={selectedHours}
                     />
                 </div>
             )}

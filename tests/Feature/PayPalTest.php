@@ -29,7 +29,11 @@ class PayPalTest extends TestCase
         $balanceToPay = $grandTotal - $cartTotal;
 
         $order = new Order;
-        $order->name = Factory::create()->name();
+        $order->order_name = Factory::create()->name();
+        $order->phone = '1234567890';
+        $order->user_id = $user->id;
+        $order->total = $grandTotal;
+        $order->total_items = \Cart::getContent()->count();
         $order->address = Factory::create()->sentence(2);
         $order->address_details = Factory::create()->sentence(2);
         $order->neighborhood = Factory::create()->sentence(2);
@@ -38,10 +42,11 @@ class PayPalTest extends TestCase
         $order->delivery_day = "Lunes";
         $order->delivery_schedule = "10 am a 2pm";
         $order->id = Factory::create()->numberBetween(1000, 2000);
+        $order->save();
 
         $orderInfo = [
             'user' => $user,
-            'order' => $order,
+            'order' => $order->toArray(),
             'balanceToPay' => $balanceToPay,
             'grandTotal' => $grandTotal,
         ];
@@ -49,7 +54,7 @@ class PayPalTest extends TestCase
         return $orderInfo;
     }
 
-        public function test_paypal_succeeds()
+    public function test_paypal_succeeds()
     {
         $this->withoutExceptionHandling();
         $this->mockCart();
@@ -78,25 +83,6 @@ class PayPalTest extends TestCase
         )));
 
         $response->assertStatus(302); // redirecting to paypal
-    }
-
-    public function test_payment_paypal_payment_fail()
-    {
-
-        $this->withoutExceptionHandling();
-        $this->mockCart();
-        $orderInfo = $this->mockOrder();
-        $orderId = $orderInfo['order']->id;
-
-        $response = $this->get(route('paypal.fail', $orderId));
-        // $contents = (string) $this->view('order.fail');
-        $view = $this->view('order.fail');
-
-        $response->assertOk();
-        $view->assertSee('Tuvimos problemas con tu compra');
-
-        // $response->assertViewIs('order.fail');
-        // $response->assertViewHas('order', $contents);
     }
 
     public function test_7_paypal_subtotal()
@@ -133,7 +119,7 @@ class PayPalTest extends TestCase
         $this->withoutExceptionHandling();
         $this->mockCart();
         $payment_mode = 'on_delivery';
-        $orderId = Factory::create()->numberBetween(1,1000);
+        $orderId = Factory::create()->numberBetween(1, 1000);
         $newCheckOutData = new PaypalController;
 
         $response = $newCheckOutData->getCheckoutData($orderId, $payment_mode);
@@ -141,8 +127,79 @@ class PayPalTest extends TestCase
 
         $subtotalRoute = $this->get('/cart/get-subtotal');
 
-        dd($response, $subtotalRoute->original);
-
         $this->assertEquals($responseTotal, $subtotalRoute->original);
+    }
+
+    public function test_paypal_response_getExpressCheckoutSuccess()
+    {
+        $payment_status = [
+            "TOKEN" => "EC-8RT56627YV7948014",
+            "BILLINGAGREEMENTID" => "B-2FL28347PG854923E",
+            "SUCCESSPAGEREDIRECTREQUESTED" => "false",
+            "TIMESTAMP" => "2021-03-05T03:31:21Z",
+            "CORRELATIONID" => "f4c023dcb82f",
+            "ACK" => "Success",
+            "VERSION" => "123",
+            "BUILD" => "55384336",
+            "INSURANCEOPTIONSELECTED" => "false",
+            "SHIPPINGOPTIONISDEFAULT" => "false",
+            "PAYMENTINFO_0_TRANSACTIONID" => "5NT73451TB651324X",
+            "PAYMENTINFO_0_TRANSACTIONTYPE" => "cart",
+            "PAYMENTINFO_0_PAYMENTTYPE" => "instant",
+            "PAYMENTINFO_0_ORDERTIME" => "2021-03-05T03:31:20Z",
+            "PAYMENTINFO_0_AMT" => "105.00",
+            "PAYMENTINFO_0_FEEAMT" => "9.45",
+            "PAYMENTINFO_0_TAXAMT" => "0.00",
+            "PAYMENTINFO_0_CURRENCYCODE" => "MXN",
+            "PAYMENTINFO_0_PAYMENTSTATUS" => "Completed",
+            "PAYMENTINFO_0_PENDINGREASON" => "None",
+            "PAYMENTINFO_0_REASONCODE" => "None",
+            "PAYMENTINFO_0_PROTECTIONELIGIBILITY" => "Eligible",
+            "PAYMENTINFO_0_PROTECTIONELIGIBILITYTYPE" => "ItemNotReceivedEligible,UnauthorizedPaymentEligible",
+            "PAYMENTINFO_0_SELLERPAYPALACCOUNTID" => "sb-tr4z02598960@business.example.com",
+            "PAYMENTINFO_0_SECUREMERCHANTACCOUNTID" => "DZKY2WMT7ZBKW",
+            "PAYMENTINFO_0_ERRORCODE" => "0",
+            "PAYMENTINFO_0_ACK" => "Success",
+        ];
+
+        $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
+
+        if (in_array($status, ['Completed', 'Processed'])) {
+            $fetchStatus = true;
+        } else $fetchStatus = false;
+
+        $this->assertTrue($fetchStatus);
+    }
+
+    public function test_orderSuccess_paypal()
+    {
+        $this->withoutExceptionHandling();
+        $this->mockCart();
+        $order = Order::first();
+        $cartTotal = \Cart::getTotal() * Factory::create()->randomElement([0.07, 1]);
+
+        // $orderInfo = array(
+        //     'order' => $order->toArray(),
+        //     'products' => \Cart::getContent()->toArray(),
+        //     'grandTotal' => \Cart::getTotal(),
+        //     'balanceToPay' => $grandTotal - $cartTotal,
+        //     'cartTotal' => $cartTotal,
+        // );
+        // $orderInfo = 'im info';
+
+        $response = $this->get(route('order.success', [$order->id, $cartTotal]));
+
+        $response->assertOk();
+
+    }
+
+    public function test_PaypalFail()
+    {
+        $this->withoutExceptionHandling();
+        $paypal = new PaypalController();
+
+        $response = $paypal->paypalFail(1, ['error' => 'a horrible error']);
+
+        $this->assertNotEmpty($response);
     }
 }

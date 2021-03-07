@@ -9,6 +9,7 @@ use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminOrderConfirmationEmail;
+use App\Mail\PayPalError;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PaypalController extends Controller
@@ -61,7 +62,7 @@ class PaypalController extends Controller
         $checkoutData = [
             'items' => $cartItems,
             'return_url' => route('paypal.success', [$orderId, $paymentMode, $cartTotal]),
-            'cancel_url' => route('paypal.fail', $orderId),
+            'cancel_url' => route('paypal.fail', $orderId, ['error' => 'cancel_url from getCheckoutData']),
             'invoice_id' => uniqid() . "-" .  $orderId,
             'invoice_description' => "Recibo de orden # $orderId ",
             'total' => $cartTotal
@@ -82,28 +83,29 @@ class PaypalController extends Controller
         if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
 
             $payment_status = $this->provider->doExpressCheckoutPayment($checkoutData, $token, $PayerID);
-            $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
+            if ($payment_status['PAYMENTINFO_0_PAYMENTSTATUS']) {
+                $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
-            if (in_array($status, ['Completed', 'Processed'])) {
-                $order = Order::find($orderId);
-                $order->is_paid = 1;
-                $order->save();
+                if (in_array($status, ['Completed', 'Processed', 'Completed-Funds-Held'])) {
+                    $order = Order::find($orderId);
+                    $order->is_paid = 1;
+                    $order->save();
+                    $products = \Cart::getContent();
+                    $grandTotal = \Cart::getTotal();
+                    $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
+                    $user = auth()->user();
 
-                // order content info
-                $products = \Cart::getContent();
-                $grandTotal = \Cart::getTotal();
-                $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
-                $user = auth()->user();
+                    // send success email
+                    $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
 
-                // send success email
-                $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
-
-                \Cart::clear();
-
-                return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
-            };
+                    return redirect(route('order.success', [$order->id, $cartTotal]));
+                    // return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
+                }
+                $this->paypalFail($orderId, ['error' => 'Missing status: Completed, Processed, or Completed-Funds-Held']);
+            }
+            $this->paypalFail($orderId, ['error' => 'PAYMENTINFO_0_PAYMENTSTATUS === false']);
         }
-        dd('Something went wrong');
+        $this->paypalFail($orderId, ['error' => 'Missing: SUCCESS , SUCCESSWITHWARNING']);
     }
 
     public function preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user)
@@ -115,7 +117,6 @@ class PaypalController extends Controller
             $grandTotal,
             $balanceToPay,
             $order,
-            $user
         ));
 
         // staff email
@@ -137,10 +138,13 @@ class PaypalController extends Controller
         }
     }
 
-    public function paypalFail($orderId)
+    public function paypalFail($orderId, array $error)
     {
         // dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
         $order = Order::find($orderId);
+        $email = 'vinoreomx@gmail.com';
+
+        Mail::to($email)->send(new PayPalError($order, $error));
 
         return view('order.fail', ['order' => $order]);
     }

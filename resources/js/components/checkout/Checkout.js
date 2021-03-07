@@ -33,7 +33,11 @@ const Checkout = (props) => {
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
     const [deliveryDay, setDeliveryDay] = useState("");
     const [deliverySchedule, setDeliverySchedule] = useState("");
+
+    const [csrfToken, setCsrfToken] = useState("");
+
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
+
     const target = useRef(null); // for Overlay Bootstrap element
 
     // from payment type radio input
@@ -138,6 +142,25 @@ const Checkout = (props) => {
         return () => isMounted = false;
     }, [address,  phone, CP, deliveryDay, deliverySchedule]);
 
+    useEffect(() => {
+        let isMounted = true;
+
+        if(isMounted) {
+            axios
+            .get('/api/csrf-token')
+            .then((res) => {
+                console.log(res.data);
+                setCsrfToken(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+                console.log('error getting csrf-token');
+            })
+        }
+
+        return () => isMounted = false;
+    });
+
     return (
         <div className="container">
             {props.loggedIn ? (
@@ -164,7 +187,7 @@ const Checkout = (props) => {
                     {/* use laravel form method */}
                     <Form className="mt-3 mb-5" action="/order/create" method="post">
                         {/* place csrf token */}
-                        <input type="hidden" value={csrf_token} name="_token" />
+                        <input type="hidden" value={csrfToken} name="_token" />
                         <input
                             type="hidden"
                             value={paymentMode}

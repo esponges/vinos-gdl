@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\GetUserInformation;
-use App\Models\Cp;
+use App\Http\Controllers\FrontEndHelpController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,27 +18,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/get-CP', [FrontEndHelpController::class, 'getCP']);
+Route::get('/is-auth', [FrontEndHelpController::class, 'isAuth'])->name('is-auth');
+Route::get('/user-info', [FrontEndHelpController::class, 'userInfo'])->name('user.info');
+Route::get('/is-registered/{email}', [FrontEndHelpController::class, 'isRegistered'])->name('userInfo.isRegistered');
 
-Route::get('/is-auth', function () {
-    return Response::json(Auth::check(), 200);
-    // return response()->json(Auth::check());
-})->name('is-auth');
+Route::get('/csrf-token', [FrontEndHelpController::class, 'csrfToken'])->name('csrf-token');
 
-Route::get('/user-info', function () {
-    if (Auth::check()) {
-        $userInfo = [];
 
-        $userInfo['userName'] = auth()->user()->name;
-        $userInfo['userPhone'] = auth()->user()->phone;
-        $userInfo['userEmail'] = auth()->user()->email;
 
-        return response()->json($userInfo, 200);
-    }
-});
-
-Route::get('get-CP', function () {
-    $cp = Cp::all()->toArray();
-    return response()->json($cp);
-});
-
-Route::get('/is-registered/{email}', [GetUserInformation::class, 'isRegistered'])->name('userInfo.isRegistered');
