@@ -196,10 +196,13 @@ class PayPalTest extends TestCase
     public function test_PaypalFail()
     {
         $this->withoutExceptionHandling();
-        $paypal = new PaypalController();
+        // $paypal = new PaypalController();
 
-        $response = $paypal->paypalFail(1, ['error' => 'a horrible error']);
+        $response = $this->get(route('paypal.fail', [1, 'a horrible error']));
 
-        $this->assertNotEmpty($response);
+        $response->assertOk();
+        $response->assertViewIs('order.fail');
+
+        // $this->assertNotEmpty($response);
     }
 }

@@ -62,7 +62,7 @@ class PaypalController extends Controller
         $checkoutData = [
             'items' => $cartItems,
             'return_url' => route('paypal.success', [$orderId, $paymentMode, $cartTotal]),
-            'cancel_url' => route('paypal.fail', $orderId, ['error' => 'cancel_url from getCheckoutData']),
+            'cancel_url' => route('paypal.fail', [$orderId, 'cancel_url from getCheckoutData']),
             'invoice_id' => uniqid() . "-" .  $orderId,
             'invoice_description' => "Recibo de orden # $orderId ",
             'total' => $cartTotal
@@ -79,6 +79,7 @@ class PaypalController extends Controller
 
         $this->provider = new ExpressCheckout();
         $response = $this->provider->getExpressCheckoutDetails($token);
+        dd($response);
 
         if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
 
@@ -101,11 +102,12 @@ class PaypalController extends Controller
                     return redirect(route('order.success', [$order->id, $cartTotal]));
                     // return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
                 }
-                $this->paypalFail($orderId, ['error' => 'Missing status: Completed, Processed, or Completed-Funds-Held']);
+
+                return redirect()->route('paypal.fail', [$orderId, 'Missing status: Completed, Processed, or Completed-Funds-Held']);
             }
-            $this->paypalFail($orderId, ['error' => 'PAYMENTINFO_0_PAYMENTSTATUS === false']);
+            return redirect()->route('paypal.fail', [$orderId, 'PAYMENTINFO_0_PAYMENTSTATUS === false']);
         }
-        $this->paypalFail($orderId, ['error' => 'Missing: SUCCESS , SUCCESSWITHWARNING']);
+        return redirect()->route('paypal.fail', [$orderId, 'Missing: SUCCESS , SUCCESSWITHWARNING']);
     }
 
     public function preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user)
@@ -138,7 +140,7 @@ class PaypalController extends Controller
         }
     }
 
-    public function paypalFail($orderId, array $error)
+    public function paypalFail($orderId, $error)
     {
         // dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
         $order = Order::find($orderId);

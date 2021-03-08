@@ -4,7 +4,7 @@ Error en el pago con Paypal !!
 
 Orden N°: {{ $order->id }}
 
-Paypal Error: {{ $error['error'] }}
+Paypal Error: {{ $error }}
 
 
 {{ config('app.name') }}
