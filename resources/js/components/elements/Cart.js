@@ -198,18 +198,16 @@ const Cart = (props) => {
                         <div className="row">
                             <div className="col-3">
                                 {/* check if client can pay */}
-                                {total > 1500 && (
-                                    <Link to="/cart/checkout">
-                                        <Button
-                                            variant="outline-success"
-                                            size="lg"
-                                            disabled={total < 1500 ? true : false}
-                                        >
-                                            {" "}
-                                            {payOrCheckout}{" "}
-                                        </Button>
-                                    </Link>
-                                )}
+                                <Link to="/cart/checkout">
+                                    <Button
+                                        variant="outline-success"
+                                        size="lg"
+                                        disabled={total < 1500 ? true : false}
+                                    >
+                                        {" "}
+                                        {payOrCheckout}{" "}
+                                    </Button>
+                                </Link>
                             </div>
                             <div className="col-3">
                                 <Link to="/">
