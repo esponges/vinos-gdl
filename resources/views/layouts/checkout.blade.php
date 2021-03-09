@@ -13,7 +13,7 @@
 
     <!-- Styles -->
     @php
-        $path = env('APP_ENV') == 'local' ? asset('css/app.css') : 'css/app.css';
+        $path = env('APP_ENV') == 'local' ? asset('css/app.css') : '/css/app.css';
     @endphp
     <link href="{{ $path }}" rel="stylesheet">
 </head>
