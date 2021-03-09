@@ -111,7 +111,18 @@ class OrderTest extends TestCase
             'delivery_schedule' => $orderInfo['order']['delivery_schedule'],
         ]);
 
-        $response->assertStatus(302); // if it were Paypal would  be 302
+        $response->assertStatus(302); //
+    }
+
+    public function test_transfer_payment_route()
+    {
+        $this->withoutExceptionHandling();
+        $this->mockCart();
+        $orderId = Order::first()->id;
+
+        $response = $this->actingAs(User::first())->get(route('paypal.transfer', $orderId));
+
+        $response->assertOk();
     }
 
     public function test_if_unauth_user_cant_create_order_not_auth()
