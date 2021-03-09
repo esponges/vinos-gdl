@@ -113,8 +113,8 @@ const App = (props) => {
                     logout={logout}
                 />
                 <div
-                    className="container mb-5"
-                    style={{ marginTop: `22%` }}
+                    className="container mb-5 body-margin-top"
+                    // style={{ marginTop: `22%` }}
                 >
                     <Switch>
                         <Route path="/products/:id">

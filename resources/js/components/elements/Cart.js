@@ -22,7 +22,6 @@ const Cart = (props) => {
                     .map((item) => item.quantity * item.price)
                     .reduce((a, b) => a + b, 0);
                 setTotal(newCartTotal);
-                isTotalAboveMin(newCartTotal);
 
                 // update navbar +1 cart count
                 props.cartCountUpdate(1);
