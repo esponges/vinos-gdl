@@ -43,7 +43,8 @@ class OrderController extends Controller
             }
 
             if ($order->payment_mode == "transfer") {
-                return $this->transferPaymentMode($order);
+                // return $this->transferPaymentMode($order);
+                return redirect()->route('paypal.transfer', $order->id);
             };
 
             return redirect()->route('paypal.checkout', [$order->id, $order->payment_mode]);
@@ -51,15 +52,15 @@ class OrderController extends Controller
         return response()->json('session timed out', 408);
     }
 
-    public function transferPaymentMode($order)
+    public function transferPaymentMode($orderId)
     {
         // prepare content
+        $order = Order::find($orderId);
         $products = \Cart::getContent();
         $grandTotal = \Cart::getTotal();
         $cartTotal = 0;
         $balanceToPay = $grandTotal - $cartTotal;
         $user = auth()->user();
-        $orderId = $order->id;
 
         \Cart::clear();
 
