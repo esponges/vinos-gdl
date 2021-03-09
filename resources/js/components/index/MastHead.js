@@ -19,7 +19,7 @@ const MastHead = () => {
 
     return (
         <>
-            <div className="container mb-4" style={{ textAlign: "center" }}>
+            <div className="container mb-4" style={{ textAlign: "center", marginTop: "-10%" }}>
                 <img
                     src="/img/vinoreologo.png"
                     alt=""

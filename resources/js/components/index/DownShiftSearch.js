@@ -42,17 +42,17 @@ const DownShiftSearch = (props) => {
                         style={{ display: "inline-block" }}
                         {...getRootProps({}, { suppressRefError: true })}
                     >
-                        <FontAwesomeIcon icon={faSearch} color={"blue"}/> &nbsp;
                         <input
                             {...getInputProps()}
                             placeholder={`Busca tu  vino`}
                             id="product-search-input"
                         />
+                        &nbsp; <FontAwesomeIcon icon={faSearch} color={"blue"}/>
                     </div>
                     <ul {...getMenuProps()}>
                         <div className="downshift-dropdown">
                             {isOpen && inputValue.length > 3
-                                ? products
+                                ? products.allProducts
                                     .filter(
                                         (item) =>
                                             !inputValue ||

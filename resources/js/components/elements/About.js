@@ -33,7 +33,7 @@ const About = () => {
                     Podrás elegir por períodos de dos horas (excepto sábados).
                 </li>
                 <li>
-                    Por el momento no tenemos envíos fuera de la zona
+                    Por el momento sólo tenemos envíos fuera de la zona
                     metropolitana de Guadalajara.
                 </li>
             </ul>
