@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\PaypalController;
 use Faker\Factory;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
+use App\Http\Controllers\PaypalController;
+use Srmklive\PayPal\Services\ExpressCheckout;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PayPalTest extends TestCase
@@ -198,11 +199,95 @@ class PayPalTest extends TestCase
         $this->withoutExceptionHandling();
         // $paypal = new PaypalController();
 
-        $response = $this->get(route('paypal.fail', [1, 'a horrible error']));
+        $response = $this->get(route('paypal.fail', [1, 'a horrible error', 'missing_status']));
+
+        $response->assertOk();
+        $response->assertViewIs('order.failButCharged');
+
+        // $this->assertNotEmpty($response);
+    }
+
+    public function test_PaypalFail_not_charged()
+    {
+        $this->withoutExceptionHandling();
+        // $paypal = new PaypalController();
+
+        $response = $this->get(route('paypal.fail', [1, 'a horrible error', 'else']));
 
         $response->assertOk();
         $response->assertViewIs('order.fail');
 
         // $this->assertNotEmpty($response);
     }
+
+    public function getCheckoutData()
+    {
+        return [
+            "items" =>  [
+                9 => [
+                "name" => "anticipo Chivas 12YO 750ml",
+                "price" => 29.0,
+                "qty" => 1,
+                ],
+                10 => [
+                "name" => "anticipo Passport 700ml",
+                "price" => 8.0,
+                "qty" => 1,
+                ],
+            ],
+            "return_url" => "https://vinos-gdl.test/paypal/success/1/on_delivery/37",
+            "cancel_url" => "https://vinos-gdl.test/paypal/fail/1/cancel_url%20from%20getCheckoutData",
+            "invoice_id" => "6046cf76ba098-1",
+            "invoice_description" => "Recibo de orden # 1 ",
+            "total" => 37.0,
+            ];
+    }
+
+    /* getExpressCheckout */
+
+    // public function test_getExpressCheckoutSuccess()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $this->mockCart();
+
+    //     $token = "EC-4WS52529FV043302E";
+    //     $PayerID = "D44EY4R4GZ7D8";
+    //     $checkoutData = $this->getCheckoutData();
+
+    //     $orderId = 1;
+    //     $cartTotal = \Cart::getTotal();
+
+    //     $this->provider = new ExpressCheckout();
+    //     $response = $this->provider->getExpressCheckoutDetails($token); // no charge to user yet, only authorizations
+
+    //     if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
+
+    //         // proceed to charge the user with doExpressCheckoutPayment
+    //         $payment_status = $this->provider->doExpressCheckoutPayment($checkoutData, $token, $PayerID);
+
+    //         if ($payment_status['PAYMENTINFO_0_PAYMENTSTATUS']) {
+
+    //             $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
+
+    //             if (in_array($status, ['Completed', 'Processed', 'Completed_Funds_Held'])) {
+    //                 $order = Order::find($orderId);
+    //                 $order->is_paid = 1;
+    //                 $order->save();
+    //                 $products = \Cart::getContent();
+    //                 $grandTotal = \Cart::getTotal();
+    //                 $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
+    //                 $user = auth()->user();
+
+    //                 // send success email
+    //                 // $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
+    //                 // return redirect(route('order.success', [$order->id, $cartTotal]));
+    //             }
+
+    //             dd($status, 'not charged');
+    //         }
+    //         dd($payment_status, 'no payment status');
+    //     }
+    //     dd($response, 'no ack success');
+    //     dd('hello');
+    // }
 }

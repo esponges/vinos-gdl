@@ -111,8 +111,7 @@ class OrderTest extends TestCase
             'delivery_schedule' => $orderInfo['order']['delivery_schedule'],
         ]);
 
-        $response->assertStatus(200); // if it were Paypal would  be 302
-        $response->assertViewIs('order.success');
+        $response->assertStatus(302); // if it were Paypal would  be 302
     }
 
     public function test_if_unauth_user_cant_create_order_not_auth()

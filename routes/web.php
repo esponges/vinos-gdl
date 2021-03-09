@@ -44,8 +44,9 @@ Route::prefix('order')->group( function () {
 });
 
 Route::prefix('paypal')->group( function () {
-    Route::get('/fail/{orderId}/{error}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');
+    Route::get('/transfer/{$orderId}')->name('paypal.transfer');
     Route::get('/checkout/{orderId}/{paymentMode}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
+    Route::get('/fail/{orderId}/{error}/{errorHeader}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');
     Route::get('/success/{orderId}/{paymentMode}/{cartTotal}', [PaypalController::class, 'getExpressCheckoutSuccess'])->name('paypal.success');
 });
 

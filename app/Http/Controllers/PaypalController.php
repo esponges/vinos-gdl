@@ -62,7 +62,7 @@ class PaypalController extends Controller
         $checkoutData = [
             'items' => $cartItems,
             'return_url' => route('paypal.success', [$orderId, $paymentMode, $cartTotal]),
-            'cancel_url' => route('paypal.fail', [$orderId, 'cancel_url from getCheckoutData']),
+            'cancel_url' => route('paypal.fail', [$orderId, 'cancel_url from getCheckoutData', 'cancel_url']),
             'invoice_id' => uniqid() . "-" .  $orderId,
             'invoice_description' => "Recibo de orden # $orderId ",
             'total' => $cartTotal
@@ -78,16 +78,18 @@ class PaypalController extends Controller
         $checkoutData = $this->getCheckoutData($orderId, $paymentMode);
 
         $this->provider = new ExpressCheckout();
-        $response = $this->provider->getExpressCheckoutDetails($token);
-        dd($response);
+        $response = $this->provider->getExpressCheckoutDetails($token); // no charge to user yet, only authorizations
 
         if (in_array(strtoupper($response['ACK']), ['SUCCESS', 'SUCCESSWITHWARNING'])) {
 
+            // proceed to charge the user with doExpressCheckoutPayment
             $payment_status = $this->provider->doExpressCheckoutPayment($checkoutData, $token, $PayerID);
+
             if ($payment_status['PAYMENTINFO_0_PAYMENTSTATUS']) {
+
                 $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
-                if (in_array($status, ['Completed', 'Processed', 'Completed-Funds-Held'])) {
+                if (in_array($status, ['Completed', 'Processed', 'Completed_Funds_Held'])) {
                     $order = Order::find($orderId);
                     $order->is_paid = 1;
                     $order->save();
@@ -99,15 +101,14 @@ class PaypalController extends Controller
                     // send success email
                     $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
 
-                    return redirect(route('order.success', [$order->id, $cartTotal]));
+                    return redirect()->route('order.success', [$order->id, $cartTotal]);
                     // return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
                 }
-
-                return redirect()->route('paypal.fail', [$orderId, 'Missing status: Completed, Processed, or Completed-Funds-Held']);
+                return redirect()->route('paypal.fail', [$orderId, 'Missing status: Completed, Processed, or Completed_Funds_Held', 'missing_status']);
             }
-            return redirect()->route('paypal.fail', [$orderId, 'PAYMENTINFO_0_PAYMENTSTATUS === false']);
+            return redirect()->route('paypal.fail', [$orderId, 'PAYMENTINFO_0_PAYMENTSTATUS === false', 'payment_status']);
         }
-        return redirect()->route('paypal.fail', [$orderId, 'Missing: SUCCESS , SUCCESSWITHWARNING']);
+        return redirect()->route('paypal.fail', [$orderId, 'Missing: SUCCESS , SUCCESSWITHWARNING', 'missing_success']);
     }
 
     public function preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user)
@@ -140,7 +141,7 @@ class PaypalController extends Controller
         }
     }
 
-    public function paypalFail($orderId, $error)
+    public function paypalFail($orderId, $error, $errorHeader)
     {
         // dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
         $order = Order::find($orderId);
@@ -148,6 +149,11 @@ class PaypalController extends Controller
 
         Mail::to($email)->send(new PayPalError($order, $error));
 
+        if ( $errorHeader === 'missing_status' || $errorHeader === 'payment_status') {
+            \Cart::clear();
+            return view('order.failButCharged', ['order' => $order]);
+        }
         return view('order.fail', ['order' => $order]);
+
     }
 }
