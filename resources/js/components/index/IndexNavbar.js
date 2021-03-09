@@ -16,7 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import {
     fab,
-    faInstagram,
+    faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 library.add(fas, fab);
@@ -86,8 +86,12 @@ const IndexNavbar = (props) => {
                     </Form>
                 </Navbar.Text>
 
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
+                <Navbar.Toggle
+                    aria-controls="responsive-navbar-nav"
+                />
+                <Navbar.Collapse
+                    id="responsive-navbar-nav"
+                >
                     <Nav className="mr-auto">
                         <Nav.Link href="#Tequila">Tequila</Nav.Link>
                         <Nav.Link href="#Whisky">Whisky</Nav.Link>
@@ -142,7 +146,7 @@ const IndexNavbar = (props) => {
                     href="https://www.instagram.com/vinoreomx/"
                     className="material-icons floating-btn-whats"
                 >
-                    <FontAwesomeIcon icon={faInstagram} />
+                    <FontAwesomeIcon icon={faWhatsapp} />
                 </a>
                 <Link to="/cart" className="material-icons floating-btn-cart">
                     <FontAwesomeIcon icon={["fas", "shopping-cart"]} />

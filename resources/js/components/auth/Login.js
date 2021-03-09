@@ -9,15 +9,15 @@ const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [sessionError, setSessionError] = useState(false);
-    const [rememberMe, setRememberMe] = useState("off");
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(true);
 
-    const localhost = window.location.protocol + "//" + window.location.host;
+    const localhost = window.location.protocol + "//" + window.location.host; // set correct protocol for request http/localhost - https/live
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
         let rememberMe = checked ? 'on' : '';
+        console.log('remember me is ', rememberMe);
 
         setSessionError(false);
 
@@ -57,7 +57,7 @@ const Login = (props) => {
     };
 
     return (
-        <div className="container" style={{ marginTop: "15%" }}>
+        <div className="container">
             {console.log(localhost)}
             {!props.loggedIn ? (
                 <Form onSubmit={handleSubmit}>
@@ -65,7 +65,7 @@ const Login = (props) => {
                         <Form.Label>Correo electrónico</Form.Label>
                         <Form.Control
                             type="email"
-                            placeholder="Ingresa to correo"
+                            placeholder="Ingresa tu correo electrónico"
                             name="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -97,15 +97,22 @@ const Login = (props) => {
                     </Form.Group>
                     {sessionError && (
                         <Alert variant={"warning"} className="m-5">
-                            Credenciales incorrectas
+                            Problemas en el servidor. Intenta más tarde por
+                            favor.
                         </Alert>
                     )}
                     <Button variant="primary" type="submit">
                         Iniciar sesión
                     </Button>
                     <Link to="/register">
-                        <Button variant="outline-primary" className="ml-5">
+                        <Button variant="outline-primary" className="ml-2">
                             Regístrate
+                        </Button>
+                    </Link>
+                    <br />
+                    <Link to="/">
+                        <Button variant="outline-secondary" className="mt-5">
+                            Regresar
                         </Button>
                     </Link>
                 </Form>

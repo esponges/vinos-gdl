@@ -1,30 +1,25 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { Context } from "../Context";
 
 const ProductGrid = (props) => {
     const [itemCount, setItemCount] = useState(1);
+
     const categories = props.products;
+
     const [productAddMsg, setProductAddMsg] = useState(false);
     const [productAddId, setProductAddId] = useState("");
 
-    const addToCart = (id, event) => {
-        event.preventDefault();
-        console.log(`item ${id}, cantidad ${itemCount}`);
-        axios.get(`cart/${id}/add/${itemCount}`)
-        .then(() => {
-            // console.log(res.data, 'added to cart!!!');
-            props.cartCountUpdate(itemCount);
-            // window.alert(res.data);
-            setProductAddMsg("Añadido");
-            setProductAddId(id);
-        })
-        .catch((err) => {
-            console.error(err);
-        })
-    }
+    const context = useContext(Context);
 
+    const handleItemAddClick = (e, id) => {
+        e.preventDefault();
+        setProductAddMsg("Añadido al carrito");
+        setProductAddId(id);
+        context.addToCart(id, itemCount);
+    };
 
     return (
         <>
@@ -73,7 +68,7 @@ const ProductGrid = (props) => {
                                                         </Card.Title>
                                                         <Card.Text>
                                                             <b>
-                                                                $ {product.price}{" "}
+                                                                $ {product.price}
                                                                 mxn
                                                             </b>
                                                         </Card.Text>
@@ -87,35 +82,16 @@ const ProductGrid = (props) => {
                                                                             1
                                                                         }
                                                                         className="form-control input-number"
-                                                                        onChange={async (
-                                                                            e
-                                                                        ) =>
-                                                                            await setItemCount(
-                                                                                parseInt(
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                )
-                                                                            )
-                                                                        }
-                                                                        style={{
-                                                                            minWidth:
-                                                                                "60px",
-                                                                        }}
+                                                                        onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                                                        style={{minWidth: "60px" }}
                                                                     />
                                                                 </div>
                                                                 <div className="col-3">
                                                                     <Button
                                                                         variant="primary"
-                                                                        onClick={() =>
-                                                                            addToCart(
-                                                                                product.id,
-                                                                                event
-                                                                            )
-                                                                        }
+                                                                        onClick={(e) => handleItemAddClick(e, product.id)}
                                                                     >
-                                                                        {" "}
-                                                                        +{" "}
+                                                                        +
                                                                     </Button>
                                                                 </div>
                                                                 <div className="col-6">
@@ -141,10 +117,7 @@ const ProductGrid = (props) => {
                                                                             marginTop:
                                                                                 "10px",
                                                                         }}
-                                                                    >
-                                                                        {
-                                                                            productAddMsg
-                                                                        }
+                                                                    > { productAddMsg }
                                                                     </Card.Text>
                                                                 </div>
                                                             )}

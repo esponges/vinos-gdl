@@ -1,14 +1,30 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
 import ReactPaginate from 'react-paginate';
 import { withRouter, Link } from 'react-router-dom';
+import { Context } from '../Context';
 
 const Category = (props) => {
     const [products, setProducts] = useState({});
+    const [itemCount, setItemCount] = useState(1); // input itemCount
+
+    // pagination
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(6);
     const [pageCount, setPageCount] = useState(0);
+
+    const [productAddMsg, setProductAddMsg] = useState(false);
+    const [productAddId, setProductAddId] = useState("");
+
+    const context = useContext(Context);
+
+    const handleItemAddClick = (e, id) => {
+        e.preventDefault();
+        setProductAddMsg("Añadido al carrito");
+        setProductAddId(id);
+        context.addToCart(id, itemCount);
+    }
 
     const getProducts = async () => {
         try {
@@ -41,8 +57,12 @@ const Category = (props) => {
                 <div className="row mt-3">
                     {Object.values(products).map((product) => {
                         return (
-                            <div key={product.id} className="col-lg-4 mt-3">
-                                <Card style={{ width: "18rem" }}>
+                            <div
+                                key={product.id}
+                                className="col-lg-3 col-md-4 mt-3"
+                                id="product-card-mobile"
+                            >
+                                <Card>
                                     <Card.Img
                                         variant="top"
                                         src={`/img/products/${product.id}.jpg`}
@@ -54,36 +74,28 @@ const Category = (props) => {
                                     </Card.Body>
                                     <ListGroup className="list-group-flush">
                                         <ListGroupItem>
-                                            Precio {product.price}
+                                            <b>Precio {product.price} mxn</b>
                                         </ListGroupItem>
                                     </ListGroup>
                                     <Card.Body>
                                         <div className="row">
-                                            <div className="row">
-                                                <div className="col-md-6"></div>
+                                            <div className="col-3 d-none d-sm-block">
+                                                <input
+                                                    type="number"
+                                                    name="quantity"
+                                                    defaultValue={1}
+                                                    min="1"
+                                                    className="form-control input-number"
+                                                    onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                                    style={{
+                                                        minWidth: "60px",
+                                                    }}
+                                                />
                                             </div>
-                                            <div className="col-6">
-                                                <Card.Link>
-                                                    <div className="row">
-                                                        <div className="col-6">
-                                                            <input
-                                                                type="number"
-                                                                name="quantity"
-                                                                defaultValue={1}
-                                                                className="form-control input-number"
-                                                                style={{
-                                                                    minWidth:
-                                                                        "60px",
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <div className="col-6">
-                                                            <Button variant="primary">
-                                                                +
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </Card.Link>
+                                            <div className="col-3">
+                                                <Button variant="primary" onClick={(e) => handleItemAddClick (e, product.id)}>
+                                                    +
+                                                </Button>
                                             </div>
                                             <div className="col-6">
                                                 <Link
@@ -104,6 +116,21 @@ const Category = (props) => {
                                                 </Link>
                                             </div>
                                         </div>
+                                        {productAddMsg &&
+                                            product.id ==
+                                                productAddId && (
+                                                <div>
+                                                    <Card.Text
+                                                        style={{
+                                                            color:
+                                                                "red",
+                                                            marginTop:
+                                                                "10px",
+                                                        }}
+                                                    > { productAddMsg }
+                                                    </Card.Text>
+                                                </div>
+                                            )}
                                     </Card.Body>
                                 </Card>
                             </div>

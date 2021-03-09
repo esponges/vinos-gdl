@@ -164,7 +164,7 @@ const Checkout = (props) => {
     return (
         <div className="container">
             {props.loggedIn ? (
-                <div style={{ marginTop: "18%", marginBottom: "6rem" }}>
+                <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
                     <h3>
                         {!totalToPay ? `Total ${cartTotal} mxn` : totalToPay}
@@ -233,7 +233,7 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         <Form.Group>
-                            <Form.Label>Tu CP</Form.Label>
+                            <Form.Label>Tu Código Postal</Form.Label>
                             <CheckCP getCpInfo={getCpInfo} />
                             <input type="hidden" name="cp" value={CP} />
                             <input

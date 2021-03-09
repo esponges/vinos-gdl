@@ -135,18 +135,18 @@ const RegisterForm = (props) => {
             <Form>
                 <Form.Group controlId="formBasicName">
                     <Form.Label>
-                        <b>Nombre Completo </b>
+                        <b>Tu nombre </b>
                     </Form.Label>
                     <Form.Control
                         type="text"
-                        placeholder="Tu nombre completo"
+                        placeholder="Tu nombre de pila"
                         name="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         required
                     />
                     <Form.Text className="text-muted">
-                        <b>El nombre con el que te ubican</b>
+                        <b>Tu nombre de pila</b>
                     </Form.Text>
                     {name != "" && name.length < 3 && (
                         <Alert variant={"warning"} className="m-1">
@@ -165,7 +165,7 @@ const RegisterForm = (props) => {
                         onChange={(e) => setFamilyName(e.target.value)}
                         required
                     />
-                    {familyName != "" && familyName.length < 6 && (
+                    {familyName != "" && familyName.length < 5 && (
                         <Alert variant={"warning"} className="m-1">
                             Ingresa correctamente la información
                         </Alert>
