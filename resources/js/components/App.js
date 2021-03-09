@@ -21,12 +21,22 @@ import About from "./elements/About";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
-    const [productsCategories, setProductsCategories] = useState("");
     const [prods, setProds] = useState("");
     const [cartCount, setCartCount] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
-    const [style, setStyle] = useState(15);
+
+    const addToCart = (id, itemCount) => {
+        console.log('add to cart! ', id, 'item count ', itemCount);
+        axios.get(`cart/${id}/add/${itemCount}`)
+        .then(() => {
+            // console.log(res.data, 'added to cart!!!');
+            cartCountUpdate(itemCount);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    }
 
     const cartCountUpdate = (qty) => {
         setCartCount(cartCount + qty);
@@ -73,7 +83,6 @@ const App = (props) => {
             setCartCount(res.data[0]);
         });
 
-        if (`${location.host}/#/home`) setStyle(3);
     }, []);
 
     //cleanup will cause reloading hook so will create one separated
@@ -96,7 +105,7 @@ const App = (props) => {
 
     return (
         <HashRouter>
-            <Context.Provider value={prods}>
+            <Context.Provider value={{ allProducts: prods, addToCart: addToCart, cartCountUpdate: cartCountUpdate }}>
                 <IndexNavbar
                     cartCount={cartCount}
                     userLogged={loggedIn}
@@ -105,21 +114,17 @@ const App = (props) => {
                 />
                 <div
                     className="container mb-5"
-                    style={{ marginTop: `${style}%` }}
+                    style={{ marginTop: `22%` }}
                 >
                     <Switch>
                         <Route path="/products/:id">
                             <div
                                 className="container"
-                                style={{ marginTop: "18%" }}
                             ></div>
-                            <SingleProduct cartCountUpdate={cartCountUpdate} />
+                            <SingleProduct />
                         </Route>
+
                         <Route path="/categories/:name">
-                            <div
-                                className="container"
-                                style={{ marginTop: "18%" }}
-                            ></div>
                             <Category />
                         </Route>
 
@@ -128,10 +133,6 @@ const App = (props) => {
                         </Route>
 
                         <Route path="/cart">
-                            <div
-                                className="container"
-                                style={{ marginTop: "15%" }}
-                            ></div>
                             <Cart cartCountUpdate={cartCountUpdate} />
                         </Route>
 
@@ -153,10 +154,7 @@ const App = (props) => {
 
                         <Route path="/">
                             <MastHead />
-                            <ProductGrid
-                                products={products}
-                                cartCountUpdate={cartCountUpdate}
-                            />
+                            <ProductGrid products={products} />
                         </Route>
                     </Switch>
                 </div>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
+import { Context } from '../Context';
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
@@ -8,18 +9,16 @@ const SingleProduct = (props) => {
     const [product, setProduct] = useState({})
     const [competidorsInfo, setCompetidorsInfo] = useState([]);
 
-    const addToCart = (id, event) => {
-        event.preventDefault();
-        console.log(`item ${id}, cantidad ${itemCount}`);
-        axios
-            .get(`cart/${id}/add/${itemCount}`)
-            .then((res) => {
-                props.cartCountUpdate(parseInt(itemCount));
-                window.alert(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+    const [productAddMsg, setProductAddMsg] = useState(false);
+    const [productAddId, setProductAddId] = useState("");
+
+    const context = useContext(Context);
+
+    const handleItemAddClick = (e, id) => {
+        e.preventDefault();
+        setProductAddMsg("Añadido al carrito");
+        setProductAddId(id);
+        context.addToCart(id, itemCount);
     };
 
     useEffect(() => {
@@ -131,16 +130,17 @@ const SingleProduct = (props) => {
                                 <input
                                     type="number"
                                     name="quantity"
+                                    min="1"
                                     defaultValue={1}
                                     className="form-control input-number"
-                                    onChange={async (e) => await setItemCount(e.target.value)}
+                                    onChange={async (e) => await setItemCount(parseInt(e.target.value))}
                                     style={{ minWidth: "60px" }}
                                 />
                             </div>
                             <div className="col-6">
                                 <Button
                                     variant="primary"
-                                    onClick={() => addToCart(product.id, event)}
+                                    onClick={(e) => handleItemAddClick(e, product.id)}
                                 >
                                     +
                                 </Button>
@@ -149,6 +149,16 @@ const SingleProduct = (props) => {
                                 </p>
                             </div>
                         </div>
+                        {productAddMsg &&
+                            product.id ==
+                                productAddId && (
+                                <div>
+                                    <Card.Text
+                                        style={{color: "red", marginTop: "10px"}}
+                                    > { productAddMsg }
+                                    </Card.Text>
+                                </div>
+                            )}
                     </Card.Body>
                 </Card>
             )}
