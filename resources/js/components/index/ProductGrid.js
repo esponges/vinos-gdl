@@ -19,6 +19,7 @@ const ProductGrid = (props) => {
         setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
         context.addToCart(id, itemCount);
+        context.getCartContent();
     };
 
     return (
@@ -90,6 +91,7 @@ const ProductGrid = (props) => {
                                                                     <Button
                                                                         variant="primary"
                                                                         onClick={(e) => handleItemAddClick(e, product.id)}
+                                                                        id="main-add-btn"
                                                                     >
                                                                         +
                                                                     </Button>
@@ -100,7 +102,7 @@ const ProductGrid = (props) => {
                                                                             pathname: `/products/${product.id}`,
                                                                         }}
                                                                     >
-                                                                        <Button variant="secondary">
+                                                                        <Button variant="secondary" id="main-details-btn">
                                                                             Detalles
                                                                         </Button>
                                                                     </Link>

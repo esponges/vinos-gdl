@@ -22,6 +22,7 @@ import About from "./elements/About";
 const App = (props) => {
     const [products, setProducts] = useState(null);
     const [prods, setProds] = useState("");
+    const [cart, setCart] = useState(null);
     const [cartCount, setCartCount] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
@@ -32,10 +33,24 @@ const App = (props) => {
         .then(() => {
             // console.log(res.data, 'added to cart!!!');
             cartCountUpdate(itemCount);
+            getCartContent();
         })
         .catch((err) => {
             console.error(err);
         });
+    }
+
+    const getCartContent = async () => {
+        const res = await
+        axios
+            .get('cart')
+            .then(res => {
+                setCart(Object.values(res.data));
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        return res;
     }
 
     const cartCountUpdate = (qty) => {
@@ -79,9 +94,12 @@ const App = (props) => {
                 console.error(err);
             })
 
+        getCartContent();
+
         axios.get("/cart/count").then((res) => {
             setCartCount(res.data[0]);
         });
+
 
     }, []);
 
@@ -105,7 +123,13 @@ const App = (props) => {
 
     return (
         <HashRouter>
-            <Context.Provider value={{ allProducts: prods, addToCart: addToCart, cartCountUpdate: cartCountUpdate }}>
+            <Context.Provider value={{
+                    cartContent: cart,
+                    allProducts: prods,
+                    addToCart: addToCart,
+                    cartCountUpdate: cartCountUpdate,
+                    getCartContent: getCartContent,
+                }}>
                 <IndexNavbar
                     cartCount={cartCount}
                     userLogged={loggedIn}
