@@ -28,6 +28,7 @@ Route::resource('products', ProductController::class);
 Route::get('/products/{id}/links', [ProductController::class, 'getCompetidorsLinks']);
 
 Route::resource('categories', CategoryController::class);
+Route::get('/category-list', [CategoryController::class, 'categoryNames'])->name('category.names');
 
 Route::prefix('cart')->group( function () {
     Route::get('/', [CartController::class, 'index']);

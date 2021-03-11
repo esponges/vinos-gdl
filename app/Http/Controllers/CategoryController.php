@@ -35,6 +35,14 @@ class CategoryController extends Controller
         return response()->json($categoriesProducts, 200);
     }
 
+    public function categoryNames()
+    {
+        $categories = Category::all()->pluck('name');
+
+        return response()->json($categories, 200);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

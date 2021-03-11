@@ -19,7 +19,7 @@
 
 @media (max-width: 991.98px) {
     .navbar {
-        padding: 0px 10px;
+        padding: 10px 10px;
     }
 }
 .nav-link {
@@ -205,9 +205,9 @@
         width: 100px;
     }
 
-    #product-search-form {
-        margin-left: -22%;
-    }
+    // #product-search-form {
+    //     margin-left: -22%;
+    // }
 }
 
 #vinoreo-logo-header {
@@ -273,5 +273,17 @@
         margin-top: 13%;
     }
 }
+
+@media (max-width: 415px ) {
+    #main-add-btn {
+        margin-left: 10px;
+    }
+
+    #main-details-btn {
+        margin-right: 15px;
+    }
+}
+
+
 
 

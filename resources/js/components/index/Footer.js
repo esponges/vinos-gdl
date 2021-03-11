@@ -11,10 +11,15 @@ const Footer = () => {
     return (
         <>
             <br />
-            <Navbar bg="light" variant="light" fixed="bottom">
+            <Navbar
+                bg="light"
+                variant="light"
+                fixed="bottom"
+                style={{ fontSize: "1rem" }}
+            >
                 {/* <Navbar.Brand href="#home">Vinoreo</Navbar.Brand> */}
                 <Nav className="mr-auto">
-                    <Nav.Link href="#home">TyC</Nav.Link>
+                    {/* <Nav.Link href="#home">TyC</Nav.Link> */}
                     <Nav.Item>
                         <Link to="/about">Nosotros</Link> &nbsp;
                     </Nav.Item>
@@ -25,7 +30,7 @@ const Footer = () => {
                 <Nav>
                     <a href="https://www.instagram.com/vinoreomx/">
                         <em>Síguenos</em> &nbsp;
-                        <FontAwesomeIcon icon={faInstagram}  color={"red"}/>
+                        <FontAwesomeIcon icon={faInstagram} color={"red"} />
                     </a>
                     <a href="https://www.facebook.com/vinoreomx">
                         &nbsp;
