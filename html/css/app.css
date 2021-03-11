@@ -9990,7 +9990,7 @@ h3 {
 
 @media (max-width: 991.98px) {
   .navbar {
-    padding: 0px 10px;
+    padding: 10px 10px;
   }
 }
 .nav-link {
@@ -10171,10 +10171,6 @@ h3 {
   #product-search-input {
     width: 100px;
   }
-
-  #product-search-form {
-    margin-left: -22%;
-  }
 }
 #vinoreo-logo-header {
   max-height: 100px;
@@ -10231,5 +10227,14 @@ h3 {
 @media (min-width: 416px) {
   .body-margin-top {
     margin-top: 13%;
+  }
+}
+@media (max-width: 415px) {
+  #main-add-btn {
+    margin-left: 10px;
+  }
+
+  #main-details-btn {
+    margin-right: 15px;
   }
 }

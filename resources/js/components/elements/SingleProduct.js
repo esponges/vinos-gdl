@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
 import { Context } from '../Context';
+import axios from 'axios';
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
@@ -19,6 +20,7 @@ const SingleProduct = (props) => {
         setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
         context.addToCart(id, itemCount);
+        context.getCartContent();
     };
 
     useEffect(() => {

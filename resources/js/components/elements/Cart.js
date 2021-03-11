@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Button, Table, Alert } from "react-bootstrap";
+import { Context } from "../Context";
 
 const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState("");
     const [total, setTotal] = useState([]);
 
+    const context = useContext(Context);
+
     const addOneMore = async (id, i) => {
         try {
             const res = await axios.get(`cart/${id}/add/1`);
             // if res true
             if (res) {
+                console.log(cart);
                 const updatedCart = [...cart];
                 updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
                 setCart(updatedCart);
@@ -25,6 +29,7 @@ const Cart = (props) => {
 
                 // update navbar +1 cart count
                 props.cartCountUpdate(1);
+                context.getCartContent();
             } else {
                 console.error("error fecthing add route");
             }
@@ -50,9 +55,9 @@ const Cart = (props) => {
                 setTotal(
                     newCartTotal
                 );
-                isTotalAboveMin(newCartTotal);
                 // remove all item count from navbar counter
                 props.cartCountUpdate(qty * -1);
+                context.getCartContent();
             } else {
                 console.error("error fetching delete route");
             }
@@ -111,13 +116,14 @@ const Cart = (props) => {
                     </thead>
                     {cart.map((product, i) => {
                         return (
+                            /* in this case using index instead id is required for cart update */
                             <tbody key={i}>
                                 <tr>
                                     <td>
                                         <h5>{product.name}</h5>
                                     </td>
                                     <td className="center">
-                                       <img
+                                        <img
                                             src={`/img/products/${product.id}.jpg`}
                                             style={{
                                                 width: "85px",
@@ -131,17 +137,14 @@ const Cart = (props) => {
                                         </Button>
                                         <Button
                                             variant="link"
-                                            onClick={() =>
-                                                addOneMore(product.id, i)
-                                            }
+                                            onClick={() => addOneMore(product.id, i)}
                                         >
                                             <b>&nbsp; ¡Una más!</b>
                                         </Button>
                                         <Button
                                             variant="link"
                                             size="sm"
-                                            onClick={() =>
-                                                removeItem(
+                                            onClick={() => removeItem(
                                                     product,
                                                     product.id,
                                                     product.quantity

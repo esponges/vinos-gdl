@@ -24,6 +24,7 @@ const Category = (props) => {
         setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
         context.addToCart(id, itemCount);
+        context.cartContent();
     }
 
     const getProducts = async () => {

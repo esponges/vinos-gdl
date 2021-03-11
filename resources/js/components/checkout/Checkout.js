@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
     Form,
     Button,
@@ -16,6 +16,8 @@ import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
+import PaypalPayment from "./PaypalPayment";
+import { Context } from "../Context";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -23,22 +25,27 @@ const Checkout = (props) => {
     const [CP, setCP] = useState("");
     const [neighborhood, setNeighborhood] = useState("");
     const [cartTotal, setCartTotal] = useState("");
-    const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
-    const [totalToPay, setTotalToPay] = useState(false);
     const [address, setAddress] = useState("");
+    const [addressNumber, setAddressNumber] = useState("");
+    const [streetName, setStreetName] = useState("");
     const [paymentMode, setPaymentMode] = useState("on_delivery");
     const [addressDetails, setAddressDetails] = useState("");
+    const [deliveryDay, setDeliveryDay] = useState("");
+    const [deliverySchedule, setDeliverySchedule] = useState("");
+
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
-    const [deliveryDay, setDeliveryDay] = useState("");
-    const [deliverySchedule, setDeliverySchedule] = useState("");
+
+    const [totalToPay, setTotalToPay] = useState(false);
+    const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
 
     const [csrfToken, setCsrfToken] = useState("");
 
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
-
     const target = useRef(null); // for Overlay Bootstrap element
+
+    const context = useContext(Context);
 
     // from payment type radio input
     const handlePaymentChange = (e) => {
@@ -98,10 +105,7 @@ const Checkout = (props) => {
     useEffect(() => {
         let isMounted = true;
 
-        console.log("validations useEffect from Checkout.js");
-
         if (isMounted) {
-
             //validate phone
             const phonePattern = new RegExp(/^[0-9\b]+$/);
             if (phone) {
@@ -118,15 +122,21 @@ const Checkout = (props) => {
                 }
             }
             //validate address
-            if (address.length < 8 && address != "") {
-                setAddressAlertMessage("Por favor ingresa dirección correcta");
+            console.log('streetname ', streetName.length, 'street name is ', streetName, 'address number len ', addressNumber.length, 'address num', addressNumber)
+            if (streetName.length < 5 && streetName != "" &&
+                addressNumber.length != 0
+            ) {
+                console.log('trueeeeeeeeeeee')
+                setAddressAlertMessage("Por favor ingresa dirección completa");
             } else {
+                console.log('falseeee')
                 setAddressAlertMessage(false);
             }
 
-            // activate proceed button
+            // activate proceed button - must check due to async
             if (
-                address.length > 8 &&
+                streetName.length > 4 &&
+                addressNumber.length > 0 &&
                 phonePattern.test(phone) &&
                 phone.length == 10 &&
                 CP &&
@@ -140,7 +150,7 @@ const Checkout = (props) => {
         }
 
         return () => isMounted = false;
-    }, [address,  phone, CP, deliveryDay, deliverySchedule]);
+    }, [addressNumber, streetName, phone, CP, deliveryDay, deliverySchedule]);
 
     useEffect(() => {
         let isMounted = true;
@@ -149,12 +159,10 @@ const Checkout = (props) => {
             axios
             .get('/api/csrf-token')
             .then((res) => {
-                console.log(res.data);
                 setCsrfToken(res.data);
             })
             .catch((err) => {
                 console.error(err);
-                console.log('error getting csrf-token');
             })
         }
 
@@ -163,6 +171,7 @@ const Checkout = (props) => {
 
     return (
         <div className="container">
+            {/* {console.log('this is in checkout ', context.cartContent)} */}
             {props.loggedIn ? (
                 <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
@@ -267,18 +276,29 @@ const Checkout = (props) => {
                         {/* address */}
                         <Form.Group className="mt-2">
                             <Form.Label>
-                                Calle y número exterior{" "}
-                                <i>(e interior si tienes)</i>
+                                Calle o avenida
                             </Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="La dirección de tu casa"
-                                value={address}
-                                name="address"
+                                value={streetName}
                                 onChange={(e) => {
-                                    setAddress(e.target.value);
+                                    setStreetName(e.target.value);
                                 }}
                             />
+                            <Form.Label>
+                                Número exterior{" "}
+                                <i>(e interior si tienes)</i>
+                            </Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="El número de la dirección"
+                                value={addressNumber}
+                                onChange={(e) => {
+                                    setAddressNumber(e.target.value);
+                                }}
+                            />
+                            <input type="hidden" value={`${streetName} - ${addressNumber}`} name="address" />
                         </Form.Group>
                         {addressAlertMessage && (
                             <Alert variant={"warning"} className="m-1">
@@ -325,6 +345,7 @@ const Checkout = (props) => {
                             Proceder a pago
                         </Button>
                     </Form>
+                    {/* <PaypalPayment /> */}
                 </div>
             ) : (
                 <LoginOrRegister className="container mt-2" />

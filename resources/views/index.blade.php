@@ -6,16 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vinoreo</title>
     <link href="css/app.css" rel="stylesheet">
-    {{-- csrf token --}}
-    <script>
-        const csrf_token = '<?php echo csrf_token(); ?>';
-    </script>
+
+    {{-- PayPal SDK --}}
+    @php
+        $paypal_link = "https://www.paypal.com/sdk/js?client-id=" . env('PAYPAL_SANDBOX_CLIENT_ID', "") . "&buyer-country=MX&currency=MXN"; // &debug=true
+    @endphp
+    <script src={{ $paypal_link }} defer></script>
 </head>
 <body>
     <div id="root"></div>
 
     {{-- React JS --}}
     <script src="js/app.js" defer></script>
+
 </body>
 </html>
 

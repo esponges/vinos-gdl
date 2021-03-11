@@ -58,7 +58,7 @@ const About = () => {
                 <li>
                     <FontAwesomeIcon icon={faExchangeAlt} color={"red"} />{" "}
                     &nbsp;
-                    <b>Transferencia Bancaria:</b> Al &nbsp;
+                    <b>Transferencia Bancaria:</b> Al
                     <em>checkout</em> de tu pedido recibirás la información
                     bancaria, y se te pedirá que envies tu comprobante a nuestro
                     Whatsapp o correo electrónico
@@ -67,18 +67,17 @@ const About = () => {
             <h3 className="mt-2">Siempre precios de Mayoreo</h3>
             <ul id="about-ul">
                 <li>
-                    Todos nuestros precios son siempre bajos{" "}
-                    <FontAwesomeIcon icon={faPercentage} color={"red"} />, al
-                    seleccionar tu producto puedes comparar el precio
-                    directamente la competencia. La compra mínima es de $1,500
-                    MXN.
+                    <FontAwesomeIcon icon={faPercentage} color={"red"} />
+                    Todos nuestros precios son siempre bajos, al seleccionar tu
+                    producto puedes comparar el precio directamente la
+                    competencia. La compra mínima es de $1,500 MXN.
                 </li>
             </ul>
             <h5 className="mb-3">
                 <FontAwesomeIcon icon={faInfoCircle} />
                 ¿Tienes dudas? Contáctanos a{" "}
-                <a href="mailto: hola@vinoreo.mx">hola@vinoreo</a> o directo a nuestro
-                Whatsapp
+                <a href="mailto: hola@vinoreo.mx">hola@vinoreo</a> o directo a
+                nuestro Whatsapp
             </h5>
             <Link to="/">
                 <Button variant={"primary"}>Regresar</Button>

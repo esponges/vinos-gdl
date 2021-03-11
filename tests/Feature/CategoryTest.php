@@ -73,4 +73,15 @@ class CategoryTest extends TestCase
 
         $response->assertJson($category->products->toArray());
     }
+
+    public function test_getCategoryNames()
+    {
+        $this->withoutExceptionHandling();
+        $categories = Category::all()->pluck('name')->toArray();
+
+        $response = $this->get(route('category.names'));
+
+        $response->assertOk();
+        $response->assertJson($categories);
+    }
 }

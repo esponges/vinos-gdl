@@ -10,14 +10,8 @@ import {
 } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faShoppingBasket,
-    fas,
-} from "@fortawesome/free-solid-svg-icons";
-import {
-    fab,
-    faWhatsapp,
-} from "@fortawesome/free-brands-svg-icons";
+import { faShoppingBasket, fas } from "@fortawesome/free-solid-svg-icons";
+import { fab, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 library.add(fas, fab);
 
@@ -28,6 +22,7 @@ import DownShiftSearch from "./DownShiftSearch";
 
 const IndexNavbar = (props) => {
     const [navbar, setNavbar] = useState(false);
+    const [categories, setCategories] = useState([]);
 
     const handleScroll = (e) => {
         if (window.scrollY >= 780) {
@@ -58,13 +53,26 @@ const IndexNavbar = (props) => {
     };
 
     useEffect(() => {
+        let isMounted = true;
         //transition effect
         handleScroll();
         window.addEventListener("scroll", handleScroll);
 
+        if (isMounted) {
+            axios
+                .get("/category-list")
+                .then((res) => {
+                    setCategories(res.data);
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        }
+
         //remove event listener
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            let isMounted = false;
         };
     }, []);
 
@@ -80,34 +88,26 @@ const IndexNavbar = (props) => {
                 <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
 
                 {/* search products */}
-                <Navbar.Text id="#product-search-form">
-                    <Form inline id="product-search-form">
+                <Navbar.Text id="product-search-form">
+                    <Form inline>
                         <DownShiftSearch />
                     </Form>
                 </Navbar.Text>
 
-                <Navbar.Toggle
-                    aria-controls="responsive-navbar-nav"
-                />
-                <Navbar.Collapse
-                    id="responsive-navbar-nav"
-                >
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="#Tequila">Tequila</Nav.Link>
                         <Nav.Link href="#Whisky">Whisky</Nav.Link>
                         <NavDropdown
-                            title="Más productos"
+                            title="Todas las categorías"
                             id="collasible-nav-dropdown"
                         >
-                            <NavDropdown.Item href="#Vodka">
-                                Vodka
-                            </NavDropdown.Item>
-                            <NavDropdown.Item href="#Gin">Gin</NavDropdown.Item>
-                            <NavDropdown.Item href="#Ron">Ron</NavDropdown.Item>
-                            {/* <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">
-                                Separated link
-                            </NavDropdown.Item> */}
+                            {categories.map(category => {
+                                return (
+                                    <NavDropdown.Item key={category} href={`#${category}`}>{category}</NavDropdown.Item>
+                                )
+                            })}
                         </NavDropdown>
                     </Nav>
                     <Nav style={{ paddingTop: "15px" }}>
@@ -143,7 +143,7 @@ const IndexNavbar = (props) => {
 
                 {/* floating btns */}
                 <a
-                    href="https://www.instagram.com/vinoreomx/"
+                    href="#"
                     className="material-icons floating-btn-whats"
                 >
                     <FontAwesomeIcon icon={faWhatsapp} />
