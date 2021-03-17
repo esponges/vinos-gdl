@@ -130,12 +130,12 @@ const App = (props) => {
                     cartCountUpdate: cartCountUpdate,
                     getCartContent: getCartContent,
                 }}>
-                {/* <IndexNavbar
+                <IndexNavbar
                     cartCount={cartCount}
                     userLogged={loggedIn}
                     userInfo={userInfo}
                     logout={logout}
-                /> */}
+                />
                 <div
                     className="container mb-5 body-margin-top"
                     // style={{ marginTop: `22%` }}
@@ -182,7 +182,7 @@ const App = (props) => {
                         </Route>
                     </Switch>
                 </div>
-                {/* <Footer /> */}
+                <Footer />
             </Context.Provider>
         </HashRouter>
     );
