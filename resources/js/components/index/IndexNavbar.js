@@ -181,7 +181,7 @@ const IndexNavbar = (props) => {
                 </ul>
             </div>
 
-            {/* floating btns
+            {/* floating btns */}
             <a href="#" className="material-icons floating-btn-whats">
                 <FontAwesomeIcon icon={faWhatsapp} />
             </a>
@@ -191,7 +191,7 @@ const IndexNavbar = (props) => {
                 <Badge pill variant="warning">
                     {props.cartCount && props.cartCount}
                 </Badge>
-            </Link> */}
+            </Link>
         </nav>
     );
 };
