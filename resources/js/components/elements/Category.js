@@ -11,7 +11,7 @@ const Category = (props) => {
 
     // pagination
     const [offset, setOffset] = useState(0);
-    const [perPage] = useState(6);
+    const [perPage] = useState(8);
     const [pageCount, setPageCount] = useState(0);
 
     const [productAddMsg, setProductAddMsg] = useState(false);
