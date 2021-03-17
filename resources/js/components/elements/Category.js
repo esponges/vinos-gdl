@@ -75,7 +75,11 @@ const Category = (props) => {
                                     </Card.Body>
                                     <ListGroup className="list-group-flush">
                                         <ListGroupItem>
-                                            <b>Precio {product.price} mxn</b>
+                                            <b>Precio
+                                                {new Intl.NumberFormat("en-US", {
+                                                        style: "currency",
+                                                        currency: "MXN",
+                                                    }).format(product.price)}</b>
                                         </ListGroupItem>
                                     </ListGroup>
                                     <Card.Body>

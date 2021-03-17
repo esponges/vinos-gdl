@@ -4,6 +4,11 @@ import { Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Context } from "../Context";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingBag, fas } from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+library.add(fas);
+
 const ProductGrid = (props) => {
     const [itemCount, setItemCount] = useState(1);
 
@@ -69,44 +74,40 @@ const ProductGrid = (props) => {
                                                         </Card.Title>
                                                         <Card.Text>
                                                             <b>
-                                                                $ {product.price}
-                                                                mxn
+                                                                {new Intl.NumberFormat("en-US", {
+                                                                        style: "currency",
+                                                                        currency: "MXN",
+                                                                    }).format(product.price)}
                                                             </b>
                                                         </Card.Text>
-                                                        <div className="row">
-                                                                <div className="col-3 d-none d-sm-block">
-                                                                    <input
-                                                                        type="number"
-                                                                        min="1"
-                                                                        name="quantity"
-                                                                        defaultValue={
-                                                                            1
-                                                                        }
-                                                                        className="form-control input-number"
-                                                                        onChange={async (e) => await setItemCount(parseInt(e.target.value))}
-                                                                        style={{minWidth: "60px" }}
-                                                                    />
-                                                                </div>
-                                                                <div className="col-3">
-                                                                    <Button
-                                                                        variant="primary"
-                                                                        onClick={(e) => handleItemAddClick(e, product.id)}
-                                                                        id="main-add-btn"
-                                                                    >
-                                                                        +
-                                                                    </Button>
-                                                                </div>
-                                                                <div className="col-6">
-                                                                    <Link
-                                                                        to={{
-                                                                            pathname: `/products/${product.id}`,
-                                                                        }}
-                                                                    >
-                                                                        <Button variant="secondary" id="main-details-btn">
-                                                                            Detalles
-                                                                        </Button>
-                                                                    </Link>
-                                                                </div>
+                                                        <div className="btn-group">
+                                                            <div className="d-none d-lg-block">
+                                                                <input
+                                                                    type="number"
+                                                                    min="1"
+                                                                    name="quantity"
+                                                                    defaultValue={1}
+                                                                    className="form-control input-number"
+                                                                    onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                                                    style={{maxWidth: "70px" }}
+                                                                />
+                                                            </div>
+                                                            <Button
+                                                                variant="primary"
+                                                                id="main-add-btn"
+                                                                onClick={(e) => handleItemAddClick(e, product.id)}
+                                                            >
+                                                                Añadir {" "}
+                                                                <FontAwesomeIcon icon={faShoppingBag} />
+                                                            </Button>
+                                                            <Link
+                                                                to={{pathname: `/products/${product.id}`}}
+                                                                id="main-details-btn"
+                                                            >
+                                                                <Button variant="secondary">
+                                                                    Info
+                                                                </Button>
+                                                            </Link>
                                                         </div>
                                                         {productAddMsg &&
                                                             product.id ==
