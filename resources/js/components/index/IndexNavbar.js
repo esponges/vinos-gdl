@@ -127,7 +127,6 @@ const IndexNavbar = (props) => {
                         >
                             Ver todos
                         </a>
-                        {console.log(categories)}
                         <div
                             className="dropdown-menu"
                             aria-labelledby="navbarDropdown"
