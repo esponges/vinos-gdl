@@ -2,28 +2,38 @@
 
 .col-md-3 {
     flex: 0 0 25%;
-    max-width: 25%;
+    // max-width: 25%;
     margin: 1rem;
 }
 
-@media (max-width: 415px) {
-    .col-3 {
-        max-width: 100%;
-        padding: 0;
-    }
-}
+// @media (max-width: 415px) {
+//     .col-3 {
+//         max-width: 100%;
+//         padding: 0;
+//     }
+// }
 
 .navbar {
+    padding-top: 1.5%;
     padding: 0.5rem 10%;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     .navbar {
-        padding: 10px 10px;
+        // padding: 0% 2%;
+        // padding: 0px;
     }
 }
+
 .nav-link {
     padding: 0px;
+}
+.navbar-dark .navbar-nav .nav-link {
+    color: #6492f3;
+}
+
+.navbar-text {
+    padding-bottom: 0;
 }
 
 .navbar-light .navbar-brand {
@@ -64,7 +74,7 @@
         padding: 4rem 8rem;
     }
 }
-@media (max-width: 750px) {
+@media (max-width: 801px) {
     .carousel {
         display: none;
     }
@@ -105,7 +115,7 @@
     transition: background 0.25s;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     .floating-btn-cart {
         width: 60px;
         height: 60px;
@@ -125,11 +135,7 @@
     }
 }
 
-.navbar-text {
-    padding-bottom: 0;
-}
-
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
 }
 
 .floating-btn-whats {
@@ -150,7 +156,7 @@
     transition: background 0.25s;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     .floating-btn-whats {
         width: 50px;
         height: 50px;
@@ -190,7 +196,7 @@
         border-radius: 0.25rem;
     }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     #get-cp-input {
         width: 100%;
     }
@@ -200,14 +206,14 @@
     border-radius: 0.25rem;
 }
 
-@media (max-width: 381px) {
+@media (max-width: 415px) {
     #product-search-input {
-        width: 100px;
+        width: 125px;
     }
 
-    // #product-search-form {
-    //     margin-left: -22%;
-    // }
+    #product-search-form {
+        padding-top: 3%;
+    }
 }
 
 #vinoreo-logo-header {
@@ -215,7 +221,7 @@
     margin-top: 5%;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     #vinoreo-logo-header {
         margin-top: 19%;
         max-width: 200px;
@@ -228,20 +234,20 @@
     background-color: #f1fae9;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     #ship_pay_banner {
         padding: 0.5rem;
         margin-top: 2rem;
     }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     .navbar-text {
         padding-top: 1rem;
     }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 801px) {
     .navbar-brand {
         margin-right: 0;
     }
@@ -268,19 +274,26 @@
     }
 }
 
-@media (min-width: 416px ) {
+@media (min-width: 415px ) {
     .body-margin-top {
         margin-top: 13%;
     }
 }
 
-@media (max-width: 415px ) {
-    #main-add-btn {
-        margin-left: 10px;
+#main-add-btn {
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
     }
 
+@media (max-width: 415px ) {
     #main-details-btn {
-        margin-right: 15px;
+        margin-left: 55px;
+    }
+}
+
+@media (max-width: 801px ) {
+    #main-details-btn {
+        margin-left: 20px;
     }
 }
 

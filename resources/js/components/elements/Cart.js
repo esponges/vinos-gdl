@@ -109,7 +109,6 @@ const Cart = (props) => {
                     <thead>
                         <tr>
                             <th>Descripción</th>
-                            <th>Producto</th>
                             <th>Cantidad</th>
                             <th>Sub-Total</th>
                         </tr>
@@ -121,8 +120,7 @@ const Cart = (props) => {
                                 <tr>
                                     <td>
                                         <h5>{product.name}</h5>
-                                    </td>
-                                    <td className="center">
+                                        <br />
                                         <img
                                             src={`/img/products/${product.id}.jpg`}
                                             style={{
@@ -137,14 +135,17 @@ const Cart = (props) => {
                                         </Button>
                                         <Button
                                             variant="link"
-                                            onClick={() => addOneMore(product.id, i)}
+                                            onClick={() =>
+                                                addOneMore(product.id, i)
+                                            }
                                         >
-                                            <b>&nbsp; ¡Una más!</b>
+                                            <b>¡Una más!</b>
                                         </Button>
                                         <Button
                                             variant="link"
                                             size="sm"
-                                            onClick={() => removeItem(
+                                            onClick={() =>
+                                                removeItem(
                                                     product,
                                                     product.id,
                                                     product.quantity
@@ -155,7 +156,12 @@ const Cart = (props) => {
                                         </Button>
                                     </td>
                                     <td>
-                                        $ {product.quantity * product.price}
+                                        {new Intl.NumberFormat("en-US", {
+                                            style: "currency",
+                                            currency: "MXN",
+                                        }).format(
+                                            product.quantity * product.price
+                                        )}
                                     </td>
                                 </tr>
                             </tbody>
@@ -165,7 +171,12 @@ const Cart = (props) => {
             )}
             <div className="container mt-3">
                 <h3 className="mb-3">
-                    Total <b>$ {total}</b>
+                    Total <b>
+                            {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'MXN'
+                            }).format(total)}
+                        </b>
                 </h3>
                 {total < 1500 && (
                     <Alert variant={"warning"}>

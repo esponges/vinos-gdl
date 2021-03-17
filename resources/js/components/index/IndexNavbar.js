@@ -77,40 +77,78 @@ const IndexNavbar = (props) => {
     }, []);
 
     return (
-        <>
-            <Navbar
-                collapseOnSelect
-                expand="lg"
-                bg={navbar ? "light" : "dark"}
-                variant="light"
-                fixed="top"
+        <nav
+            className={`navbar navbar-expand-lg fixed-top
+            ${navbar ? "navbar-light bg-light" : "navbar-dark bg-dark"}`}
+        >
+            <a className="navbar-brand" href="#">
+                VINOREO
+            </a>
+            <div className="navbar-brand" id="product-search-form">
+                <Form inline>
+                    <DownShiftSearch />
+                </Form>
+            </div>
+            <button
+                className="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
             >
-                <Navbar.Brand href="#home">VINOREO</Navbar.Brand>
-
-                {/* search products */}
-                <Navbar.Text id="product-search-form">
-                    <Form inline>
-                        <DownShiftSearch />
-                    </Form>
-                </Navbar.Text>
-
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="mr-auto">
-                        <Nav.Link href="#Tequila">Tequila</Nav.Link>
-                        <Nav.Link href="#Whisky">Whisky</Nav.Link>
-                        <NavDropdown
-                            title="Todas las categorías"
-                            id="collasible-nav-dropdown"
+                <span className="navbar-toggler-icon" />
+            </button>
+            <div
+                className="collapse navbar-collapse"
+                id="navbarSupportedContent"
+            >
+                <ul className="navbar-nav mr-auto">
+                    <li className="nav-item">
+                        <a className="nav-link" href="#Tequila">
+                            Tequila
+                        </a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#Whisky">
+                            Whisky
+                        </a>
+                    </li>
+                    <li className="nav-item dropdown">
+                        <a
+                            className="nav-link dropdown-toggle"
+                            href="#"
+                            id="navbarDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
                         >
-                            {categories.map(category => {
+                            Ver todos
+                        </a>
+                        {console.log(categories)}
+                        <div
+                            className="dropdown-menu"
+                            aria-labelledby="navbarDropdown"
+                        >
+                            {categories.map((category) => {
                                 return (
-                                    <NavDropdown.Item key={category} href={`#${category}`}>{category}</NavDropdown.Item>
-                                )
+                                    <a
+                                        className="dropdown-item"
+                                        key={category}
+                                        href={`#${category}`}
+                                    >
+                                        {category}
+                                    </a>
+                                );
                             })}
-                        </NavDropdown>
-                    </Nav>
-                    <Nav style={{ paddingTop: "15px" }}>
+                        </div>
+                    </li>
+                </ul>
+                {/* right side of navbar */}
+                <ul className="navbar-nav">
+                    <li className="nav-item">
                         <Link
                             to="/cart"
                             className="nav-link"
@@ -127,8 +165,9 @@ const IndexNavbar = (props) => {
                                 &nbsp;{props.cartCount ?? props.cartCount}
                             </Badge>
                         </Link>
-
-                        {props.userLogged && (
+                    </li>
+                    {props.userLogged && (
+                        <li>
                             <NavDropdown
                                 title={`${props.userInfo["userName"]}`}
                                 id="collasible-nav-dropdown"
@@ -137,26 +176,23 @@ const IndexNavbar = (props) => {
                                     Cerrar sesión
                                 </NavDropdown.Item>
                             </NavDropdown>
-                        )}
-                    </Nav>
-                </Navbar.Collapse>
+                        </li>
+                    )}
+                </ul>
+            </div>
 
-                {/* floating btns */}
-                <a
-                    href="#"
-                    className="material-icons floating-btn-whats"
-                >
-                    <FontAwesomeIcon icon={faWhatsapp} />
-                </a>
-                <Link to="/cart" className="material-icons floating-btn-cart">
-                    <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
-                    &nbsp;
-                    <Badge pill variant="warning">
-                        {props.cartCount && props.cartCount}
-                    </Badge>
-                </Link>
-            </Navbar>
-        </>
+            {/* floating btns */}
+            <a href="#" className="material-icons floating-btn-whats">
+                <FontAwesomeIcon icon={faWhatsapp} />
+            </a>
+            <Link to="/cart" className="material-icons floating-btn-cart">
+                <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
+                &nbsp;
+                <Badge pill variant="warning">
+                    {props.cartCount && props.cartCount}
+                </Badge>
+            </Link>
+        </nav>
     );
 };
 

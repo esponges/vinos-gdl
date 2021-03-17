@@ -69,7 +69,12 @@ const SingleProduct = (props) => {
                         {/* <Card.Text>{product.description}</Card.Text> */}
                     </Card.Body>
                     <ListGroup className="list-group-flush">
-                        <ListGroupItem>Precio: $ {product.price}</ListGroupItem>
+                        <ListGroupItem>Precio:
+                            {new Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "MXN",
+                                }).format(product.price)}
+                        </ListGroupItem>
                         <ListGroupItem>
                             {competidorsInfo.length != 0 && (
                                 <div>
@@ -93,8 +98,11 @@ const SingleProduct = (props) => {
                                                             height: "35px",
                                                         }}
                                                     />
-                                                    <span>&nbsp;&nbsp;</span>$
-                                                    {competidorsInfo[0].price}
+                                                    <span>&nbsp;&nbsp;</span>
+                                                    {new Intl.NumberFormat("en-US", {
+                                                            style: "currency",
+                                                            currency: "MXN",
+                                                        }).format(competidorsInfo[0].price)}
                                                 </button>
                                             </li>
                                         )}
@@ -116,8 +124,11 @@ const SingleProduct = (props) => {
                                                             height: "25px",
                                                         }}
                                                     />
-                                                    <span>&nbsp;&nbsp;</span>$
-                                                    {competidorsInfo[1].price}
+                                                    <span>&nbsp;&nbsp;</span>
+                                                    {new Intl.NumberFormat("en-US", {
+                                                            style: "currency",
+                                                            currency: "MXN",
+                                                        }).format(competidorsInfo[1].price)}
                                                 </button>
                                             </li>
                                         )}
