@@ -52,9 +52,7 @@ const Cart = (props) => {
                 const newCartTotal = updatedCart
                     .map((item) => item.quantity * item.price)
                     .reduce((a, b) => a + b, 0);
-                setTotal(
-                    newCartTotal
-                );
+                setTotal(newCartTotal);
                 // remove all item count from navbar counter
                 props.cartCountUpdate(qty * -1);
                 context.getCartContent();
@@ -93,8 +91,8 @@ const Cart = (props) => {
                 setError(err.message);
             });
 
-            //unmount
-            return () => isMounted = false;
+        //unmount
+        return () => (isMounted = false);
     }, []);
 
     return (
@@ -130,30 +128,36 @@ const Cart = (props) => {
                                         />
                                     </td>
                                     <td>
-                                        <Button variant="success">
-                                            {product.quantity}
-                                        </Button>
-                                        <Button
-                                            variant="link"
-                                            onClick={() =>
-                                                addOneMore(product.id, i)
-                                            }
+                                        <div
+                                            className="btn-group"
+                                            id="qty-action-btns"
                                         >
-                                            <b>¡Una más!</b>
-                                        </Button>
-                                        <Button
-                                            variant="link"
-                                            size="sm"
-                                            onClick={() =>
-                                                removeItem(
-                                                    product,
-                                                    product.id,
-                                                    product.quantity
-                                                )
-                                            }
-                                        >
-                                            Eliminar
-                                        </Button>
+                                            <Button variant="success">
+                                                {product.quantity}
+                                            </Button>
+                                            <Button
+                                                variant="link"
+                                                id="add-one-more-cart"
+                                                onClick={() =>
+                                                    addOneMore(product.id, i)
+                                                }
+                                            >
+                                                <b>¡Añade una más!</b>
+                                            </Button>
+                                            <Button
+                                                variant="link"
+                                                size="sm"
+                                                onClick={() =>
+                                                    removeItem(
+                                                        product,
+                                                        product.id,
+                                                        product.quantity
+                                                    )
+                                                }
+                                            >
+                                                Eliminar
+                                            </Button>
+                                        </div>
                                     </td>
                                     <td>
                                         {new Intl.NumberFormat("en-US", {
@@ -171,17 +175,22 @@ const Cart = (props) => {
             )}
             <div className="container mt-3">
                 <h3 className="mb-3">
-                    Total <b>
-                            {new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'MXN'
-                            }).format(total)}
-                        </b>
+                    Total{" "}
+                    <b>
+                        {new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "MXN",
+                        }).format(total)}
+                    </b>
                 </h3>
                 {total < 1500 && (
                     <Alert variant={"warning"}>
-                        Adquiere un mínimo de 1500mxn en compra para poderte dar
-                        nuestros precios de mayoreo
+                        Te faltan{" "}
+                        {new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "MXN",
+                        }).format(1500 - total)}{" "}
+                        para completar tu pedido
                     </Alert>
                 )}
                 {cart.length == 0 ? (
