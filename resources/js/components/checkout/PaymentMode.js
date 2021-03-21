@@ -21,9 +21,11 @@ const PaymentMode = (props) => {
                             onClick={props.handlePaymentChange}
                             defaultChecked
                         />
-                        Paga un pequeño anticipo de{" "}
-                        {Math.ceil(props.upfrontPayPalPayment)}&nbsp;mxn con{" "}
-                        <b>PayPal</b> &nbsp;
+                        Paga un pequeño anticipo de{" "}MX$
+                        {Math.ceil(
+                            props.upfrontPayPalPayment
+                        )}
+                        &nbsp; con <b>PayPal</b> &nbsp;
                         <FontAwesomeIcon icon={faPaypal} /> y liquida la
                         diferencia en efectivo cuando te entreguemos
                     </li>
