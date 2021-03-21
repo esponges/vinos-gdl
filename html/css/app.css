@@ -10272,3 +10272,7 @@ h3 {
     display: grid;
   }
 }
+#cart-qty-btn {
+  background-color: #3490dc;
+  border-color: #3490dc;
+}

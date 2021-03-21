@@ -132,7 +132,7 @@ const Cart = (props) => {
                                             className="btn-group"
                                             id="qty-action-btns"
                                         >
-                                            <Button variant="success">
+                                            <Button variant="success" id="cart-qty-btn">
                                                 {product.quantity}
                                             </Button>
                                             <Button
