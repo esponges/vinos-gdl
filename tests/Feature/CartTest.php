@@ -158,4 +158,18 @@ class CartTest extends TestCase
         // $this->assertEquals($response->data, $cartTotal);
     }
 
+    /* Couldn't make Cart::update method workd */
+
+    // public function test_removeOneTiem () {
+    //     $this->withoutExceptionHandling();
+    //     $this->dummyItems();
+    //     $count = \Cart::getContent()->count() - 1;
+    //     $productId = \Cart::getContent()->first()->id;
+
+    //     $response = $this->get(route('cart.removeOne', $productId));
+
+    //     $response->assertOk();
+    //     $this->assertEquals($count, \Cart::getContent()->count());
+    // }
+
 }

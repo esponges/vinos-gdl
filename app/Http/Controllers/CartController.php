@@ -69,4 +69,23 @@ class CartController extends Controller
 
         return response()->json([$product->name . ' eliminado del carrito']);
     }
+
+    /* Couldn't update method work */
+    /* Neither by simple update nor relative config */
+
+    // public function removeOneItem($productId)
+    // {
+    //     $product = \Cart::get($productId);
+    //     $productCount = $product->quantity;
+    //     $cartOld = \Cart::getContent();
+
+    //     \Cart::update($productId, array(
+    //         'relative' => false,
+    //         'value' => $productCount - 1,
+    //     ));
+
+    //     dd('old', $cartOld, 'new', \Cart::getContent(), 'id', $productId);
+
+    //     return response()->json(['1 unit of ' . $productId . ' removed']);
+    // }
 }

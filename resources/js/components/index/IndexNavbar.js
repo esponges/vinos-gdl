@@ -130,6 +130,7 @@ const IndexNavbar = (props) => {
                         <div
                             className="dropdown-menu"
                             aria-labelledby="navbarDropdown"
+                            id="category-dropdown"
                         >
                             {categories.map((category) => {
                                 return (

@@ -10,14 +10,19 @@ const RegisterForm = (props) => {
     const [name, setName] = useState("");
     const [familyName, setFamilyName] = useState("");
     const [age, setAge] = useState(0);
+
     const [email, setEmail] = useState("");
     const [emailValidationAlert, setEmailValidationAlert] = useState(null);
+
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordsMatch, setPasswordsMatch] = useState(false);
+
     const [userDataIsValid, setUserDataIsValid] = useState(null);
+
     const [isRegistered, setIsRegistered] = useState(null);
     const [error, setError] = useState(false);
+    const [completedForm, setCompletedForm] = useState(null);
     // const [nameOk, setNameOk] = useState(false);
     // const [addressOk, setAddressOk] = useState(false);
     const localhost = window.location.protocol + "//" + window.location.host;
@@ -269,6 +274,12 @@ const RegisterForm = (props) => {
                 {error && (
                     <Alert variant={"warning"} className="m-5">
                         Error en el servidor intenta en un momento
+                    </Alert>
+                )}
+                {/* incomplete form */}
+                {!userDataIsValid && (
+                    <Alert variant={"warning"} className="m-5">
+                        Por favor completa toda la información
                     </Alert>
                 )}
                 <Button

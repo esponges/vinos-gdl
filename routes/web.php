@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use Darryldecode\Cart\CartCondition;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +37,7 @@ Route::prefix('cart')->group( function () {
     Route::get('/get-total', [CartController::class, 'getTotal']); // cart total
     Route::get('/get-subtotal', [CartController::class, 'getSubTotal']);
     Route::get('/{product}/destroy', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::get('/{productId}/destroy-one', [CartController::class, 'removeOneItem'])->name('cart.removeOne');
     Route::get('/{product}/add/{qty}', [CartController::class, 'add'])->name('cart.add');
 });
 
