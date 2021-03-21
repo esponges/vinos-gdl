@@ -36,6 +36,7 @@ const Checkout = (props) => {
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
+    const [paymentModeReminder, setPaymentModeReminder] = useState("on_delivery");
 
     const [totalToPay, setTotalToPay] = useState(false);
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
@@ -82,7 +83,14 @@ const Checkout = (props) => {
             axios
                 .get("/cart/get-total")
                 .then((res) => {
-                    setCartTotal(res.data);
+                    setCartTotal(
+                        new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "MXN",
+                        }).format(
+                            res.data
+                        )
+                    );
                 })
                 .catch((err) => {
                     console.error(err);
@@ -147,10 +155,26 @@ const Checkout = (props) => {
                 setButtonIsActive(true);
             }
             else setButtonIsActive(false);
+            // remind user payment method
+            paymentMode === 'on_delivery' && setPaymentModeReminder('Pago en efectivo contra entrega');
+            paymentMode === 'transfer' && setPaymentModeReminder('Pago del 100% por transferencia o depósito');
+            paymentMode === 'paypal' && setPaymentModeReminder('Pago del 100% por PayPal');
         }
 
         return () => isMounted = false;
-    }, [addressNumber, streetName, phone, CP, deliveryDay, deliverySchedule]);
+    }, [addressNumber, streetName, phone, CP, deliveryDay, deliverySchedule, paymentMode]);
+
+    const totalHeader = (
+        <h3>
+            {!totalToPay ? `Total ${cartTotal} ` :
+                new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "MXN",
+                }).format(
+                    totalToPay
+                )}
+        </h3>
+    );
 
     useEffect(() => {
         let isMounted = true;
@@ -175,9 +199,8 @@ const Checkout = (props) => {
             {props.loggedIn ? (
                 <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
-                    <h3>
-                        {!totalToPay ? `Total ${cartTotal} mxn` : totalToPay}
-                    </h3>
+
+                    {totalHeader && totalHeader}
 
                     <PaymentMode
                         handlePaymentChange={handlePaymentChange}
@@ -336,6 +359,13 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         {/* let user pay if all information is set */}
+                        {!buttonIsActive && addressAlertMessage &&
+                            <Alert variant={"warning"} className="m-1">
+                                Por favor completa tu información
+                            </Alert>
+                        }
+                        {totalHeader && totalHeader}
+                        <p>Tipo de pago: <b>{paymentModeReminder}</b></p>
                         <Button
                             className="mb-5"
                             variant="primary"
