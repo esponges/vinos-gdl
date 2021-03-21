@@ -13,6 +13,8 @@
 //     }
 // }
 
+/* Navbar */
+
 .navbar {
     padding-top: 1.5%;
     padding: 0.5rem 10%;
@@ -64,6 +66,31 @@
     border-color: #3490dc;
 }
 
+@media (max-width: 415px) {
+    #category-dropdown {
+        position: absolute;
+    }
+}
+
+/* NavBar media fixed btns */
+
+#main-add-btn {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+@media (max-width: 415px) {
+    #main-details-btn {
+        margin-left: 55px;
+    }
+}
+
+@media (max-width: 801px) {
+    #main-details-btn {
+        margin-left: 5px;
+    }
+}
+
 .jumbotron {
     padding: 2rem rem;
     /* margin-bottom: 2rem; */
@@ -93,6 +120,18 @@
     cursor: pointer;
     border-bottom: 1px solid whitesmoke;
     font-size: 1rem;
+}
+
+#downshift-0-menu {
+    position: absolute;
+    margin-left: -5%;
+}
+
+@media (max-width: 415px) {
+    #downshift-0-menu {
+        position: absolute;
+        margin-left: -35%;
+    }
 }
 
 // Floating btns
@@ -193,8 +232,8 @@
 }
 
 #get-cp-input {
-        border-radius: 0.25rem;
-    }
+    border-radius: 0.25rem;
+}
 
 @media (max-width: 801px) {
     #get-cp-input {
@@ -204,11 +243,13 @@
 
 #product-search-input {
     border-radius: 0.25rem;
+    font-size: 0.8rem;
 }
 
 @media (max-width: 415px) {
     #product-search-input {
-        width: 125px;
+        width: 100px;
+        margin: 0px;
     }
 
     #product-search-form {
@@ -268,35 +309,28 @@
     }
 }
 
-@media (max-width: 415px ) {
+@media (max-width: 415px) {
     .body-margin-top {
         margin-top: 22%;
     }
 }
 
-@media (min-width: 415px ) {
+@media (min-width: 415px) {
     .body-margin-top {
         margin-top: 13%;
     }
 }
 
-#main-add-btn {
-        border: 1px solid transparent;
-        border-radius: 0.25rem;
-    }
+/* Cart */
 
-@media (max-width: 415px ) {
-    #main-details-btn {
-        margin-left: 55px;
+@media (max-width: 415px) {
+    #add-one-more-cart {
+        padding: 2%
     }
 }
 
-@media (max-width: 801px ) {
-    #main-details-btn {
-        margin-left: 20px;
+@media (max-width: 415px) {
+    #qty-action-btns {
+        display: grid;
     }
 }
-
-
-
-
