@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Alert } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
 import sanctumApi from "../../sanctum-api";
-import axiosAuth from '../../axios-config';
-import { method } from "lodash";
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
@@ -19,17 +17,18 @@ const RegisterForm = (props) => {
     const [passwordsMatch, setPasswordsMatch] = useState(false);
 
     const [userDataIsValid, setUserDataIsValid] = useState(null);
+    const [mktEmails, setMktEmails] = useState(true);
 
     const [isRegistered, setIsRegistered] = useState(null);
     const [error, setError] = useState(false);
     const [completedForm, setCompletedForm] = useState(null);
-    // const [nameOk, setNameOk] = useState(false);
-    // const [addressOk, setAddressOk] = useState(false);
+
     const localhost = window.location.protocol + "//" + window.location.host;
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("submitting form");
+        console.log('mkt emails is ', mktEmails);
         const fullName = name + " " + familyName;
         // check if user is already registered
         axios({
@@ -47,7 +46,6 @@ const RegisterForm = (props) => {
                     sanctumApi
                         .get("sanctum/csrf-cookie")
                         .then((res) => {
-                            console.log("age is ", age);
                             axios({ baseURL: localhost,
                                     method: 'POST',
                                     url: '/register',
@@ -56,31 +54,41 @@ const RegisterForm = (props) => {
                                         email: email,
                                         password: password,
                                         age: age,
+                                        mkt_emails: mktEmails
                                     }
                             })
                                 .then(() => {
                                     // if no error, log in user
-                                    axios({
-                                        baseURL: localhost,
-                                        method: "POST",
-                                        url: "/login",
-                                        data: {
-                                            email: email,
-                                            password: password,
-                                        },
-                                    })
-                                        .then((res) => {
-                                            console.log(res.data);
-                                            props.login()
-                                            props.history.push("/login");
+                                    sanctumApi
+                                        .get('sanctum/csrf-cookie')
+                                        .then(() => {
+                                            axios({
+                                                baseURL: localhost,
+                                                method: "POST",
+                                                url: "/login",
+                                                data: {
+                                                    email: email,
+                                                    password: password,
+                                                    remember: 'on',
+                                                },
+                                            })
+                                                .then((res) => {
+                                                    console.log(res.data);
+                                                    props.login()
+                                                    props.history.push("/login");
+                                                })
+                                                .catch((err) => {
+                                                    console.error(err);
+                                                    setError(true);
+                                                });
                                         })
-                                        .catch((err) => {
-                                            console.error(err);
-                                            setError(true);
-                                        });
+                                        .catch(err => {
+                                            console.error('error with sanctum before login')
+                                        })
+
                                 })
                                 .catch((err) => {
-                                    console.error(err, "error loging user in");
+                                    console.error(err, "error registering user");
                                     setError(true);
                                 });
                         })
@@ -133,7 +141,7 @@ const RegisterForm = (props) => {
         ) {
             setUserDataIsValid(true);
         } else setUserDataIsValid(false);
-    }, [email, confirmPassword, name]);
+    }, [email, confirmPassword, name, mktEmails]);
 
     return (
         <div className="container" style={{ marginTop: "13%" }}>
@@ -154,7 +162,7 @@ const RegisterForm = (props) => {
                         <b>Tu nombre de pila</b>
                     </Form.Text>
                     {name != "" && name.length < 3 && (
-                        <Alert variant={"warning"} className="m-1">
+                        <Alert variant={"warning"} className="m-2">
                             Ingresa correctamente la información
                         </Alert>
                     )}
@@ -171,7 +179,7 @@ const RegisterForm = (props) => {
                         required
                     />
                     {familyName != "" && familyName.length < 5 && (
-                        <Alert variant={"warning"} className="m-1">
+                        <Alert variant={"warning"} className="m-2">
                             Ingresa correctamente la información
                         </Alert>
                     )}
@@ -190,7 +198,7 @@ const RegisterForm = (props) => {
                     />
 
                     {emailValidationAlert && (
-                        <Alert variant={"warning"} className="m-5">
+                        <Alert variant={"warning"} className="m-2">
                             {emailValidationAlert}
                         </Alert>
                     )}
@@ -248,6 +256,11 @@ const RegisterForm = (props) => {
                         required
                     />
                 </Form.Group>
+                {!passwordsMatch && password != "" && confirmPassword != "" && (
+                    <Alert variant={"warning"} className="m-2">
+                        Las contraseñas no coinciden
+                    </Alert>
+                )}
                 <Form.Group controlId="confirmPassword">
                     <Form.Label>
                         <b>Confirma contraseña</b>
@@ -260,28 +273,40 @@ const RegisterForm = (props) => {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                     />
                 </Form.Group>
-                {!passwordsMatch && password != "" && confirmPassword != "" && (
-                    <Alert variant={"warning"} className="m-5">
-                        Las contraseñas no coinciden
-                    </Alert>
-                )}
+
+                <Form.Text className="text-muted success">
+                    Nunca compartiremos tu información
+                </Form.Text>
+                <Form.Check
+                    className="mb-2"
+                    type="checkbox"
+                    label="Deseo recibir ofertas exclusivas"
+                    defaultChecked={mktEmails}
+                    onChange={() => {
+                        setMktEmails(!mktEmails);
+                    }}
+                />
+
                 {isRegistered && (
-                    <Alert variant={"warning"} className="m-5">
+                    <Alert variant={"warning"} className="m-2">
                         Este usuario ya está registrado
                     </Alert>
                 )}
+
                 {/* server error */}
                 {error && (
-                    <Alert variant={"warning"} className="m-5">
+                    <Alert variant={"warning"} className="m-2">
                         Error en el servidor intenta en un momento
                     </Alert>
                 )}
+
                 {/* incomplete form */}
                 {!userDataIsValid && (
-                    <Alert variant={"warning"} className="m-5">
+                    <Alert variant={"warning"} className="m-2">
                         Por favor completa toda la información
                     </Alert>
                 )}
+
                 <Button
                     variant="success"
                     type="submit"
@@ -291,13 +316,13 @@ const RegisterForm = (props) => {
                     {/* {console.log(userDataIsValid)} */}
                     Regístrate
                 </Button>
+
                 <Link to="/cart" className="btn btn-secondary ml-3">
                     Regresar
                 </Link>{" "}
                 <br />
-                <Form.Text className="text-muted success">
-                    Nunca compartiremos tu información
-                </Form.Text>
+
+
             </Form>
         </div>
     );

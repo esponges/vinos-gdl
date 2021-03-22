@@ -9,15 +9,12 @@ const Login = (props) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [sessionError, setSessionError] = useState(false);
-    const [checked, setChecked] = useState(true);
+    const [rememberMe, setRememberMe] = useState(true);
 
     const localhost = window.location.protocol + "//" + window.location.host; // set correct protocol for request http/localhost - https/live
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        let rememberMe = checked ? 'on' : '';
-        console.log('remember me is ', rememberMe);
 
         setSessionError(false);
 
@@ -31,7 +28,7 @@ const Login = (props) => {
                     data: {
                         email: email,
                         password: password,
-                        remember: rememberMe,
+                        remember: rememberMe ? "on" : "",
                     },
                 })
                     .then((res) => {
@@ -91,8 +88,8 @@ const Login = (props) => {
                         <Form.Check
                             type="checkbox"
                             label="Recordar usuario"
-                            defaultChecked={checked}
-                            onChange={() => setChecked(!checked)}
+                            defaultChecked={rememberMe}
+                            onChange={() => setRememberMe(!rememberMe)}
                         />
                     </Form.Group>
                     {sessionError && (

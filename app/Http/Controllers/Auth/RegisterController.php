@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class RegisterController extends Controller
 {
     /*
-    |--------------------------------------------------------------------------
+    |-------------------------------------------------------------php -------------
     | Register Controller
     |--------------------------------------------------------------------------
     |
@@ -54,7 +54,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6|required_with:password_confirmation|same:password_confirmation'],
-            'password_confirmation' => ['min:6', 'string']
+            'password_confirmation' => ['min:6', 'string'],
         ]);
     }
 
@@ -71,6 +71,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'age' => $data['age'], // vinoreo custom register
+            'mkt_emails' => $data['mkt_emails'],
         ]);
     }
 }
