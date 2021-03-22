@@ -20,7 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'age'
+        'age',
+        'mkt_emails'
     ];
 
     /**

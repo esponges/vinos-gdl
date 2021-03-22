@@ -28,6 +28,8 @@ class AuthTest extends TestCase
             'password' => Hash::make('123456'),
             'password_confirmation' => Hash::make('123456'),
             'age' => Factory::create()->numberBetween(1, 4),
+            'mkt_emails' => Factory::create()->randomElement([true, false, NULL]),
+            // 'mkt_emails' => true,
         ]);
 
         // $response->dumpHeaders();
