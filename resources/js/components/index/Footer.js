@@ -15,16 +15,15 @@ const Footer = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-bottom">
             <div className="mr-auto">
-                <Link to="/about">Nosotros</Link> &nbsp;
-                <Link to="/login">Inicia Sesión</Link>
+                <Link to="/FAQ">Preguntas Frecuentes</Link> |&nbsp;
+                <Link to="/about">Nosotros</Link>
             </div>
             <div>
                 <a href="https://www.instagram.com/vinoreomx/">
-                    <em>Síguenos</em> &nbsp;
                     <FontAwesomeIcon icon={faInstagram} color={"red"} />
                 </a>
+                &nbsp;&nbsp;&nbsp;
                 <a href="https://www.facebook.com/vinoreomx">
-                    &nbsp;
                     <FontAwesomeIcon icon={faFacebook} />
                 </a>
             </div>
