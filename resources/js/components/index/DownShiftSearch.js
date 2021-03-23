@@ -82,7 +82,7 @@ const DownShiftSearch = (props) => {
                                                 },
                                             })}
                                         >
-                                            {item.name}
+                                            {item.name} ${item.price}
                                         </li>
                                     ))
                                 : null}
