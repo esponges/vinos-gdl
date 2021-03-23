@@ -19,18 +19,30 @@ import { Link, withRouter } from "react-router-dom";
 import axios from "axios";
 import sanctumApi from "../../sanctum-api";
 import DownShiftSearch from "./DownShiftSearch";
+import { debounce } from "../../utilities/helpers";
 
 const IndexNavbar = (props) => {
-    const [navbar, setNavbar] = useState(false);
+    const [navbarBg, setNavbarBg] = useState(false);
     const [categories, setCategories] = useState([]);
 
-    const handleScroll = (e) => {
-        if (window.scrollY >= 780) {
-            setNavbar(true);
-        } else {
-            setNavbar(false);
-        }
-    };
+    const [prevScrollPos, setPrevScrollPos] = useState(0);
+    const [visible, setVisible] = useState(true);
+
+
+    const handleScroll = debounce(() => {
+        // use debounce help to reduce rerenders from scroll listener
+
+        const currentScrollPos = window.pageYOffset;
+
+        setVisible(
+            prevScrollPos - currentScrollPos > 70 || // ensures navbar is shown only when swiping up more than 70px
+                currentScrollPos < 10 //  ensures navbar is shown always at the verytop
+        );
+
+        setPrevScrollPos(currentScrollPos);
+
+        window.scrollY >= 480 ? setNavbarBg(true) : setNavbarBg(false);
+    }, 100);
 
     const logout = () => {
         sanctumApi
@@ -54,8 +66,7 @@ const IndexNavbar = (props) => {
 
     useEffect(() => {
         let isMounted = true;
-        //transition effect
-        handleScroll();
+        //transition effect dark/light and hide/show nav
         window.addEventListener("scroll", handleScroll);
 
         if (isMounted) {
@@ -69,17 +80,17 @@ const IndexNavbar = (props) => {
                 });
         }
 
-        //remove event listener
         return () => {
             window.removeEventListener("scroll", handleScroll);
-            let isMounted = false;
+            isMounted = false;
         };
-    }, []);
+    }, [prevScrollPos, visible]);
 
     return (
         <nav
             className={`navbar navbar-expand-lg fixed-top
-            ${navbar ? "navbar-light bg-light" : "navbar-dark bg-dark"}`}
+            ${navbarBg ? "navbar-light bg-light" : "navbar-dark bg-dark"}`}
+            style= {{ top: visible ? '0' : '-180px', transition: 'top 0.6s' }}
         >
             <a className="navbar-brand" href="#">
                 VINOREO

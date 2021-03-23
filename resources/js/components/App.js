@@ -19,6 +19,7 @@ import RegisterForm from "./auth/RegisterForm";
 import { Context } from "./Context";
 import About from "./elements/About";
 import ForgotPassword from "./auth/ForgotPassword";
+import FAQ from "./elements/FAQ";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -175,6 +176,10 @@ const App = (props) => {
 
                         <Route path="/register">
                             <RegisterForm  login={login}/>
+                        </Route>
+
+                        <Route path="/FAQ">
+                            <FAQ />
                         </Route>
 
                         <Route path="/about">

@@ -64,10 +64,12 @@ const Category = (props) => {
                                 id="product-card-mobile"
                             >
                                 <Card>
-                                    <Card.Img
-                                        variant="top"
-                                        src={`/img/products/${product.id}.jpg`}
-                                    />
+                                    <Link to={{pathname: `/products/${product.id}`}}>
+                                        <Card.Img
+                                            variant="top"
+                                            src={`/img/products/${product.id}.jpg`}
+                                        />
+                                    </Link>
                                     <Card.Body>
                                         <Card.Title>
                                             <b>{product.name}</b>

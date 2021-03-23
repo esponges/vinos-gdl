@@ -10276,3 +10276,12 @@ h3 {
   background-color: #3490dc;
   border-color: #3490dc;
 }
+
+/* FAQ */
+#faq-list-el {
+  margin-top: 1rem;
+}
+
+#faq-list-container {
+  margin-left: 0%;
+}
