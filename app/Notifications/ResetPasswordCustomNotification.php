@@ -44,7 +44,7 @@ class ResetPasswordCustomNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Vinoreo: recupera tu contraseña')
+            ->subject('Vinoreo: reestablece tu contraseña')
             ->from('nocontestar@vinoreo.mx')
             ->markdown('emails.auth.passwordReset', ['url' => $this->url, 'host' => $this->host]);
     }

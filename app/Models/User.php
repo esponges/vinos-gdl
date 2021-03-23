@@ -27,7 +27,7 @@ class User extends Authenticatable
 
         // pass url with custom parameters token and email
         $host = $_SERVER['SERVER_NAME'];
-        $url = $host !== 'https//vinoreo.mx'
+        $url = $host !== 'vinoreo.mx'
             ? 'http://127.0.0.1:8000/password/reset/' . $token . '?email=' . $email
             : 'https://vinoreo.mx/password/reset/' . $token . '?email=' . $email;
 
