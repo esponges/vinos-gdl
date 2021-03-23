@@ -90,15 +90,15 @@ const MastHead = () => {
                         );
                     })}
                 </Carousel>
-                <Jumbotron id="ship_pay_banner">
+                {/* <Jumbotron id="ship_pay_banner">
                     <Container>
                         <h5 style={{ textAlign: "center" }}>
-                            <Link to="/about">
-                                <b>Más información sobre pagos y envíos</b>
+                            <Link to="/FAQ">
+                                <b>Preguntas Frecuentes</b>
                             </Link>
                         </h5>
                     </Container>
-                </Jumbotron>
+                </Jumbotron> */}
             </div>
         </>
     );

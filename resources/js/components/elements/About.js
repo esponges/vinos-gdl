@@ -19,65 +19,42 @@ import { Button } from "react-bootstrap";
 const About = () => {
     return (
         <div className="container" style={{ marginTop: "13%" }}>
-            <h3 className="mt-2">Envíos</h3>
             <ul id="about-ul">
+                <h3 className="mt-4">¿Quiénes somos?</h3>
                 <li>
-                    Recibe gratis al día siguiente{" "}
-                    <FontAwesomeIcon icon={faShippingFast} color={"orange"} />{" "}
-                    en el horario que elijas.
+                    Hola! <br /> Somos Fer y Tomás. Somos millenials y
+                    treintones (¿ups?). Nos encanta pasar momentos divertidos
+                    con la nuestra familia y con nuestros amigos acompañados de
+                    un buen vino. Conocemos muy bien la industria de vinos y
+                    licores, por lo que &nbsp;
+                    <b>puedes estar tranquilo; te vamos a atender muy bien.</b>
                 </li>
+                <h3 className="mt-4">¿Qué buscamos?</h3>
                 <li>
-                    Al realizar tu pedido y pagar, tu orden llegará a la
-                    dirección que indiques dentro de la Zona Metropolitana de
-                    Guadalajara al día siguiente, o el día que selecciones.
-                    Podrás elegir por períodos de dos horas (excepto sábados).
+                    No nos parece justo que tengas que pagar precios inflados al
+                    comprar tu vino a domicilio. Prepara con un día de
+                    anticipación tu consumo y te podemos ayudar a ahorrar mucho
+                    desde la comodidad de tu casa.
                 </li>
+                <h3 className="mt-4 mb-3">Nuestro compromiso</h3>
                 <li>
-                    Por el momento sólo tenemos envíos fuera de la zona
-                    metropolitana de Guadalajara.
-                </li>
-            </ul>
-            <h3 className="mt-2">Pagos</h3>
-            <p>Escoge el método de pago de tu preferencia:</p>
-            <ul>
-                <li>
-                    <FontAwesomeIcon icon={faPaypal} color={"blue"} /> &nbsp;
-                    <b>PayPal:</b> Realiza el pago total de tu compra mediante
-                    PayPal con tu tarjeta de crédito o débito.
-                </li>
-                <li>
-                    <FontAwesomeIcon
-                        icon={faMoneyBillWaveAlt}
-                        color={"green"}
-                    />{" "}
-                    &nbsp;
-                    <b>En efectivo al recibir: </b> Paga una pequeña cantidad
-                    del total de la compra por PayPal y liquida el resto en
-                    efectivo al recibir tu orden.
-                </li>
-                <li>
-                    <FontAwesomeIcon icon={faExchangeAlt} color={"red"} />{" "}
-                    &nbsp;
-                    <b>Transferencia Bancaria:</b> Al
-                    <em>checkout</em> de tu pedido recibirás la información
-                    bancaria, y se te pedirá que envies tu comprobante a nuestro
-                    Whatsapp o correo electrónico
-                </li>
-            </ul>
-            <h3 className="mt-2">Siempre precios de Mayoreo</h3>
-            <ul id="about-ul">
-                <li>
-                    <FontAwesomeIcon icon={faPercentage} color={"red"} />
-                    Todos nuestros precios son siempre bajos, al seleccionar tu
-                    producto puedes comparar el precio directamente la
-                    competencia. La compra mínima es de $1,500 MXN.
+                    <b>
+                        Queremos que el vino sea la menor de tus preocupaciones
+                    </b>
+                    &nbsp; para
+                    <ul id="about-ul">
+                        <li>ese viaje o evento en puerta,</li>
+                        <li>mantener bien llena la cava de tu hogar,</li>
+                    </ul>
+                    y, en general, hacer tus compras de vino a domicilio más{" "}
+                    <em>baratas sin dejar de ser confiables.</em>
                 </li>
             </ul>
             <h5 className="mb-3">
                 <FontAwesomeIcon icon={faInfoCircle} />
                 ¿Tienes dudas? Contáctanos a{" "}
                 <a href="mailto: hola@vinoreo.mx">hola@vinoreo</a> o directo a
-                nuestro Whatsapp
+                nuestro Whatsapp/DM.
             </h5>
             <Link to="/">
                 <Button variant={"primary"}>Regresar</Button>
