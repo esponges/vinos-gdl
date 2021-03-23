@@ -18,6 +18,7 @@ import RegisterForm from "./auth/RegisterForm";
 
 import { Context } from "./Context";
 import About from "./elements/About";
+import ForgotPassword from "./auth/ForgotPassword";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -158,6 +159,10 @@ const App = (props) => {
 
                         <Route path="/cart">
                             <Cart cartCountUpdate={cartCountUpdate} />
+                        </Route>
+
+                        <Route path="/forgot-password">
+                            <ForgotPassword />
                         </Route>
 
                         <Route path="/login">
