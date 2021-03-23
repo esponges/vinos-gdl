@@ -107,8 +107,14 @@ const Login = (props) => {
                         </Button>
                     </Link>
                     <br />
+                    <Link to="/forgot-password">
+                        <Button variant="link" className="mt-2">
+                            ¿Olvidaste tu contraseña?
+                        </Button>
+                    </Link>
+                    <br />
                     <Link to="/">
-                        <Button variant="outline-secondary" className="mt-5">
+                        <Button variant="outline-secondary" className="mt-2">
                             Regresar
                         </Button>
                     </Link>

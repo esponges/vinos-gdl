@@ -13,7 +13,7 @@ const loginOrRegister = () => {
                         Sólo necesitas un correo electrónico válido.
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        O si ya estás registrado, inicia sesión.
+                        Si ya estás registrado, inicia sesión.
                     </ListGroup.Item>
                 </ListGroup>
                 <div className="container mt-3">
