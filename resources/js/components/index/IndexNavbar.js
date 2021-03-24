@@ -90,7 +90,7 @@ const IndexNavbar = (props) => {
         <nav
             className={`navbar navbar-expand-lg fixed-top
             ${navbarBg ? "navbar-light bg-light" : "navbar-dark bg-dark"}`}
-            style= {{ top: visible ? '0' : '-180px', transition: 'top 0.6s' }}
+            style={{ top: visible ? "0" : "-180px", transition: "top 0.6s" }}
         >
             <a className="navbar-brand" href="#">
                 VINOREO
@@ -193,7 +193,10 @@ const IndexNavbar = (props) => {
             </div>
 
             {/* floating btns */}
-            <a href="#" className="material-icons floating-btn-whats">
+            <a
+                href="https://wa.me/message/U6TWALXLFVMJF1"
+                className="material-icons floating-btn-whats"
+            >
                 <FontAwesomeIcon icon={faWhatsapp} />
             </a>
             <Link to="/cart" className="material-icons floating-btn-cart">
