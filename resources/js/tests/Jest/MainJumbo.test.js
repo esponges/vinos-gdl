@@ -4,7 +4,7 @@ import toJson from "enzyme-to-json";
 import Adapter from "enzyme-adapter-react-16";
 import { BrowserRouter as Router } from "react-router-dom";
 import { create, update } from "react-test-renderer";
-import MainJumbo from "../components/index/MainJumbo";
+import MainJumbo from "../../components/index/MainJumbo";
 
 configure({ adapter: new Adapter() });
 
