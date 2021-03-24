@@ -16,7 +16,6 @@ import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
-import PaypalPayment from "./PaypalPayment";
 import { Context } from "../Context";
 
 const Checkout = (props) => {

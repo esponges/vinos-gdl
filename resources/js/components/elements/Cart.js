@@ -27,9 +27,9 @@ const Cart = (props) => {
                     .reduce((a, b) => a + b, 0);
                 setTotal(newCartTotal);
 
-                // update navbar +1 cart count
                 props.cartCountUpdate(1);
                 context.getCartContent();
+                context.notifyMinAmountRemaining(updatedCart[i].price);
             } else {
                 console.error("error fecthing add route");
             }
@@ -55,7 +55,9 @@ const Cart = (props) => {
                 setTotal(newCartTotal);
                 // remove all item count from navbar counter
                 props.cartCountUpdate(qty * -1);
-                context.getCartContent();
+
+                const removedAmount = total - newCartTotal;
+                context.notifyMinAmountRemaining(removedAmount * -1);
             } else {
                 console.error("error fetching delete route");
             }

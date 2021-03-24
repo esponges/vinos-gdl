@@ -15,12 +15,16 @@ const SingleProduct = (props) => {
 
     const context = useContext(Context);
 
-    const handleItemAddClick = (e, id) => {
+    const handleItemAddClick = (e, id, price) => {
         e.preventDefault();
         setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
+
         context.addToCart(id, itemCount);
         context.getCartContent();
+
+        let productSubTotal = price * itemCount;
+        context.notifyMinAmountRemaining(productSubTotal);
     };
 
     useEffect(() => {
@@ -56,8 +60,6 @@ const SingleProduct = (props) => {
             className="container"
             style={{ maxWidth: "32rem", marginTop: "5%", marginBottom: "10%" }}
         >
-            {console.log("SingleProduct.js rendering")}
-
             {product != {} && (
                 <Card>
                     <Card.Img
@@ -153,7 +155,7 @@ const SingleProduct = (props) => {
                             <div className="col-6">
                                 <Button
                                     variant="primary"
-                                    onClick={(e) => handleItemAddClick(e, product.id)}
+                                    onClick={(e) => handleItemAddClick(e, product.id, product.price)}
                                 >
                                     +
                                 </Button>
