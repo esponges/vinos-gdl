@@ -31,22 +31,21 @@ const About = () => {
                 </li>
                 <h3 className="mt-4">¿Qué buscamos?</h3>
                 <li>
-                    No nos parece justo que tengas que pagar precios inflados al
-                    comprar tu vino a domicilio. Prepara con un día de
-                    anticipación tu consumo y te podemos ayudar a ahorrar mucho
-                    desde la comodidad de tu casa.
+                    Que no pagues sobreprecio en el super, tienda de
+                    conveniencia, vianata o app. Prepara con un día de
+                    anticipación tu consumo y te podemos ayudar a ahorrar desde
+                    la comodidad de tu casa.
+                    <em>Olvídate de estar cazando ofertas</em>. <br />
+                    <b>Con nosotros siempre hay precios bajos.</b>
                 </li>
                 <h3 className="mt-4 mb-3">Nuestro compromiso</h3>
                 <li>
                     <b>
                         Queremos que el vino sea la menor de tus preocupaciones
                     </b>
-                    &nbsp; para
-                    <ul id="about-ul">
-                        <li>ese viaje o evento en puerta,</li>
-                        <li>mantener bien llena la cava de tu hogar,</li>
-                    </ul>
-                    y, en general, hacer tus compras de vino a domicilio más{" "}
+                    &nbsp; para ese viaje o evento en puerta, mantener bien
+                    llena la cava de tu hogar, y, en general, hacer tus compras
+                    de vino a domicilio más{" "}
                     <em>baratas sin dejar de ser confiables.</em>
                 </li>
             </ul>

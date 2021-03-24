@@ -19,12 +19,16 @@ const Category = (props) => {
 
     const context = useContext(Context);
 
-    const handleItemAddClick = (e, id) => {
+    const handleItemAddClick = (e, id, price) => {
         e.preventDefault();
         setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
+
         context.addToCart(id, itemCount);
-        context.cartContent();
+        context.getCartContent();
+
+        let productSubTotal = price * itemCount;
+        context.notifyMinAmountRemaining(productSubTotal);
     }
 
     const getProducts = async () => {
@@ -100,7 +104,7 @@ const Category = (props) => {
                                                 />
                                             </div>
                                             <div className="col-3">
-                                                <Button variant="primary" onClick={(e) => handleItemAddClick (e, product.id)}>
+                                                <Button variant="primary" onClick={(e) => handleItemAddClick (e, product.id, product.price)}>
                                                     +
                                                 </Button>
                                             </div>
