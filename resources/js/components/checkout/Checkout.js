@@ -52,10 +52,10 @@ const Checkout = (props) => {
         console.log(e.target.value);
         setPaymentMode(e.target.value);
         if (e.target.value === "paypal")
-            setTotalToPay(`Total ${cartTotal} mxn`);
+            setTotalToPay(`Total MX$${cartTotal}`);
         else if (e.target.value === "transfer")
-            setTotalToPay(`Total ${cartTotal} mxn`);
-        else setTotalToPay(`Sub-total ${upfrontPayPalPayment} mxn`);
+            setTotalToPay(`Total MX$${cartTotal}`);
+        else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
     };
 
     // validate CP
@@ -83,12 +83,12 @@ const Checkout = (props) => {
                 .get("/cart/get-total")
                 .then((res) => {
                     setCartTotal(
-                        new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "MXN",
-                        }).format(
+                        // new Intl.NumberFormat("en-US", {
+                        //     style: "currency",
+                        //     currency: "MXN",
+                        // }).format(
                             res.data
-                        )
+                        // )
                     );
                 })
                 .catch((err) => {
@@ -165,13 +165,10 @@ const Checkout = (props) => {
 
     const totalHeader = (
         <h3>
-            {!totalToPay ? `Total ${cartTotal} ` :
-                new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "MXN",
-                }).format(
-                    totalToPay
-                )}
+            {/* {paymentMode == "on_delivery"
+                ? totalToPay + '<br />' + 'Total MX$' + cartTotal
+                : `Total MX$${cartTotal} `} */}
+                {`Total MX$${cartTotal}`}
         </h3>
     );
 
