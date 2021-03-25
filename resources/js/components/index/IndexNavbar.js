@@ -172,7 +172,7 @@ const IndexNavbar = (props) => {
                                 size="sm"
                                 id="item-count"
                             >
-                                <FontAwesomeIcon icon={faShoppingBasket} />
+                                <FontAwesomeIcon icon={faShoppingBasket} data-testid="cart-count-badge"/>
                                 &nbsp;{props.cartCount ?? props.cartCount}
                             </Badge>
                         </Link>

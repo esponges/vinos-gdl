@@ -1,0 +1,60 @@
+import { rest } from 'msw';
+import "@testing-library/jest-dom";
+import { render, screen } from "@testing-library/react";
+import { setupServer } from 'msw/node';
+
+import React from "react";
+import { HashRouter } from "react-router-dom";
+
+import SingleProduct from "../../components/elements/SingleProduct";
+import axios from 'axios';
+
+const fakeUserResponse = { token: "fake_response" };
+const server = setupServer(
+    rest.post("/api/login", (req, res, ctx) => {
+        return res(ctx.json(fakeUserResponse));
+    })
+);
+
+jest.mock('axios');
+
+describe("SingleProduct", () => {
+    beforeAll(() => {
+        render(
+            <HashRouter>
+                <SingleProduct />
+            </HashRouter>
+        );
+    });
+
+    server.use(
+        rest.get(
+            "/products/1/links",
+            (req, res, ctx) => {
+                return res(
+                    ctx.status(500),
+                    ctx.json({ message: "Internal server error" })
+                );
+            }
+        )
+    );
+
+    it("renders", () => {
+        expect(screen.getByText("Añadir al carrito")).toBeInTheDocument();
+        expect(screen.getByText(/Añadir al carrito/)).toBeInTheDocument();
+
+        /* retrieve roles */
+        // screen.getByRole('');
+
+        expect(screen.getByRole("img")).toBeInTheDocument();
+    });
+    it("fetch product", () => {
+        // fireEvent.click(screen.getByRole())
+        // screen.getByText('');
+        const product = [{name: 'absolut', price: '1000', id: 1}];
+        const res = {data: product};
+        axios.get.mockResolvedValue(res);
+
+        return SingleProduct.all().then(data => expect(data).toEqual(product));
+    });
+});

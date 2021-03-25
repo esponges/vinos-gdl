@@ -11,37 +11,41 @@
         "test": "jest --watchAll"
     },
     "devDependencies": {
-        "@babel/preset-react": "^7.0.0",
+        "@babel/preset-react": "^7.12.13",
+        "@testing-library/jest-dom": "5.11.9",
+        "@testing-library/react": "^11.2.5",
         "axios": "^0.21.1",
-        "bootstrap": "^4.5.3",
+        "bootstrap": "^4.6.0",
         "jquery": "^3.2",
-        "laravel-mix": "^6.0.6",
-        "lodash": "^4.17.19",
-        "popper.js": "^1.12",
-        "postcss": "^8.1.14",
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
-        "resolve-url-loader": "^3.1.0",
-        "sass": "^1.15.2",
-        "sass-loader": "^8.0.0"
+        "laravel-mix": "^6.0.13",
+        "lodash": "^4.17.21",
+        "popper.js": "^1.16.1",
+        "postcss": "^8.2.8",
+        "react": "^16.14.0",
+        "react-dom": "^16.14.0",
+        "resolve-url-loader": "^3.1.2",
+        "sass": "^1.32.8",
+        "sass-loader": "^8.0.2"
     },
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": "^1.2.34",
-        "@fortawesome/free-brands-svg-icons": "^5.15.2",
-        "@fortawesome/free-solid-svg-icons": "^5.15.2",
+        "@babel/plugin-transform-runtime": "^7.13.10",
+        "@fortawesome/fontawesome-svg-core": "^1.2.35",
+        "@fortawesome/free-brands-svg-icons": "^5.15.3",
+        "@fortawesome/free-solid-svg-icons": "^5.15.3",
         "@fortawesome/react-fontawesome": "^0.1.14",
-        "downshift": "^6.1.0",
+        "downshift": "^6.1.1",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.6",
         "enzyme-to-json": "^3.6.1",
         "jest": "^26.6.3",
-        "react-bootstrap": "^1.4.3",
-        "react-multi-carousel": "^2.6.1",
-        "react-paginate": "^7.1.0",
+        "msw": "^0.27.2",
+        "react-bootstrap": "^1.5.0",
+        "react-multi-carousel": "^2.6.2",
+        "react-paginate": "^7.1.2",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "react-select": "^4.1.0",
-        "react-test-renderer": "^17.0.1",
+        "react-select": "^4.3.0",
+        "react-test-renderer": "^16.14.0",
         "react-toastify": "^7.0.3"
     },
     "babel": {
@@ -50,7 +54,8 @@
             "@babel/preset-env"
         ],
         "plugins": [
-            "@babel/plugin-transform-react-jsx"
+            "@babel/plugin-transform-react-jsx",
+            "@babel/plugin-transform-runtime"
         ]
     }
 }
