@@ -4,7 +4,7 @@
     <body>
         <div class="container mt-2">
             {{-- <img class="card-img-top" src="holder.js/100x180/" alt=""> --}}
-                <h4>Gracias por tu compra</h4>
+                <p>Confirmación de la orden <b>#{{$order['id']}}</b></p>
                 <p class="mt-4"><b>Resumen de compra</b></p>
                 <table class="table mt-2 mb-2">
                     <thead>

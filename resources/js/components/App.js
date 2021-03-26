@@ -119,7 +119,7 @@ const App = (props) => {
 
         if (newCartTotal < 1500) {
             toast.info(
-                `Sólo agrega MX${
+                `Sólo agrega MX$${
                     1500 - newCartTotal
                 } más para proceder al checkout`
             );

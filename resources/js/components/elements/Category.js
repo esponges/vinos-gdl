@@ -105,7 +105,8 @@ const Category = (props) => {
                                                 <input
                                                     type="number"
                                                     name="quantity"
-                                                    defaultValue={1}
+                                                    defaultValue={itemCount}
+                                                    value={itemCount}
                                                     min="1"
                                                     className="form-control input-number"
                                                     onChange={async (e) =>
