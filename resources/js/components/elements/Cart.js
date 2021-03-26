@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+
 import { Button, Table, Alert } from "react-bootstrap";
+import CustomLoader from "../CustomLoader";
+
 import { Context } from "../Context";
 
 const Cart = (props) => {
@@ -12,11 +15,12 @@ const Cart = (props) => {
     const context = useContext(Context);
 
     const addOneMore = async (id, i) => {
+        context.setLoader(true);
+
         try {
             const res = await axios.get(`cart/${id}/add/1`);
             // if res true
             if (res) {
-                console.log(cart);
                 const updatedCart = [...cart];
                 updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
                 setCart(updatedCart);
@@ -32,14 +36,17 @@ const Cart = (props) => {
                 context.notifyMinAmountRemaining(updatedCart[i].price);
             } else {
                 console.error("error fecthing add route");
+                context.setLoader(false);
             }
         } catch (err) {
             console.error(err);
+            context.setLoader(false);
         }
     };
 
     // remove all items from given id
     const removeItem = async (productToRemove, productId, qty) => {
+        context.setLoader(true);
         try {
             const res = await axios.get(`/cart/${productId}/destroy`);
             // positive response
@@ -60,10 +67,12 @@ const Cart = (props) => {
                 context.notifyMinAmountRemaining(removedAmount * -1);
             } else {
                 console.error("error fetching delete route");
+                context.setLoader(false);
             }
             // res not true
         } catch (err) {
             console.error(err, "try failed, got catch");
+            context.setLoader(false);
         }
     };
 
@@ -90,7 +99,8 @@ const Cart = (props) => {
                 }
             })
             .catch((err) => {
-                setError(err.message);
+                // setError(err.message);
+                console.error(err);
             });
 
         //unmount
@@ -104,7 +114,7 @@ const Cart = (props) => {
                 <Alert variant="info">
                     Aún no has añadido productos al carrito
                 </Alert>
-            ) : (
+            ) : !context.loader ? (
                 <Table striped bordered hover size="sm" className="mt-3">
                     <thead>
                         <tr>
@@ -134,7 +144,10 @@ const Cart = (props) => {
                                             className="btn-group"
                                             id="qty-action-btns"
                                         >
-                                            <Button variant="success" id="cart-qty-btn">
+                                            <Button
+                                                variant="success"
+                                                id="cart-qty-btn"
+                                            >
                                                 {product.quantity}
                                             </Button>
                                             <Button
@@ -174,6 +187,8 @@ const Cart = (props) => {
                         );
                     })}
                 </Table>
+            ) : (
+                <CustomLoader />
             )}
             <div className="container mt-3">
                 <h3 className="mb-3">

@@ -191,7 +191,6 @@ const Checkout = (props) => {
 
     return (
         <div className="container">
-            {/* {console.log('this is in checkout ', context.cartContent)} */}
             {props.loggedIn ? (
                 <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}

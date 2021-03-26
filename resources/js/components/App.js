@@ -24,7 +24,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Context } from "./Context";
 
-
 const App = (props) => {
     const [products, setProducts] = useState(null);
     const [prods, setProds] = useState("");
@@ -34,12 +33,14 @@ const App = (props) => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
 
+    const [loader, setLoader] = useState(false);
+
     const addToCart = (id, itemCount) => {
-        console.log("add to cart! ", id, "item count ", itemCount);
+        setLoader(true);
         axios
-            .get(`cart/${id}/add/${itemCount}`)
-            .then(() => {
-                // console.log(res.data, 'added to cart!!!');
+        .get(`cart/${id}/add/${itemCount}`)
+        .then(() => {
+                console.log("add to cart! ", id, "item count ", itemCount);
                 cartCountUpdate(itemCount);
                 getCartContent();
             })
@@ -48,6 +49,12 @@ const App = (props) => {
             });
     };
 
+    const cartCountUpdate = (qty) => {
+        setCartCount(cartCount + qty);
+        setLoader(false);
+    };
+
+    /* Remove this from context after setting paypal in back end  */
     const getCartContent = async () => {
         const res = await axios
             .get("cart")
@@ -58,10 +65,6 @@ const App = (props) => {
                 console.error(err);
             });
         return res;
-    };
-
-    const cartCountUpdate = (qty) => {
-        setCartCount(cartCount + qty);
     };
 
     const login = () => {
@@ -169,6 +172,8 @@ const App = (props) => {
                     cartCountUpdate: cartCountUpdate,
                     getCartContent: getCartContent,
                     notifyMinAmountRemaining: notifyMinAmountRemaining,
+                    loader: loader,
+                    setLoader: setLoader,
                 }}
             >
                 <IndexNavbar
