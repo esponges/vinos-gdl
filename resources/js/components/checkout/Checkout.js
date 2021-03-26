@@ -20,7 +20,7 @@ import { Context } from "../Context";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
-    const [orderName, setOrderName] = useState("");
+    const [orderName, setOrderName] = useState(`${props.userInfo["userName"]}`);
     const [CP, setCP] = useState("");
     const [neighborhood, setNeighborhood] = useState("");
     const [cartTotal, setCartTotal] = useState("");
@@ -31,6 +31,8 @@ const Checkout = (props) => {
     const [addressDetails, setAddressDetails] = useState("");
     const [deliveryDay, setDeliveryDay] = useState("");
     const [deliverySchedule, setDeliverySchedule] = useState("");
+
+    const [orderInfo, setOrderInfo] = useState(null);
 
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
@@ -228,7 +230,7 @@ const Checkout = (props) => {
                             <Form.Label>Tu nombre</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={`${props.userInfo["userName"]}`}
+                                value={orderName}
                                 onChange={(e) => setOrderName(e.target.value)}
                                 name="order_name"
                             />

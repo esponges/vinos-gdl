@@ -7,7 +7,9 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PaypalRestApiController;
 use Darryldecode\Cart\CartCondition;
+use Tests\Feature\PaypalRestApiTest;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,9 @@ Route::prefix('order')->group( function () {
 });
 
 Route::prefix('paypal')->group( function () {
+    /* v3  */
+    Route::post('/rest-api/checkout/', [PaypalRestApiController::class, 'restApiCheckout'])->name('paypal.restApiCheckout');
+    /* v1 expressCheckout */
     Route::get('/checkout/{orderId}/{paymentMode}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
     Route::get('/fail/{orderId}/{error}/{errorHeader}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');
     Route::get('/success/{orderId}/{paymentMode}/{cartTotal}', [PaypalController::class, 'getExpressCheckoutSuccess'])->name('paypal.success');

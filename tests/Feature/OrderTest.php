@@ -42,13 +42,10 @@ class OrderTest extends TestCase
 
     public function mockOrder()
     {
-        $cartTotal = \Cart::getTotal() * 0.07;
-        $grandTotal = \Cart::getTotal();
-        $user = User::first();
-        $balanceToPay = $grandTotal - $cartTotal;
+        $this->mockCart();
 
         $order = new Order;
-        $order->name = Factory::create()->name();
+        $order->order_name = Factory::create()->name();
         $order->address = Factory::create()->sentence(2);
         $order->payment_mode = Factory::create()->randomElement(['on_delivery', 'paypal']);
         $order->address_details = Factory::create()->sentence(2);
@@ -57,13 +54,36 @@ class OrderTest extends TestCase
         $order->phone = Factory::create()->numberBetween('123456', '123443');
         $order->delivery_day = "Lunes";
         $order->delivery_schedule = "10 am a 2pm";
-        $order->id = Factory::create()->numberBetween(1000, 2000);
+
+        if($order->payment_mode == 'on_delivery'){
+            $cart = \Cart::getContent();
+
+            $cartItems = array_map(function ($item) {
+                return [
+                    'name' => "anticipo " . $item['name'],
+                    'price' => ceil($item['price'] - ($item['price'] / 1.07)),
+                    'qty' => $item['quantity']
+                ];
+            }, $cart->toArray());
+
+            $subtotal = 0;
+            foreach ($cartItems as $item) {
+                $subtotal += $item['price'] * $item['qty'];
+            }
+
+            $order->balance = $subtotal;
+        }
+
+        $user = User::first()->toArray();
+
+        $order->total = \Cart::getTotal();
+        $order->total_items = \Cart::getContent()->count();
+        $order->user_id = $user['id'];
+        $order->save();
 
         $orderInfo = [
             'user' => $user,
-            'order' => $order,
-            'balanceToPay' => $balanceToPay,
-            'grandTotal' => $grandTotal,
+            'order' => $order->toArray(),
         ];
 
         return $orderInfo;
@@ -72,7 +92,7 @@ class OrderTest extends TestCase
     public function test_order_gets_created()
     {
         $this->withoutExceptionHandling();
-        $this->mockCart();
+        $this->mockOrder();
 
         $response = $this->actingAs(User::first())->post('order/create', [
             'address' => Factory::create()->sentence(6),
@@ -91,7 +111,6 @@ class OrderTest extends TestCase
     public function test_transfer_payment_works()
     {
         $this->withoutExceptionHandling();
-        $this->mockCart();
         $orderInfo = $this->mockOrder();
         $user = User::first();
 
@@ -106,7 +125,7 @@ class OrderTest extends TestCase
             'cp' => $orderInfo['order']['cp'],
             'user_id' => $orderInfo['user']['id'],
             'order_name' => $orderInfo['user']['name'],
-            'neighborhood' => $orderInfo['order']['name'],
+            'neighborhood' => $orderInfo['order']['neighborhood'],
             'delivery_day' => $orderInfo['order']['delivery_day'],
             'delivery_schedule' => $orderInfo['order']['delivery_schedule'],
         ]);
@@ -117,7 +136,7 @@ class OrderTest extends TestCase
     public function test_transfer_payment_route()
     {
         $this->withoutExceptionHandling();
-        $this->mockCart();
+        $this->mockOrder();
         $orderId = Order::first()->id;
 
         $response = $this->actingAs(User::first())->get(route('paypal.transfer', $orderId));
