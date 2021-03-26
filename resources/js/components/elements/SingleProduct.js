@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
 import { withRouter, Link } from 'react-router-dom';
 import { Context } from '../Context';
 import axios from 'axios';
+
+import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
+import CustomLoader from '../CustomLoader';
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
@@ -60,7 +62,7 @@ const SingleProduct = (props) => {
             className="container"
             style={{ maxWidth: "32rem", marginTop: "5%", marginBottom: "10%" }}
         >
-            {product != {} && (
+            {product != {} && !context.loader ? (
                 <Card>
                     <Card.Img
                         variant="top"
@@ -71,11 +73,12 @@ const SingleProduct = (props) => {
                         {/* <Card.Text>{product.description}</Card.Text> */}
                     </Card.Body>
                     <ListGroup className="list-group-flush">
-                        <ListGroupItem>Precio:
+                        <ListGroupItem>
+                            Precio:
                             {new Intl.NumberFormat("en-US", {
-                                    style: "currency",
-                                    currency: "MXN",
-                                }).format(product.price)}
+                                style: "currency",
+                                currency: "MXN",
+                            }).format(product.price)}
                         </ListGroupItem>
                         <ListGroupItem>
                             {competidorsInfo.length != 0 && (
@@ -89,7 +92,10 @@ const SingleProduct = (props) => {
                                                     target="_blank"
                                                     onClick={(e) => {
                                                         e.preventDefault;
-                                                        window.open(competidorsInfo[0].link);
+                                                        window.open(
+                                                            competidorsInfo[0]
+                                                                .link
+                                                        );
                                                     }}
                                                 >
                                                     <img
@@ -101,10 +107,15 @@ const SingleProduct = (props) => {
                                                         }}
                                                     />
                                                     <span>&nbsp;&nbsp;</span>
-                                                    {new Intl.NumberFormat("en-US", {
+                                                    {new Intl.NumberFormat(
+                                                        "en-US",
+                                                        {
                                                             style: "currency",
                                                             currency: "MXN",
-                                                        }).format(competidorsInfo[0].price)}
+                                                        }
+                                                    ).format(
+                                                        competidorsInfo[0].price
+                                                    )}
                                                 </button>
                                             </li>
                                         )}
@@ -115,7 +126,10 @@ const SingleProduct = (props) => {
                                                     target="_blank"
                                                     onClick={(e) => {
                                                         e.preventDefault;
-                                                        window.open(competidorsInfo[1].link);
+                                                        window.open(
+                                                            competidorsInfo[1]
+                                                                .link
+                                                        );
                                                     }}
                                                 >
                                                     <img
@@ -127,10 +141,15 @@ const SingleProduct = (props) => {
                                                         }}
                                                     />
                                                     <span>&nbsp;&nbsp;</span>
-                                                    {new Intl.NumberFormat("en-US", {
+                                                    {new Intl.NumberFormat(
+                                                        "en-US",
+                                                        {
                                                             style: "currency",
                                                             currency: "MXN",
-                                                        }).format(competidorsInfo[1].price)}
+                                                        }
+                                                    ).format(
+                                                        competidorsInfo[1].price
+                                                    )}
                                                 </button>
                                             </li>
                                         )}
@@ -148,14 +167,24 @@ const SingleProduct = (props) => {
                                     min="1"
                                     defaultValue={1}
                                     className="form-control input-number"
-                                    onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                    onChange={async (e) =>
+                                        await setItemCount(
+                                            parseInt(e.target.value)
+                                        )
+                                    }
                                     style={{ minWidth: "60px" }}
                                 />
                             </div>
                             <div className="col-6">
                                 <Button
                                     variant="primary"
-                                    onClick={(e) => handleItemAddClick(e, product.id, product.price)}
+                                    onClick={(e) =>
+                                        handleItemAddClick(
+                                            e,
+                                            product.id,
+                                            product.price
+                                        )
+                                    }
                                 >
                                     +
                                 </Button>
@@ -164,18 +193,20 @@ const SingleProduct = (props) => {
                                 </p>
                             </div>
                         </div>
-                        {productAddMsg &&
-                            product.id ==
-                                productAddId && (
-                                <div>
-                                    <Card.Text
-                                        style={{color: "red", marginTop: "10px"}}
-                                    > { productAddMsg }
-                                    </Card.Text>
-                                </div>
-                            )}
+                        {productAddMsg && product.id == productAddId && (
+                            <div>
+                                <Card.Text
+                                    style={{ color: "red", marginTop: "10px" }}
+                                >
+                                    {" "}
+                                    {productAddMsg}
+                                </Card.Text>
+                            </div>
+                        )}
                     </Card.Body>
                 </Card>
+            ) : (
+                <CustomLoader />
             )}
             <div className="container mt-5">
                 <Link className="ml-2" to="/">
