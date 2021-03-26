@@ -4,7 +4,7 @@
     <body>
         <div class="container mt-2">
             {{-- <img class="card-img-top" src="holder.js/100x180/" alt=""> --}}
-            <h4>Gracias por tu compra</h4>
+            <p>Confirmación de la orden <b>#{{$orderId}}</b></p>
             <p class="mt-4"><b>Resumen de compra</b></p>
             <table class="table mt-2 mb-2">
                 <thead>
@@ -50,7 +50,7 @@
                             <li>Banco <b>Banorte</b><br><br></li>
                         </ul>
                         <p>Por favor envía tu comprobante de pago junto a tu número de orden al Whatsapp
-                            <b>33 31 67 31 50</b>
+                            <b>33 20 19 24 20</b>
                             o al correo electrónico
                             <b>hola@vinoreo.mx</b>
                             &nbsp;para procesar tu envío
