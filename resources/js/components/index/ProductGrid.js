@@ -107,9 +107,6 @@ const ProductGrid = (props) => {
                                                                             type="number"
                                                                             min="1"
                                                                             name="quantity"
-                                                                            defaultValue={
-                                                                                itemCount
-                                                                            }
                                                                             value={itemCount}
                                                                             className="form-control input-number"
                                                                             onChange={async (

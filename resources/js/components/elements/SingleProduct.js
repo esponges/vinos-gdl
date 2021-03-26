@@ -165,7 +165,6 @@ const SingleProduct = (props) => {
                                     type="number"
                                     name="quantity"
                                     min="1"
-                                    defaultValue={itemCount}
                                     value={itemCount}
                                     className="form-control input-number"
                                     onChange={async (e) =>

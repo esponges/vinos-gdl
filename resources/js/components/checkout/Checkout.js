@@ -17,6 +17,7 @@ import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
 import { Context } from "../Context";
+import { Link } from "react-router-dom";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -191,7 +192,7 @@ const Checkout = (props) => {
 
     return (
         <div className="container">
-            {props.loggedIn ? (
+            {props.loggedIn && cartTotal > 1500 ? (
                 <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
 
@@ -354,7 +355,8 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         {/* let user pay if all information is set */}
-                        {!buttonIsActive && addressAlertMessage &&
+                        {console.log(buttonIsActive, addressAlertMessage, phone.length)}
+                        {!buttonIsActive && (addressAlertMessage || phone.length != 10) &&
                             <Alert variant={"warning"} className="m-1">
                                 Por favor completa tu información
                             </Alert>
@@ -373,7 +375,14 @@ const Checkout = (props) => {
                     {/* <PaypalPayment /> */}
                 </div>
             ) : (
-                <LoginOrRegister className="container mt-2" />
+                <div>
+                    <Alert variant="warning">
+                        Tu carrito de compras está vacío
+                    </Alert>
+                    <Link to="/">
+                        <Button variant="primary">Regresar</Button>
+                    </Link>
+                </div>
             )}
         </div>
     );
