@@ -23,7 +23,7 @@ class OrderController extends Controller
             $order->payment_mode = $request->payment_mode;
             $order->address = $request->address;
             $order->address_details = $request->address_details;
-            $order->delivery_day = $request->delivery_day;
+            $order->delivery_day =$request->delivery_day;
             $order->delivery_schedule = $request->delivery_schedule;
             $order->phone = $request->phone;
             $order->cp = $request->cp;
@@ -110,5 +110,41 @@ class OrderController extends Controller
         \Cart::clear();
 
         return view('order.paypalSuccess', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal'));
+    }
+
+    public function paypalApiOrder(Request $request)
+    {
+        if (Auth::user()) {
+            $order = new Order();
+            $order->total = \Cart::getTotal();
+            $order->total_items = \Cart::getTotalQuantity();
+            $order->user_id = Auth::user()->id;
+            $order->order_name = $request->order_name;
+            $order->payment_mode = $request->payment_mode;
+            $order->address = $request->address;
+            $order->address_details = $request->address_details;
+            $order->delivery_day = $request->delivery_day;
+            $order->delivery_schedule = $request->delivery_schedule;
+            $order->phone = $request->phone;
+            $order->cp = $request->cp;
+            $order->neighborhood = $request->neighborhood;
+            $order->balance = $request->balance;
+
+            $order->save();
+
+            $cartItems = \Cart::getContent();
+
+            foreach ($cartItems as $item) {
+                DB::table('order_items')->insert([
+                    'product_id' => $item->id,
+                    'unit_price' => $item->price,
+                    'order_id' => $order->id,
+                    'qty' => $item->quantity,
+                ]);
+            }
+
+            return response()->json(['status' => 'CREATED', 'orderID' => $order->id], 200);
+        }
+        return response()->json('session timed out', 408);
     }
 }

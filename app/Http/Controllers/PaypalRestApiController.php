@@ -25,7 +25,7 @@ class PaypalRestApiController extends Controller
 
             return response()->json(['id' => $paypalOrderId, 'status' => $paypalOrderStatus], 200);
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'Error processing order ' . $order->id]);
+            return response()->json(['error' => 'Error processing order ' . $order->id, 'order' => $order]);
         }
     }
 

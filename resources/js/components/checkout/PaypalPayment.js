@@ -1,28 +1,27 @@
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { Context } from "../Context";
 
 const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 
-const PaypalPayment = () => {
+const PaypalPayment = ({ orderInfo }) => {
     const context = useContext(Context);
 
     /* doesn't include taxes and shipping */
-    const value = (
-        context.cartContent
-            .map((item) => item.quantity * item.price)
-            .reduce((a, b) => a + b, 0)
-    );
+    const value = context.cartContent
+        .map((item) => item.quantity * item.price)
+        .reduce((a, b) => a + b, 0);
 
     // const items = (
     //     let data = new Map()
     //     context.cartContent
-            // .map((item) => {
-            //     {
-            //         item: item.name,
+    // .map((item) => {
+    //     {
+    //         item: item.name,
 
-            //     }
-            // })
+    //     }
+    // })
     // );
 
     // const prepareItems = () => {
@@ -42,47 +41,84 @@ const PaypalPayment = () => {
     // }
 
     const prepareItems = () => {
-        return (
-            context.cartContent.map(item => ({
-                name: item.name,
-                sku: item.id,
-                unit_amount: {
-                    currency_code: 'MXN',
-                    value: item.price,
-                },
-                quantity: item.quantity
-            }))
-        );
-    }
+        return context.cartContent.map((item) => ({
+            name: item.name,
+            sku: item.id,
+            unit_amount: {
+                currency_code: "MXN",
+                value: item.price,
+            },
+            quantity: item.quantity,
+        }));
+    };
 
     const purchaseUnits = {
-        purchase_units: [{
-            description: "Bebidas Vinoreo",
-            amount: {
-                currency_code: 'MXN',
-                value: value, // total including taxes, shipping and products
-                breakdown: {
-                    item_total: {
-                        currency_code: 'MXN',
-                        value: value
+        purchase_units: [
+            {
+                description: "Bebidas Vinoreo",
+                amount: {
+                    currency_code: "MXN",
+                    value: value, // total including taxes, shipping and products
+                    breakdown: {
+                        item_total: {
+                            currency_code: "MXN",
+                            value: value,
+                        },
                     },
                 },
+                items: prepareItems(),
             },
-            items: prepareItems(),
-        }],
+        ],
     };
 
     const createOrder = (data, actions) => {
         // create order at server side
-        // then proceed create
-        console.log('starting create order');
-        return actions.order.create(
-            purchaseUnits
-        );
+        {
+            console.log("create order!!!");
+        }
+        return axios
+            .post("/order/rest-api/create", {
+                order_name: orderInfo.order_name,
+                payment_mode: orderInfo.payment_mode,
+                address: orderInfo.address,
+                address_details: orderInfo.address_details,
+                delivery_day: orderInfo.delivery_day,
+                delivery_schedule: orderInfo.delivery_schedule,
+                phone: orderInfo.phone,
+                cp: orderInfo.cp,
+                neighborhood: orderInfo.neighborhood,
+                balance: orderInfo.balance,
+            })
+            .then((res) => {
+                if (res.data.orderID) {
+                    return axios
+                        .post(
+                            "/paypal/rest-api/checkout/",
+                            {
+                                orderID: res.data.orderID,
+                            },
+                            {
+                                headers: {
+                                    "content-type": "application/json",
+                                },
+                            }
+                        )
+                        .then((res) => {
+                            console.log(res.data);
+                            return res.data.id
+                        })
+                        .catch((err) => {
+                            console.error("error getting ID from api", err);
+                        });
+                } else console.log("error creating order");
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
 
     const onApprove = (data, actions) => {
-        console.log('payment approved', data);
+        console.log("payment approved by user", data);
         return actions.order.capture().then((res) => {
             console.log(res);
         });
@@ -96,10 +132,7 @@ const PaypalPayment = () => {
 
     return (
         <div>
-            {/* {value && console.log(value)}
-            {purchaseUnits && console.log('real ', purchaseUnits)}
-            {exampleObject && console.log('fake ', exampleObject)} */}
-            {/* {prepareItems() && console.log(prepareItems())} */}
+            {orderInfo && console.log(orderInfo)}
 
             <PayPalButton
                 createOrder={(data, actions) => createOrder(data, actions)}

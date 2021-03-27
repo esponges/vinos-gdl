@@ -165,4 +165,53 @@ class OrderTest extends TestCase
         // $response->dumpHeaders();
         $response->assertOk();
     }
+
+    public function test_createPayPalApiOrder()
+    {
+        $this->withoutExceptionHandling();
+        $order = $this->mockOrder()['order'];
+
+        $response = $this->actingAs(User::first())->post(route('order.paypalApiOrder', [
+            'total' => $order['total'],
+            'total_items' => $order['total_items'],
+            'user_id' => $order['user_id'],
+            'order_name' => $order['order_name'],
+            'payment_mode' => $order['payment_mode'],
+            'address' => $order['address'],
+            'address_details' => $order['address_details'],
+            'delivery_day' => $order['delivery_day'],
+            'delivery_schedule' => $order['delivery_schedule'],
+            'phone' => $order['phone'],
+            'cp' => $order['cp'],
+            'neighborhood' => $order['neighborhood'],
+            'balance' => $order['balance'] ?? 0,
+        ]));
+
+        $response->assertOk();
+        $response->assertJsonFragment(['status' => 'CREATED']);
+    }
+
+    public function test_createNotAuthPayPalApiOrder()
+    {
+        $this->withoutExceptionHandling();
+        $order = $this->mockOrder()['order'];
+
+        $response = $this->post(route('order.paypalApiOrder', [
+            'total' => $order['total'],
+            'total_items' => $order['total_items'],
+            'user_id' => $order['user_id'],
+            'order_name' => $order['order_name'],
+            'payment_mode' => $order['payment_mode'],
+            'address' => $order['address'],
+            'address_details' => $order['address_details'],
+            'delivery_day' => $order['delivery_day'],
+            'delivery_schedule' => $order['delivery_schedule'],
+            'phone' => $order['phone'],
+            'cp' => $order['cp'],
+            'neighborhood' => $order['neighborhood'],
+            'balance' => $order['balance'] ?? 0,
+        ]));
+
+        $response->assertStatus(408);
+    }
 }

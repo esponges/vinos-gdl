@@ -16,6 +16,8 @@ import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
+import PaypalPayment from './PaypalPayment';
+
 import { Context } from "../Context";
 
 const Checkout = (props) => {
@@ -51,7 +53,7 @@ const Checkout = (props) => {
 
     // from payment type radio input
     const handlePaymentChange = (e) => {
-        console.log(e.target.value);
+        console.log('payment_mode is', e.target.value);
         setPaymentMode(e.target.value);
         if (e.target.value === "paypal")
             setTotalToPay(`Total ${cartTotal} mxn`);
@@ -131,29 +133,40 @@ const Checkout = (props) => {
                 }
             }
             //validate address
-            console.log('streetname ', streetName.length, 'street name is ', streetName, 'address number len ', addressNumber.length, 'address num', addressNumber)
             if (streetName.length < 5 && streetName != "" &&
                 addressNumber.length != 0
             ) {
-                console.log('trueeeeeeeeeeee')
                 setAddressAlertMessage("Por favor ingresa dirección completa");
             } else {
-                console.log('falseeee')
                 setAddressAlertMessage(false);
             }
 
             // activate proceed button - must check due to async
             if (
+                orderName != undefined &&
+                phone.length == 10 &&
                 streetName.length > 4 &&
                 addressNumber.length > 0 &&
                 phonePattern.test(phone) &&
-                phone.length == 10 &&
                 CP &&
                 deliveryDay &&
                 deliverySchedule
             )
             {
                 setButtonIsActive(true);
+                // pass to PayPal btn
+                setOrderInfo({
+                    order_name: orderName,
+                    payment_mode: paymentMode,
+                    address: `${streetName} #${addressNumber}`,
+                    address_details: addressDetails,
+                    delivery_day: deliveryDay,
+                    delivery_schedule: deliverySchedule,
+                    phone: phone,
+                    cp: CP,
+                    neighborhood: neighborhood,
+                    balance: paymentMode == 'on_delivery' ? upfrontPayPalPayment : 0,
+                });
             }
             else setButtonIsActive(false);
             // remind user payment method
@@ -163,17 +176,11 @@ const Checkout = (props) => {
         }
 
         return () => isMounted = false;
-    }, [addressNumber, streetName, phone, CP, deliveryDay, deliverySchedule, paymentMode]);
+    }, [orderName, phone, CP, streetName, addressNumber, deliveryDay, deliverySchedule, addressDetails]);
 
     const totalHeader = (
         <h3>
-            {!totalToPay ? `Total ${cartTotal} ` :
-                new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "MXN",
-                }).format(
-                    totalToPay
-                )}
+            {`Total ${cartTotal} `}
         </h3>
     );
 
@@ -376,7 +383,7 @@ const Checkout = (props) => {
                             Proceder a pago
                         </Button>
                     </Form>
-                    {/* <PaypalPayment /> */}
+                    <PaypalPayment orderInfo={orderInfo}/>
                 </div>
             ) : (
                 <LoginOrRegister className="container mt-2" />

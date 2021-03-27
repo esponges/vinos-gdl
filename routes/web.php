@@ -47,6 +47,8 @@ Route::prefix('order')->group( function () {
     Route::post('/create', [OrderController::class, 'create'])->middleware('auth:sanctum');
     Route::get('/transfer/{orderId}', [OrderController::class, 'transferPaymentMode'])->name('paypal.transfer')->middleware('auth:sanctum');
     Route::get('/success/{orderId}/{cartTotal}', [OrderController::class, 'orderSuccess'])->name('order.success');
+    /* v3 */
+    Route::post('/rest-api/create', [OrderController::class, 'paypalApiOrder'])->name('order.paypalApiOrder');
 });
 
 Route::prefix('paypal')->group( function () {
