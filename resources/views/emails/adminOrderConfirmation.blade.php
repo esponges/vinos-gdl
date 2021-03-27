@@ -1,5 +1,5 @@
 @component('mail::message')
-# Nueva compra en Vinoreo
+# Orden: <b>#{{$order->id}}</b><br>
 
 Resumen:
 @component('mail::table')

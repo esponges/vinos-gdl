@@ -1,5 +1,5 @@
 @component('mail::message')
-# Gracias por tu compra
+# Confirmación de la orden <b>#{{$order->id}}</b>
 
 El resumen de tu compra:
 @component('mail::table')
@@ -23,7 +23,7 @@ CLABE interbancaria <b>0723 2000 3244 528134</b><br>
 Nombre <b>Licoret Occidental SA de CV</b>
 N° de cuenta <b>032 445 2813</b><br>
 Banco <b>Banorte</b><br><br>
-Por favor envía tu comprobante de pago junto a tu n° de orden al Whatsapp <b>33 31 67 31 50</b> o al correo electrónico <b>hola@vinoreo.mx</b> para procesar tu envío
+Por favor envía tu comprobante de pago junto a tu n° de orden al Whatsapp <b>33 20 19 24 20</b> o al correo electrónico <b>hola@vinoreo.mx</b> para procesar tu envío
 <br>
 
 <b>Detalles de entrega</b>

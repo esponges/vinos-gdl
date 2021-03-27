@@ -28,7 +28,7 @@ class OrderTest extends TestCase
             'associatedModel' => $product
         ));
 
-        $productTwo = Product::find(Factory::create()->numberBetween(1,27));
+        $productTwo = Product::find(Factory::create()->numberBetween(1, 27));
 
         \Cart::add(array(
             'id' => $productTwo->id,

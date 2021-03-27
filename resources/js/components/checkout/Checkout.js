@@ -19,6 +19,7 @@ import DeliverySchedule from "./DeliverySchedule";
 import PaypalPayment from './PaypalPayment';
 
 import { Context } from "../Context";
+import { Link } from "react-router-dom";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -56,10 +57,10 @@ const Checkout = (props) => {
         console.log('payment_mode is', e.target.value);
         setPaymentMode(e.target.value);
         if (e.target.value === "paypal")
-            setTotalToPay(`Total ${cartTotal} mxn`);
+            setTotalToPay(`Total MX$${cartTotal}`);
         else if (e.target.value === "transfer")
-            setTotalToPay(`Total ${cartTotal} mxn`);
-        else setTotalToPay(`Sub-total ${upfrontPayPalPayment} mxn`);
+            setTotalToPay(`Total MX$${cartTotal}`);
+        else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
     };
 
     // validate CP
@@ -87,12 +88,12 @@ const Checkout = (props) => {
                 .get("/cart/get-total")
                 .then((res) => {
                     setCartTotal(
-                        new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "MXN",
-                        }).format(
+                        // new Intl.NumberFormat("en-US", {
+                        //     style: "currency",
+                        //     currency: "MXN",
+                        // }).format(
                             res.data
-                        )
+                        // )
                     );
                 })
                 .catch((err) => {
@@ -203,8 +204,7 @@ const Checkout = (props) => {
 
     return (
         <div className="container">
-            {/* {console.log('this is in checkout ', context.cartContent)} */}
-            {props.loggedIn ? (
+            {props.loggedIn && cartTotal > 1500 ? (
                 <div style={{ marginBottom: "6rem" }}>
                     {/* prompt user for payment method */}
 
@@ -367,7 +367,8 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         {/* let user pay if all information is set */}
-                        {!buttonIsActive && addressAlertMessage &&
+                        {console.log(buttonIsActive, addressAlertMessage, phone.length)}
+                        {!buttonIsActive && (addressAlertMessage || phone.length != 10) &&
                             <Alert variant={"warning"} className="m-1">
                                 Por favor completa tu información
                             </Alert>
@@ -386,7 +387,14 @@ const Checkout = (props) => {
                     <PaypalPayment orderInfo={orderInfo}/>
                 </div>
             ) : (
-                <LoginOrRegister className="container mt-2" />
+                <div>
+                    <Alert variant="warning">
+                        Tu carrito de compras está vacío
+                    </Alert>
+                    <Link to="/">
+                        <Button variant="primary">Regresar</Button>
+                    </Link>
+                </div>
             )}
         </div>
     );

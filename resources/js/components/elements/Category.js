@@ -1,9 +1,11 @@
-import axios from 'axios';
 import React, { useState, useEffect, useContext } from 'react';
-import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
-import ReactPaginate from 'react-paginate';
 import { withRouter, Link } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 import { Context } from '../Context';
+import axios from 'axios';
+
+import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
+import CustomLoader from '../CustomLoader';
 
 const Category = (props) => {
     const [products, setProducts] = useState({});
@@ -58,7 +60,7 @@ const Category = (props) => {
         <section className="container mb-2">
             {/* {console.log("rendering Category.js", products)} */}
             <h1 className="mt-5">{props.match.params.name}</h1>
-            {products != {} ? (
+            {products != {} && !context.loader ? (
                 <div className="row mt-3">
                     {Object.values(products).map((product) => {
                         return (
@@ -68,7 +70,11 @@ const Category = (props) => {
                                 id="product-card-mobile"
                             >
                                 <Card>
-                                    <Link to={{pathname: `/products/${product.id}`}}>
+                                    <Link
+                                        to={{
+                                            pathname: `/products/${product.id}`,
+                                        }}
+                                    >
                                         <Card.Img
                                             variant="top"
                                             src={`/img/products/${product.id}.jpg`}
@@ -81,11 +87,16 @@ const Category = (props) => {
                                     </Card.Body>
                                     <ListGroup className="list-group-flush">
                                         <ListGroupItem>
-                                            <b>Precio
-                                                {new Intl.NumberFormat("en-US", {
+                                            <b>
+                                                Precio
+                                                {new Intl.NumberFormat(
+                                                    "en-US",
+                                                    {
                                                         style: "currency",
                                                         currency: "MXN",
-                                                    }).format(product.price)}</b>
+                                                    }
+                                                ).format(product.price)}
+                                            </b>
                                         </ListGroupItem>
                                     </ListGroup>
                                     <Card.Body>
@@ -94,17 +105,32 @@ const Category = (props) => {
                                                 <input
                                                     type="number"
                                                     name="quantity"
-                                                    defaultValue={1}
+                                                    value={itemCount}
                                                     min="1"
                                                     className="form-control input-number"
-                                                    onChange={async (e) => await setItemCount(parseInt(e.target.value))}
+                                                    onChange={async (e) =>
+                                                        await setItemCount(
+                                                            parseInt(
+                                                                e.target.value
+                                                            )
+                                                        )
+                                                    }
                                                     style={{
                                                         minWidth: "60px",
                                                     }}
                                                 />
                                             </div>
                                             <div className="col-3">
-                                                <Button variant="primary" onClick={(e) => handleItemAddClick (e, product.id, product.price)}>
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={(e) =>
+                                                        handleItemAddClick(
+                                                            e,
+                                                            product.id,
+                                                            product.price
+                                                        )
+                                                    }
+                                                >
                                                     +
                                                 </Button>
                                             </div>
@@ -128,17 +154,16 @@ const Category = (props) => {
                                             </div>
                                         </div>
                                         {productAddMsg &&
-                                            product.id ==
-                                                productAddId && (
+                                            product.id == productAddId && (
                                                 <div>
                                                     <Card.Text
                                                         style={{
-                                                            color:
-                                                                "red",
-                                                            marginTop:
-                                                                "10px",
+                                                            color: "red",
+                                                            marginTop: "10px",
                                                         }}
-                                                    > { productAddMsg }
+                                                    >
+                                                        {" "}
+                                                        {productAddMsg}
                                                     </Card.Text>
                                                 </div>
                                             )}
@@ -149,21 +174,17 @@ const Category = (props) => {
                     })}
                 </div>
             ) : (
-                "error con el servidor"
+                <CustomLoader />
             )}
             <div className="container mt-5">
                 <ReactPaginate
                     previousLabel={"previous"}
                     nextLabel={"next"}
                     breakLabel={"..."}
-
                     pageCount={pageCount}
-
                     marginPagesDisplayed={2} // # last pages buttons displayed - for long lists
                     pageRangeDisplayed={5} // # total buttons displayed
-
                     onPageChange={handlePageClick}
-
                     // bootstrap class for every item
                     breakClassName={"page-item"}
                     containerClassName={"pagination"}
