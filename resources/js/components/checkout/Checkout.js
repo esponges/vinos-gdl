@@ -110,6 +110,15 @@ const Checkout = (props) => {
                 });
         }
 
+        axios
+            .get("/api/csrf-token")
+            .then((res) => {
+                setCsrfToken(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+
         return () => (isMounted = false);
     }, []);
 
@@ -177,30 +186,13 @@ const Checkout = (props) => {
         }
 
         return () => isMounted = false;
-    }, [orderName, phone, CP, streetName, addressNumber, deliveryDay, deliverySchedule, addressDetails]);
+    }, [orderName, phone, CP, streetName, addressNumber, deliveryDay, deliverySchedule, addressDetails, paymentMode]);
 
     const totalHeader = (
         <h3>
             {`Total ${cartTotal} `}
         </h3>
     );
-
-    useEffect(() => {
-        let isMounted = true;
-
-        if(isMounted) {
-            axios
-            .get('/api/csrf-token')
-            .then((res) => {
-                setCsrfToken(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            })
-        }
-
-        return () => isMounted = false;
-    });
 
     return (
         <div className="container">

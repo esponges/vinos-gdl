@@ -93,7 +93,7 @@ const PaypalPayment = ({ orderInfo }) => {
                 if (res.data.orderID) {
                     return axios
                         .post(
-                            "/paypal/rest-api/checkout/",
+                            "/paypal/rest-api/checkout",
                             {
                                 orderID: res.data.orderID,
                             },
@@ -118,9 +118,10 @@ const PaypalPayment = ({ orderInfo }) => {
     };
 
     const onApprove = (data, actions) => {
-        console.log("payment approved by user", data);
+        console.log("payment approved by user", data, actions.order.get());
         return actions.order.capture().then((res) => {
-            console.log(res);
+            console.log(res, 'is array? ', Array.isArray(res));
+            res.details ? console.log(res.details) : console.log('no details bru');
         });
     };
 

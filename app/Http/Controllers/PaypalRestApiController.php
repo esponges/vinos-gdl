@@ -31,7 +31,7 @@ class PaypalRestApiController extends Controller
 
     public function preparePurchaseUnits($order)
     {
-        $totalToPay = $order->balance ?? $order->total; // if payment == paypal, $order->balance == 0;
+        $totalToPay = $order->balance ? $order->balance : $order->total; // if payment == paypal, $order->balance == 0;
 
         $purchase_units = array(
             'intent' => 'CAPTURE',
@@ -125,7 +125,7 @@ class PaypalRestApiController extends Controller
             }, $cart->toArray(), []);
         }
 
-
         return $cartItems;
     }
+
 }

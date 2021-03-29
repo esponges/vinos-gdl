@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Http\Controllers\PaypalRestApiController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 
 class restApiCheckoutTest extends TestCase
 {
@@ -137,5 +138,99 @@ class restApiCheckoutTest extends TestCase
         );
 
         $this->assertEquals($purchase_units, $purchase_units); // was getting empty object response from $response. ¿Why? dd($cartItems) shows correctly
+    }
+
+    public function getAccessToken()
+    {
+        $this->withoutExceptionHandling();
+
+        // $response = Http::post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
+        //     'headers' => [
+        //         'Accept' => 'application/json',
+        //
+        //     ],
+        //     'body' => 'grant_type=client_credentials',
+        //     'auth' => [env('PAYPAL_SANDBOX_CLIENT_ID', ''), env('PAYPAL_SANDBOX_CLIENT_SECRET'), 'basic']
+        // ]);
+
+        // $response = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        //     'Accept-Language' => 'en_US',
+        // ])
+        // ->withBasicAuth(env('PAYPAL_SANDBOX_CLIENT_ID', ''), env('PAYPAL_SANDBOX_CLIENT_SECRET'))
+        // ->post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
+        //     'body' =>
+        //     'grant_type=client_credentials',
+        // ]);
+
+        // $data = json_decode($response->getBody(), true);
+
+        // $response = Http::post('https://api-m.sandbox.paypal.com/v1/oauth2/token', [
+        //     'headers' =>
+        //     [
+        //         'Accept' => 'application/json',
+        //         'Accept-Language' => 'en_US',
+        //     ],
+        //     'body' => 'grant_type=client_credentials',
+
+        //     'auth' => [env('PAYPAL_SANDBOX_CLIENT_ID', ''), env('PAYPAL_SANDBOX_CLIENT_SECRET'), 'basic']
+        // ]);
+
+        $uri = 'https://api.sandbox.paypal.com/v1/oauth2/token';
+        $clientId = env('PAYPAL_SANDBOX_CLIENT_ID', '');
+        $secret = env('PAYPAL_SANDBOX_CLIENT_SECRET');
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request(
+            'POST',
+            $uri,
+            [
+                'headers' =>
+                [
+                    'Content-Type' => 'application/json',
+                    'Accept-Language' => 'en_US',
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body' => 'grant_type=client_credentials',
+
+                'auth' => [$clientId, $secret, 'basic']
+            ]
+        );
+
+        $data = json_decode($response->getBody(), true);
+        // $access_token = $data['access_token'];
+        return $data['access_token'];
+    }
+
+    public function test_createOrder()
+    {
+        $this->withoutExceptionHandling();
+        $access_token = $this->getAccessToken();
+        dd($access_token);
+
+        $client = new \GuzzleHttp\Client();
+        $response = $client->request(
+            'POST',
+            'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . $access_token,
+                ],
+                'json' => [
+                    "intent" => "CAPTURE",
+                    "purchase_units" => [
+                        [
+                            "amount" => [
+                                "currency_code" => "USD",
+                                "value" => "100.00"
+                            ]
+                        ]
+                    ]
+                ],
+            ],
+        );
+
+        $data = json_decode($response, true);
     }
 }
