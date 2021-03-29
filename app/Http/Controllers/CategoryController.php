@@ -23,6 +23,7 @@ class CategoryController extends Controller
             $productsFromCategory = $category
                 ->products()
                 ->orderBy('score', 'desc')
+                ->where('is_available', 1)
                 ->get(); // call relationship
 
             array_push($categoriesProducts, array(

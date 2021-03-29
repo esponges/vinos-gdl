@@ -15,15 +15,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all()->toArray();
-        // $productsWithCategories = [];
-
-        // foreach ($products as $prod) {
-        //     $id = $prod['id'];
-        //     $product = Product::find($id);
-        //     $productCategory['category'] = $product->category->name;
-        //     array_push($productsWithCategories, array_merge($productCategory, $prod));
-        // }
+        $products = Product::all()
+            ->where('is_available', '=', 1)
+            ->toArray();
 
         return response()->json($products, 200);
     }
