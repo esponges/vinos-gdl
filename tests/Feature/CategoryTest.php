@@ -35,9 +35,10 @@ class CategoryTest extends TestCase
 
             $category = $categories[$i];
             $productsFromCategory = $category
-                ->products()
+                ->products() // call relationship
                 ->orderBy('score', 'desc')
-                ->get(); // call relationship
+                ->where('is_available', 1)
+                ->get();
 
             array_push($categoriesProducts, array(
                 'id' => $category->id,
