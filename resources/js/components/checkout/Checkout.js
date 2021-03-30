@@ -392,7 +392,7 @@ const Checkout = (props) => {
                     {!props.loggedIn && <LoginOrRegister />}
                     {cartTotal < 1500 && (
                         <Alert variant="warning">
-                            No has completado tu compra mínima
+                            No has completado tu compra mínima de MX$1,5000
                         </Alert>
                     )}
                     <Link to="/">
