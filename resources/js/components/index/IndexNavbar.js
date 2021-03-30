@@ -30,7 +30,6 @@ const IndexNavbar = (props) => {
     const [prevScrollPos, setPrevScrollPos] = useState(0);
     const [visible, setVisible] = useState(true);
 
-
     const handleScroll = debounce(() => {
         // use debounce help to reduce rerenders from scroll listener
 
@@ -161,7 +160,7 @@ const IndexNavbar = (props) => {
                 </ul>
                 {/* right side of navbar */}
                 <ul className="navbar-nav">
-                    {props.cartCount && props.cartCount !== undefined ? (
+                    {props.cartCount || props.cartCount === 0 ? (
                         <li className="nav-item">
                             <Link
                                 to="/cart"
@@ -192,8 +191,12 @@ const IndexNavbar = (props) => {
                     {/* <li className="nav-item">
                         <CustomLoader size={30} />
                     </li> */}
-                    {props.userLogged &&
-                    props.userInfo["userName"] !== undefined ? (
+                    {props.userLogged && !props.userInfo["userName"] && (
+                        <li className="nav-item">
+                            <CustomLoader size={30} />
+                        </li>
+                    )}
+                    {props.userInfo["userName"] && (
                         <li className="nav-item">
                             <NavDropdown
                                 title={`${props.userInfo["userName"]}`}
@@ -203,10 +206,6 @@ const IndexNavbar = (props) => {
                                     Cerrar sesión
                                 </NavDropdown.Item>
                             </NavDropdown>
-                        </li>
-                    ) : (
-                        <li className="nav-item">
-                            <CustomLoader size={30} />
                         </li>
                     )}
                 </ul>
