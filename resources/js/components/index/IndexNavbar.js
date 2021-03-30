@@ -21,6 +21,8 @@ import sanctumApi from "../../sanctum-api";
 import DownShiftSearch from "./DownShiftSearch";
 import { debounce } from "../../utilities/helpers";
 
+import CustomLoader from "../CustomLoader";
+
 const IndexNavbar = (props) => {
     const [navbarBg, setNavbarBg] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -159,26 +161,40 @@ const IndexNavbar = (props) => {
                 </ul>
                 {/* right side of navbar */}
                 <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <Link
-                            to="/cart"
-                            className="nav-link"
-                            style={{ marginRight: "10px" }}
-                        >
-                            <b>Carrito</b> &nbsp;&nbsp;&nbsp;
-                            <Badge
-                                pill
-                                variant="info"
-                                size="sm"
-                                id="item-count"
+                    {props.cartCount && props.cartCount !== undefined ? (
+                        <li className="nav-item">
+                            <Link
+                                to="/cart"
+                                className="nav-link"
+                                style={{ marginRight: "10px" }}
                             >
-                                <FontAwesomeIcon icon={faShoppingBasket} data-testid="cart-count-badge"/>
-                                &nbsp;{props.cartCount ?? props.cartCount}
-                            </Badge>
-                        </Link>
-                    </li>
-                    {props.userLogged && (
-                        <li>
+                                <b>Carrito</b> &nbsp;&nbsp;&nbsp;
+                                <Badge
+                                    pill
+                                    variant="info"
+                                    size="sm"
+                                    id="item-count"
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faShoppingBasket}
+                                        data-testid="cart-count-badge"
+                                    />
+                                    &nbsp;{props.cartCount ?? props.cartCount}
+                                </Badge>
+                            </Link>
+                        </li>
+                    ) : (
+                        <li className="nav-item">
+                            <CustomLoader size={30} />
+                        </li>
+                    )}
+
+                    {/* <li className="nav-item">
+                        <CustomLoader size={30} />
+                    </li> */}
+                    {props.userLogged &&
+                    props.userInfo["userName"] !== undefined ? (
+                        <li className="nav-item">
                             <NavDropdown
                                 title={`${props.userInfo["userName"]}`}
                                 id="collasible-nav-dropdown"
@@ -187,6 +203,10 @@ const IndexNavbar = (props) => {
                                     Cerrar sesión
                                 </NavDropdown.Item>
                             </NavDropdown>
+                        </li>
+                    ) : (
+                        <li className="nav-item">
+                            <CustomLoader size={30} />
                         </li>
                     )}
                 </ul>
