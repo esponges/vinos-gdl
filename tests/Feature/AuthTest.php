@@ -59,6 +59,27 @@ class AuthTest extends TestCase
         $this->assertAuthenticated();
     }
 
+    public function test_incorrect_credentials()
+    {
+        $this->withoutExceptionHandling();
+
+        // $user = User::first();
+        $user = User::first();
+        // dd($user);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'incorrectcred',
+            'remember' => 'on'
+        ]);
+
+        // $response->getStatusCode();
+        // $response->dumpHeaders();
+        // $response->dump();
+        $response->assertStatus(401);
+        // $this->assertAuthenticated();
+    }
+
     public function test_user_can_log_out()
     {
         $this->withoutExceptionHandling();

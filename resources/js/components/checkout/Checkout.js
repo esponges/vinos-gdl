@@ -213,7 +213,11 @@ const Checkout = (props) => {
                     )}
 
                     {/* use laravel form method */}
-                    <Form className="mt-3 mb-5" action="/order/create" method="post">
+                    <Form
+                        className="mt-3 mb-5"
+                        action="/order/create"
+                        method="post"
+                    >
                         {/* place csrf token */}
                         <input type="hidden" value={csrfToken} name="_token" />
                         <input
@@ -251,7 +255,8 @@ const Checkout = (props) => {
                                 onChange={(e) => setPhone(e.target.value)}
                             />
                             <Form.Text className="text-muted success">
-                                Sólo lo usaremos para mantenerte informado sobre tu orden
+                                Sólo lo usaremos para mantenerte informado sobre
+                                tu orden
                             </Form.Text>
                             {phoneAlertMessage && (
                                 <Alert variant={"warning"} className="m-1">
@@ -294,9 +299,7 @@ const Checkout = (props) => {
 
                         {/* address */}
                         <Form.Group className="mt-2">
-                            <Form.Label>
-                                Calle o avenida
-                            </Form.Label>
+                            <Form.Label>Calle o avenida</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="La dirección de tu casa"
@@ -306,8 +309,7 @@ const Checkout = (props) => {
                                 }}
                             />
                             <Form.Label>
-                                Número exterior{" "}
-                                <i>(e interior si tienes)</i>
+                                Número exterior <i>(e interior si tienes)</i>
                             </Form.Label>
                             <Form.Control
                                 type="text"
@@ -317,7 +319,11 @@ const Checkout = (props) => {
                                     setAddressNumber(e.target.value);
                                 }}
                             />
-                            <input type="hidden" value={`${streetName} - ${addressNumber}`} name="address" />
+                            <input
+                                type="hidden"
+                                value={`${streetName} - ${addressNumber}`}
+                                name="address"
+                            />
                         </Form.Group>
                         {addressAlertMessage && (
                             <Alert variant={"warning"} className="m-1">
@@ -355,14 +361,21 @@ const Checkout = (props) => {
                         </Form.Group>
 
                         {/* let user pay if all information is set */}
-                        {console.log(buttonIsActive, addressAlertMessage, phone.length)}
-                        {!buttonIsActive && (addressAlertMessage || phone.length != 10) &&
-                            <Alert variant={"warning"} className="m-1">
-                                Por favor completa tu información
-                            </Alert>
-                        }
+                        {console.log(
+                            buttonIsActive,
+                            addressAlertMessage,
+                            phone.length
+                        )}
+                        {!buttonIsActive &&
+                            (addressAlertMessage || phone.length != 10) && (
+                                <Alert variant={"warning"} className="m-1">
+                                    Por favor completa tu información
+                                </Alert>
+                            )}
                         {totalHeader && totalHeader}
-                        <p>Tipo de pago: <b>{paymentModeReminder}</b></p>
+                        <p>
+                            Tipo de pago: <b>{paymentModeReminder}</b>
+                        </p>
                         <Button
                             className="mb-5"
                             variant="primary"
@@ -376,9 +389,12 @@ const Checkout = (props) => {
                 </div>
             ) : (
                 <div>
-                    <Alert variant="warning">
-                        Tu carrito de compras está vacío
-                    </Alert>
+                    {!props.loggedIn && <LoginOrRegister />}
+                    {cartTotal < 1500 && (
+                        <Alert variant="warning">
+                            No has completado tu compra mínima
+                        </Alert>
+                    )}
                     <Link to="/">
                         <Button variant="primary">Regresar</Button>
                     </Link>
