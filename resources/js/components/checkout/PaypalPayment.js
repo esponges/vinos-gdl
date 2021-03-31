@@ -8,69 +8,6 @@ const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 const PaypalPayment = ({ orderInfo }) => {
     const context = useContext(Context);
 
-    /* doesn't include taxes and shipping */
-    const value = context.cartContent
-        .map((item) => item.quantity * item.price)
-        .reduce((a, b) => a + b, 0);
-
-    // const items = (
-    //     let data = new Map()
-    //     context.cartContent
-    // .map((item) => {
-    //     {
-    //         item: item.name,
-
-    //     }
-    // })
-    // );
-
-    // const prepareItems = () => {
-    //     let data = new Map();
-
-    //     data.set("items", [{
-    //         name: context.cartContent[0].name,
-    //         sku: context.cartContent[0].id,
-    //         unit_amount: {
-    //             currency_code: 'MXN',
-    //             value: context.cartContent[0].price
-    //         },
-    //         quantity: context.cartContent[0].quantity,
-    //     }]);
-
-    //     return data;
-    // }
-
-    const prepareItems = () => {
-        return context.cartContent.map((item) => ({
-            name: item.name,
-            sku: item.id,
-            unit_amount: {
-                currency_code: "MXN",
-                value: item.price,
-            },
-            quantity: item.quantity,
-        }));
-    };
-
-    const purchaseUnits = {
-        purchase_units: [
-            {
-                description: "Bebidas Vinoreo",
-                amount: {
-                    currency_code: "MXN",
-                    value: value, // total including taxes, shipping and products
-                    breakdown: {
-                        item_total: {
-                            currency_code: "MXN",
-                            value: value,
-                        },
-                    },
-                },
-                items: prepareItems(),
-            },
-        ],
-    };
-
     const createOrder = (data, actions) => {
         // create order at server side
         {
@@ -105,7 +42,7 @@ const PaypalPayment = ({ orderInfo }) => {
                         )
                         .then((res) => {
                             console.log(res.data);
-                            return res.data.id
+                            return res.data.id;
                         })
                         .catch((err) => {
                             console.error("error getting ID from api", err);
@@ -119,10 +56,41 @@ const PaypalPayment = ({ orderInfo }) => {
 
     const onApprove = (data, actions) => {
         console.log("payment approved by user", data, actions.order.get());
-        return actions.order.capture().then((res) => {
-            console.log(res, 'is array? ', Array.isArray(res));
-            res.details ? console.log(res.details) : console.log('no details bru');
-        });
+        const orderID = data.orderID;
+
+        /* SUCCESS */
+
+        // const accessToken = document.head
+        //     .querySelector('meta[name="paypaltoken"]')
+        //     .getAttribute("content");
+
+        // return axios
+        //     .post(
+        //         `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`,
+        //         {},
+        //         {
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //                 Authorization: "Bearer " + accessToken,
+        //                 "PayPal-Mock-Response":
+        //                     '{"mock_application_codes":"INSTRUMENT_DECLINED"}',
+        //             },
+        //         }
+        //     )
+        //     .then((res) => {
+        //         console.log('response from caputre ' ,res);
+        //     });
+
+        return axios
+            .post("/paypal/rest-api/capture-order", {
+                orderID: orderID,
+            })
+            .then((res) => {
+                console.log("success creating order", res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
 
     const onCancel = (data, actions) => {

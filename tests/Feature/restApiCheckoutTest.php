@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Http\Controllers\PaypalRestApiController;
+use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 
@@ -202,35 +203,65 @@ class restApiCheckoutTest extends TestCase
         return $data['access_token'];
     }
 
-    public function test_createOrder()
-    {
-        $this->withoutExceptionHandling();
-        $access_token = $this->getAccessToken();
-        dd($access_token);
+    /* Create Order Api Call with GuzzleHttp - March 30th */
 
-        $client = new \GuzzleHttp\Client();
-        $response = $client->request(
-            'POST',
-            'https://api-m.sandbox.paypal.com/v2/checkout/orders',
-            [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . $access_token,
-                ],
-                'json' => [
-                    "intent" => "CAPTURE",
-                    "purchase_units" => [
-                        [
-                            "amount" => [
-                                "currency_code" => "USD",
-                                "value" => "100.00"
-                            ]
-                        ]
-                    ]
-                ],
-            ],
-        );
+    // public function test_createOrder()
+    // {
+    //     $this->withoutExceptionHandling();
+    //     $access_token = $this->getAccessToken();
+    //     dd($access_token);
 
-        $data = json_decode($response, true);
-    }
+    //     $client = new \GuzzleHttp\Client();
+    //     $response = $client->request(
+    //         'POST',
+    //         'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+    //         [
+    //             'headers' => [
+    //                 'Content-Type' => 'application/json',
+    //                 'Authorization' => 'Bearer ' . $access_token,
+    //             ],
+    //             'json' => [
+    //                 "intent" => "CAPTURE",
+    //                 "purchase_units" => [
+    //                     [
+    //                         "amount" => [
+    //                             "currency_code" => "USD",
+    //                             "value" => "100.00"
+    //                         ]
+    //                     ]
+    //                 ]
+    //             ],
+    //         ],
+    //     );
+
+    //     $data = json_decode($response, true);
+    // }
+
+    /* Capture Order Api Call with GuzzleHttp - March 30th */
+
+    // public function test_caputeOrder()
+    // {
+    //     $paypalOrderId = Uuid::
+    // $paypalOrderId = $request->orderID;
+        // PayPalClient::setProvider();
+        // $paypalProvider = PayPalClient::getProvider();
+        // $paypalProvider->setApiCredentials(config('paypal'));
+        // $access_token = $paypalProvider->getAccessToken()['access_token'];
+
+    //     $client = new \GuzzleHttp\Client();
+    //     $response = $client->request(
+    //         'POST',
+    //         'https://api-m.sandbox.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture',
+    //         [
+    //             'headers' => [
+    //                 'Content-Type' => 'application/json',
+    //                 'Authorization' => 'Bearer ' . $access_token,
+    //                 // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INSTRUMENT_DECLINED"]),
+    //                 // 'PayPal-Mock-Response' => "['{mock_application_codes':'COMPLIANCE_VIOLATION'}]",
+    //             ],
+    //         ],
+    //     );
+
+    //     $data = json_decode($response->getBody(), true);
+    // }
 }

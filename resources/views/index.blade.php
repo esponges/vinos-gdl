@@ -19,7 +19,8 @@
         $host = $_SERVER['SERVER_NAME'];
         // if ($host === '127.0.0.1') echo $host;
     @endphp
-    <link type="text/css" href={{ $host == '127.0.0.1' ? asset('css/app.css') : '/css/app.css' }} rel="stylesheet">
+
+    <meta name='paypaltoken' content ='{{ $paypalToken }}'>
 
     {{-- PayPal SDK --}}
     @php

@@ -54,6 +54,7 @@ Route::prefix('order')->group( function () {
 Route::prefix('paypal')->group( function () {
     /* v3  */
     Route::post('/rest-api/checkout/', [PaypalRestApiController::class, 'restApiCheckout'])->name('paypal.restApiCheckout');
+    Route::post('/rest-api/capture-order/', [PaypalRestApiController::class, 'captureOrder'])->name('paypal.captureOrder');
     /* v1 expressCheckout */
     Route::get('/checkout/{orderId}/{paymentMode}', [PaypalController::class, 'checkout'])->name('paypal.checkout')->middleware('auth:sanctum');
     Route::get('/fail/{orderId}/{error}/{errorHeader}', [PaypalController::class, 'paypalFail'])->name('paypal.fail');

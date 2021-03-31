@@ -4,18 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Srmklive\PayPal\Facades\PayPal as PayPalClient;
+use Srmklive\PayPal\Services\PayPal;
 
 class PaypalRestApiController extends Controller
 {
     public function restApiCheckout(Request $request)
     {
         $order = Order::find($request->orderID);
-        \PayPal::setProvider();
-        $paypalProvider = \PayPal::getProvider();
-        $paypalProvider->setApiCredentials(config('paypal'));
-        $access_token = $paypalProvider->getAccessToken();
-        $paypalProvider->setAccessToken($access_token);
 
+        $paypalProvider = $this->setPaypalProvider();
         $purchase_units = $this->preparePurchaseUnits($order);
 
         try {
@@ -126,6 +124,48 @@ class PaypalRestApiController extends Controller
         }
 
         return $cartItems;
+    }
+
+    /**
+     * setPaypalProvider
+     * set Client PayPalClientCredentials from package
+     * @return mixed
+     */
+    public function setPaypalProvider()
+    {
+        PayPalClient::setProvider();
+        $paypalProvider = PayPalClient::getProvider();
+        $paypalProvider->setApiCredentials(config('paypal'));
+        $access_token = $paypalProvider->getAccessToken();
+        $paypalProvider->setAccessToken($access_token);
+        return $paypalProvider;
+    }
+
+    public function captureOrder(Request $request)
+    {
+        $paypalOrderId = $request->orderID;
+
+        $paypalProvider = $this->setPaypalProvider();
+        // $provider = \PayPal;
+        // dd($paypalOrderId);
+        // $response = \PayPal::capturePaymentOrder($paypalOrderId);
+        // $paypalProvider->capturePaymentOrder($paypalOrderId);
+        // $options = "PayPal-Mock-Response: {'mock_application_codes' : 'INSTRUMENT_DECLINED'}";
+        // $options = ['PayPal-Mock-Response' => "['mock_application_codes':'INSTRUMENT_DECLINED']"];
+        // $options = ["PayPal-Mock-Response: {'mock_application_codes' : 'INSTRUMENT_DECLINED'}"];
+        // $options = ['PayPal-Mock-Response' => ['mock_application_codes' => 'INSTRUMENT_DECLINED']];
+        // $options = ['{\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
+        $options = ['PayPal-Mock-Response":{\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
+        // $options = ['PayPal-Mock-Response: {\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
+
+        try {
+            $response = $paypalProvider->capturePaymentOrder($paypalOrderId, $options);
+
+            return response()->json($response, 200);
+        } catch (\Throwable $th) {
+
+            return response()->json(['error' => 'error capturing order'], 400);
+        }
     }
 
 }
