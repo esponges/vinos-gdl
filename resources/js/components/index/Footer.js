@@ -25,7 +25,8 @@ const Footer = () => {
                 &nbsp;&nbsp;&nbsp;
                 <a href="https://www.facebook.com/vinoreomx">
                     <FontAwesomeIcon icon={faFacebook} />
-                </a>
+                </a> &nbsp;
+                <Link to="/legal">Legales</Link>
             </div>
         </nav>
     );

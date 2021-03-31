@@ -188,15 +188,12 @@ const IndexNavbar = (props) => {
                         </li>
                     )}
 
-                    {/* <li className="nav-item">
-                        <CustomLoader size={30} />
-                    </li> */}
                     {props.userLogged && !props.userInfo["userName"] && (
                         <li className="nav-item">
                             <CustomLoader size={30} />
                         </li>
                     )}
-                    {props.userInfo["userName"] && (
+                    {props.userInfo["userName"] && props.userLogged && (
                         <li className="nav-item">
                             <NavDropdown
                                 title={`${props.userInfo["userName"]}`}
@@ -206,6 +203,14 @@ const IndexNavbar = (props) => {
                                     Cerrar sesión
                                 </NavDropdown.Item>
                             </NavDropdown>
+                        </li>
+                    )}
+
+                    {!props.userLogged && (
+                        <li className="nav-item">
+                            <Link to="/login" className="nav-link">
+                                Inicia Sesión
+                            </Link>
                         </li>
                     )}
                 </ul>

@@ -23,6 +23,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Context } from "./Context";
+import Legal from "./elements/Legal";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -227,6 +228,10 @@ const App = (props) => {
 
                         <Route path="/about">
                             <About />
+                        </Route>
+
+                        <Route path="/legal">
+                            <Legal />
                         </Route>
 
                         <Route path="/">
