@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cp;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Facade\FlareClient\Http\Response;
 
@@ -51,6 +52,13 @@ class FrontEndHelpController extends Controller
     {
         $cp = Cp::all()->toArray();
         return response()->json($cp);
+    }
+
+    public function getDeliveryDays()
+    {
+        $deliveryDays = DB::table('delivery_days')->get()->toArray();
+
+        return response()->json($deliveryDays, 200);
     }
 }
 
