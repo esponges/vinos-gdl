@@ -56,7 +56,7 @@ class FrontEndHelpController extends Controller
 
     public function getDeliveryDays()
     {
-        $deliveryDays = DB::table('delivery_days')->get()->toArray();
+        $deliveryDays = DB::table('delivery_days')->where('is_hidden', 0)->get()->toArray();
 
         return response()->json($deliveryDays, 200);
     }
