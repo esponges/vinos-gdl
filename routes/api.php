@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/get-CP', [FrontEndHelpController::class, 'getCP']);
+Route::get('/delivery-days', [FrontEndHelpController::class, 'getDeliveryDays']);
+
 Route::get('/is-auth', [FrontEndHelpController::class, 'isAuth'])->name('is-auth');
 Route::get('/user-info', [FrontEndHelpController::class, 'userInfo'])->name('user.info');
 Route::get('/is-registered/{email}', [FrontEndHelpController::class, 'isRegistered'])->name('userInfo.isRegistered');
