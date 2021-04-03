@@ -16,11 +16,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vinoreo</title>
     @php
+        use Srmklive\PayPal\Facades\PayPal as PayPalClient;
+
         $host = $_SERVER['SERVER_NAME'];
         // if ($host === '127.0.0.1') echo $host;
+        /* PayPal Access Token with Srmk-Laravel */
+        PayPalClient::setProvider();
+        $paypalProvider = PayPalClient::getProvider();
+        $paypalProvider->setApiCredentials(config('paypal'));
+        $access_token = $paypalProvider->getAccessToken()['access_token'];
     @endphp
 
-    <meta name='paypaltoken' content ='{{ $paypalToken }}'>
+    <meta name='paypaltoken' content ='{{ $access_token }}'>
+
+    <link type="text/css" href={{ $host == '127.0.0.1' ? asset('css/app.css') : '/css/app.css' }} rel="stylesheet">
 
     {{-- PayPal SDK --}}
     @php
