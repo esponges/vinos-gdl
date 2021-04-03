@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Http\Request;
 use Srmklive\PayPal\Facades\PayPal as PayPalClient;
 use Srmklive\PayPal\Services\PayPal;
+use Throwable;
 
 class PaypalRestApiController extends Controller
 {
@@ -143,29 +147,103 @@ class PaypalRestApiController extends Controller
 
     public function captureOrder(Request $request)
     {
-        $paypalOrderId = $request->orderID;
+        // $paypalOrderId = $request->orderID;
 
-        $paypalProvider = $this->setPaypalProvider();
-        // $provider = \PayPal;
-        // dd($paypalOrderId);
-        // $response = \PayPal::capturePaymentOrder($paypalOrderId);
-        // $paypalProvider->capturePaymentOrder($paypalOrderId);
-        // $options = "PayPal-Mock-Response: {'mock_application_codes' : 'INSTRUMENT_DECLINED'}";
-        // $options = ['PayPal-Mock-Response' => "['mock_application_codes':'INSTRUMENT_DECLINED']"];
-        // $options = ["PayPal-Mock-Response: {'mock_application_codes' : 'INSTRUMENT_DECLINED'}"];
-        // $options = ['PayPal-Mock-Response' => ['mock_application_codes' => 'INSTRUMENT_DECLINED']];
-        // $options = ['{\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
-        $options = ['PayPal-Mock-Response":{\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
-        // $options = ['PayPal-Mock-Response: {\"mock_application_codes\":\"INSTRUMENT_DECLINED\"}'];
+        // $paypalProvider = $this->setPaypalProvider();
+        // $options=['PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INSTRUMENT_DECLINED"])];
+
+        // try {
+        //     $response = $paypalProvider->capturePaymentOrder($paypalOrderId, $options);
+
+        //     return response()->json($response, 200);
+        // } catch (\Throwable $th) {
+
+        //     return response()->json(['error' => 'error capturing order'], 400);
+        // }
+
+        $paypalOrderId = $request->orderID;
+        PayPalClient::setProvider();
+        $paypalProvider = PayPalClient::getProvider();
+        $paypalProvider->setApiCredentials(config('paypal'));
+        $access_token = $paypalProvider->getAccessToken()['access_token'];
+
+        $client = new \GuzzleHttp\Client();
+
+        // $response = $client->request(
+        //     'POST',
+        //     'https://api-m.sandbox.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture',
+        //     [
+        //         'headers' => [
+        //             'Content-Type' => 'application/json',
+        //             'Authorization' => 'Bearer ' . $access_token,
+        //             // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INTERNAL_SERVER_ERROR"]),
+        //             'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INSTRUMENT_DECLINED"]),
+        //         ],
+        //     ],
+        // );
+
+        // $data = json_decode($response->getBody(), true);
+
+        // return response()->json($data, 200);
 
         try {
-            $response = $paypalProvider->capturePaymentOrder($paypalOrderId, $options);
+            $response = $client->request(
+                'POST',
+                'https://api-m.sandbox.paypal.com/v2/checkout/orders/' . $paypalOrderId . '/capture',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'Authorization' => 'Bearer ' . $access_token,
+                        // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INTERNAL_SERVER_ERROR"]),
+                        // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INSTRUMENT_DECLINED"]),
+                    ],
+                ],
+            );
+            $data = json_decode($response->getBody(), true);
 
-            return response()->json($response, 200);
-        } catch (\Throwable $th) {
+            return response()->json($data, 200);
+        } catch (ServerException $e) {
 
-            return response()->json(['error' => 'error capturing order'], 400);
+            if ($e->hasResponse()) {
+                return response()->json([
+                    'msg' => 'Server Exception',
+                    'error' => json_decode($e->getResponse()->getBody()),
+                ], 500);
+            }
+            return response()->json([
+                'msg' => 'Server Exception',
+                'request' => $e->getRequest(),
+                $e->hasResponse() ? $e->getResponse() : ""
+            ]);
+
+            // return response()->json(['msg' => 'Client Error', 'error' => $e->getRequest()]);
+        } catch (ClientException $e) {
+
+            if ($e->hasResponse()) {
+                return response()->json([
+                    'msg' => 'Client Exception',
+                    'error' => json_decode($e->getResponse()->getBody()),
+                ], 400);
+            }
+            return response()->json([
+                'msg' => 'Client Exception',
+                'request' => $e->getRequest(),
+                $e->hasResponse() ? $e->getResponse() : ""
+            ]);
+            // return response()->json(['msg' => 'Server Error', 'error' => report($e)]);
+        } catch (BadResponseException $e) {
+
+            if ($e->hasResponse()) {
+                return response()->json([
+                    'msg' => 'Uknown Exception',
+                    'error' => json_decode($e->getResponse()->getBody()),
+                ], 500);
+            }
+            return response()->json([
+                'msg' => 'Uknown Exception',
+                'request' => $e->getRequest(),
+                $e->hasResponse() ? $e->getResponse() : ""
+            ]);
         }
     }
-
 }
