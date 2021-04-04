@@ -14,7 +14,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vinoreo</title>
+    
+    {{-- SEO --}}
+    <title>Vinoreomx</title>
+    <meta name="description" content="Vino a domicilio con precio de mayoreo. Entrega en un día en Guadalajara">
+
     @php
         $host = $_SERVER['SERVER_NAME'];
         // if ($host === '127.0.0.1') echo $host;
