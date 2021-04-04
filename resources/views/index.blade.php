@@ -17,7 +17,7 @@
     
     {{-- SEO --}}
     <title>Vinoreomx</title>
-    <meta name="description" content="Vino a domicilio con precio de mayoreo. Entrega en un día en Guadalajara">
+    <meta name="description" content="Tienda online. Entrega gratis de vinos y licores a domicilio en Guadalajara. Precios de mayoreo con la mayor selección de tequila, whisky, gin, vodka y más.">
 
     @php
         $host = $_SERVER['SERVER_NAME'];
