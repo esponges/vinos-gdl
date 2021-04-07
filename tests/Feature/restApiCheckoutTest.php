@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Http\Controllers\PaypalRestApiController;
+use App\Models\User;
 use Faker\Provider\Uuid;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ class restApiCheckoutTest extends TestCase
         $order = $mockOrder->mockOrder()['order'];
         $orderID = $order['id'];
 
-        $response = $this->post(route('paypal.restApiCheckout', [
+        $response = $this->actingAs(User::first())->post(route('paypal.restApiCheckout', [
             'orderID' => $orderID
         ]));
 

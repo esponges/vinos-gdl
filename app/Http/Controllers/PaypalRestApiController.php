@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use App\Models\Order;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Http\Request;
+use App\Mail\ConfirmationEmail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Srmklive\PayPal\Services\PayPal;
+use App\Mail\AdminOrderConfirmationEmail;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
-use Illuminate\Http\Request;
+use GuzzleHttp\Exception\BadResponseException;
 use Srmklive\PayPal\Facades\PayPal as PayPalClient;
-use Srmklive\PayPal\Services\PayPal;
-use Throwable;
 
 class PaypalRestApiController extends Controller
 {
@@ -25,12 +29,67 @@ class PaypalRestApiController extends Controller
             $paypalOrderId = $paypalOrder['id'];
             $paypalOrderStatus = $paypalOrder['status'];
 
+            $this->storePaypalResponse($paypalOrder, 'createOrder');
+            $order->paypal_id = $paypalOrderId;
+            $order->save();
+
             return response()->json(['id' => $paypalOrderId, 'status' => $paypalOrderStatus], 200);
-        } catch (\Throwable $th) {
-            return response()->json(['error' => 'Error processing order ' . $order->id, 'order' => $order]);
+        } catch (BadResponseException $ex) {
+            return response()->json(['error' => 'Error processing order ' . $order->id, 'order' => $order, 'exception' => $ex]);
         }
     }
 
+    /**
+     * getItemUnits
+     * Fetch cart and prepare items as solicited by Paypal docs
+     *
+     * @param  mixed $order
+     * @return array
+     */
+    public function getItemUnits($order)
+    {
+
+        $cart = \Cart::getContent();
+        $paymentMode = $order->payment_mode;
+
+        if ($paymentMode == "paypal") {
+            $cartItems = array_map(function ($item) {
+                return array(
+                    'name' => $item['name'],
+                    'sku' => $item['id'],
+                    'unit_amount' =>
+                    array(
+                        'currency_code' => 'MXN',
+                        'value' => $item['price'],
+                    ),
+                    'quantity' => $item['quantity'],
+                );
+            }, $cart->toArray(), []); // adding a second array will make index keys display correctly... lol
+        } else {
+            // if payment on_delivery only charge 7% and change item name
+            $cartItems = array_map(function ($item) {
+                return array(
+                    'name' => 'Anticipo ' . $item['name'],
+                    'sku' => $item['id'],
+                    'unit_amount' =>
+                    array(
+                        'currency_code' => 'MXN',
+                        'value' => ceil($item['price'] - ($item['price'] / 1.07)),
+                    ),
+                    'quantity' => $item['quantity'],
+                );
+            }, $cart->toArray(), []);
+        }
+
+        return $cartItems;
+    }
+
+    /**
+     * preparePurchaseUnits
+     *
+     * @param  mixed $order
+     * @return array
+     */
     public function preparePurchaseUnits($order)
     {
         $totalToPay = $order->balance ? $order->balance : $order->total; // if payment == paypal, $order->balance == 0;
@@ -92,59 +151,6 @@ class PaypalRestApiController extends Controller
         return $purchase_units;
     }
 
-    public function getItemUnits($order)
-    {
-
-        $cart = \Cart::getContent();
-        $paymentMode = $order->payment_mode;
-
-        if ($paymentMode == "paypal") {
-            $cartItems = array_map(function ($item) {
-                return array(
-                    'name' => $item['name'],
-                    'sku' => $item['id'],
-                    'unit_amount' =>
-                    array(
-                        'currency_code' => 'MXN',
-                        'value' => $item['price'],
-                    ),
-                    'quantity' => $item['quantity'],
-                );
-            }, $cart->toArray(), []); // adding a second array will make index keys display correctly... lol
-        } else {
-            // if payment on_delivery only charge 7% and change item name
-            $cartItems = array_map(function ($item) {
-                return array(
-                    'name' => 'Anticipo ' . $item['name'],
-                    'sku' => $item['id'],
-                    'unit_amount' =>
-                    array(
-                        'currency_code' => 'MXN',
-                        'value' => ceil($item['price'] - ($item['price'] / 1.07)),
-                    ),
-                    'quantity' => $item['quantity'],
-                );
-            }, $cart->toArray(), []);
-        }
-
-        return $cartItems;
-    }
-
-    /**
-     * setPaypalProvider
-     * set Client PayPalClientCredentials from package
-     * @return mixed
-     */
-    public function setPaypalProvider()
-    {
-        PayPalClient::setProvider();
-        $paypalProvider = PayPalClient::getProvider();
-        $paypalProvider->setApiCredentials(config('paypal'));
-        $access_token = $paypalProvider->getAccessToken();
-        $paypalProvider->setAccessToken($access_token);
-        return $paypalProvider;
-    }
-
     public function captureOrder(Request $request)
     {
         // $paypalOrderId = $request->orderID;
@@ -201,49 +207,141 @@ class PaypalRestApiController extends Controller
             );
             $data = json_decode($response->getBody(), true);
 
-            return response()->json($data, 200);
+            $this->storePaypalResponse($data, 'captureOrder');
+
+            //prepare email data
+            $order = Order::where('paypal_id', $request->orderID)->first();
+            $products = \Cart::getContent();
+            $paidWithPayPal = $order->balance;
+            $grandTotal = \Cart::getTotal();
+            $balanceToPay = $grandTotal - $paidWithPayPal;
+            $user = auth()->user();
+
+            /* success email for user and staff */
+            $this->prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user);
+
+            //clear cart
+
+            /* front end response */
+            return response()->json([$data, 'vinoreo_orderID' => $order->id], 200);
+
         } catch (ServerException $e) {
 
             if ($e->hasResponse()) {
+                $response = json_decode($e->getResponse()->getBody());
+                $this->storePaypalResponse($response, 'captureOrderServerException');
+
                 return response()->json([
                     'msg' => 'Server Exception',
-                    'error' => json_decode($e->getResponse()->getBody()),
+                    'error' => $response,
                 ], 500);
             }
+
+            $response = json_decode($e->hasResponse() ? $e->getResponse() : "");
+            $this->storePaypalResponse($response, 'captureOrderServerException');
+
             return response()->json([
                 'msg' => 'Server Exception',
                 'request' => $e->getRequest(),
-                $e->hasResponse() ? $e->getResponse() : ""
+                'error' => $response,
             ]);
 
-            // return response()->json(['msg' => 'Client Error', 'error' => $e->getRequest()]);
         } catch (ClientException $e) {
 
             if ($e->hasResponse()) {
+                $response = json_decode($e->getResponse()->getBody());
+                $this->storePaypalResponse($response, 'captureOrderClientException');
+
                 return response()->json([
                     'msg' => 'Client Exception',
-                    'error' => json_decode($e->getResponse()->getBody()),
+                    'error' => $response,
                 ], 400);
             }
+            $response = json_decode($e->hasResponse() ? $e->getResponse() : "");
+            $this->storePaypalResponse($response, 'captureOrderClientException');
+
             return response()->json([
                 'msg' => 'Client Exception',
                 'request' => $e->getRequest(),
-                $e->hasResponse() ? $e->getResponse() : ""
+                'error' => $response,
             ]);
-            // return response()->json(['msg' => 'Server Error', 'error' => report($e)]);
+
         } catch (BadResponseException $e) {
 
             if ($e->hasResponse()) {
+                $response = json_decode($e->getResponse()->getBody());
+                $this->storePaypalResponse($response, 'captureOrderGeneralException');
+
                 return response()->json([
                     'msg' => 'Uknown Exception',
-                    'error' => json_decode($e->getResponse()->getBody()),
+                    'error' => $response,
                 ], 500);
             }
+
+            $response = json_decode($e->hasResponse() ? $e->getResponse() : "");
+            $this->storePaypalResponse($response, 'captureOrderGeneralException');
+
             return response()->json([
                 'msg' => 'Uknown Exception',
                 'request' => $e->getRequest(),
-                $e->hasResponse() ? $e->getResponse() : ""
+                'error' => $response,
             ]);
+        }
+    }
+
+    /**
+     * setPaypalProvider
+     * set Client PayPalClientCredentials from package
+     * @return mixed
+     */
+    public function setPaypalProvider()
+    {
+        PayPalClient::setProvider();
+        $paypalProvider = PayPalClient::getProvider();
+        $paypalProvider->setApiCredentials(config('paypal'));
+        $access_token = $paypalProvider->getAccessToken();
+        $paypalProvider->setAccessToken($access_token);
+        return $paypalProvider;
+    }
+
+    public function storePaypalResponse($response, $type)
+    {
+        DB::table('paypal_response')->insert([
+            'body' => json_encode($response),
+            'type' => $type,
+            'user_id' => auth()->user()->id,
+        ]);
+    }
+
+    public function prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user)
+    {
+        // customer email
+        Mail::to($user->email)->queue(new ConfirmationEmail(
+            $paidWithPayPal,
+            $products,
+            $grandTotal,
+            $balanceToPay,
+            $order,
+        ));
+
+        // staff email
+        $adminEmails = [
+            'vinoreomx@gmail.com',
+            'ventas@vinosdivisa.com',
+            // 'spalafox@vinosdivisa.com',
+            'jrodriguez@vinosdivisa.com',
+            'blancacarretero@vinosdivisa.com',
+        ];
+
+        foreach ($adminEmails as $email) {
+            sleep(1);
+            Mail::to($email)->queue(new AdminOrderConfirmationEmail(
+                $order,
+                $products,
+                $grandTotal,
+                $paidWithPayPal,
+                $balanceToPay,
+            ));
         }
     }
 }
