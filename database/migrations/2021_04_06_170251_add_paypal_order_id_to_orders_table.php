@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddBalanceToOrdersTable extends Migration
+class AddPaypalOrderIdToOrdersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddBalanceToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->float('balance')->nullabel();
+            $table->string('paypal_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddBalanceToOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('balance');
+            $table->dropColumn('paypal_id');
         });
     }
 }
