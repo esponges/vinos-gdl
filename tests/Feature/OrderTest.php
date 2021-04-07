@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\OrderController;
 use App\Models\Cp;
 use Faker\Factory;
 use Tests\TestCase;
@@ -213,5 +214,23 @@ class OrderTest extends TestCase
         ]));
 
         $response->assertStatus(408);
+    }
+
+    public function test_getOrderInfo()
+    {
+        $this->withoutExceptionHandling();
+        // get order
+        $order = Order::first();
+        $vinoreoOrderID = $order->id;
+        // get cart items
+        $orderController = new OrderController();
+        $cartItems = $orderController->getOrderItems($order->id);
+
+        $response = $this->actingAs(User::first())->post('/order/info', [
+            'vinoreoOrderID' => $vinoreoOrderID,
+        ]);
+
+        $response->assertOk();
+        $response->assertJsonFragment($order->toArray(), $cartItems);
     }
 }
