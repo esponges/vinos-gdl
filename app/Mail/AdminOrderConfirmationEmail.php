@@ -14,7 +14,7 @@ class AdminOrderConfirmationEmail extends Mailable
     public $order;
     public $products;
     public $grandTotal;
-    public $cartTotal;
+    public $paidWithPayPal;
     public $balanceToPay;
 
     /**
@@ -26,14 +26,14 @@ class AdminOrderConfirmationEmail extends Mailable
         $order,
         $products,
         $grandTotal,
-        $cartTotal,
+        $paidWithPayPal,
         $balanceToPay
         )
     {
         $this->order = $order;
         $this->products = $products;
         $this->grandTotal = $grandTotal;
-        $this->cartTotal = $cartTotal;
+        $this->paidWithPayPal = $paidWithPayPal;
         $this->balanceToPay = $balanceToPay;
     }
 

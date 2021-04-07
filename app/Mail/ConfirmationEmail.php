@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 
 class ConfirmationEmail extends Mailable
 {
-    public $cartTotal;
+    public $paidWithPayPal;
     public $products;
     public $grandTotal;
     public $balanceToPay;
@@ -23,14 +23,14 @@ class ConfirmationEmail extends Mailable
      * @return void
      */
     public function __construct(
-        $cartTotal,
+        $paidWithPayPal,
         $products,
         $grandTotal,
         $balanceToPay,
         $order
         )
     {
-        $this->cartTotal = $cartTotal;
+        $this->paidWithPayPal = $paidWithPayPal;
         $this->products = $products;
         $this->grandTotal = $grandTotal;
         $this->balanceToPay = $balanceToPay;
