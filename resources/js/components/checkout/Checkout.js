@@ -1,12 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef, useContext } from "react";
-import {
-    Form,
-    Button,
-    Alert,
-    Overlay,
-    Tooltip,
-} from "react-bootstrap";
+import { Form, Button, Alert, Overlay, Tooltip } from "react-bootstrap";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -16,10 +10,11 @@ import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
-import PaypalPayment from './PaypalPayment';
+import PaypalPayment from "./PaypalPayment";
 
 import { Context } from "../Context";
 import { Link } from "react-router-dom";
+import CustomLoader from "../CustomLoader";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -40,7 +35,10 @@ const Checkout = (props) => {
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
-    const [paymentModeReminder, setPaymentModeReminder] = useState("on_delivery");
+    const [paymentModeReminder, setPaymentModeReminder] = useState(
+        "on_delivery"
+    );
+    const [showPayPalBtn, setShowPayPalBtn] = useState(false);
 
     const [totalToPay, setTotalToPay] = useState(false);
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
@@ -50,14 +48,15 @@ const Checkout = (props) => {
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
 
+    const [loader, setLoader] = useState(null);
+
     const context = useContext(Context);
 
     // from payment type radio input
     const handlePaymentChange = (e) => {
-        console.log('payment_mode is', e.target.value);
+        console.log("payment_mode is", e.target.value);
         setPaymentMode(e.target.value);
-        if (e.target.value === "paypal")
-            setTotalToPay(`Total MX$${cartTotal}`);
+        if (e.target.value === "paypal") setTotalToPay(`Total MX$${cartTotal}`);
         else if (e.target.value === "transfer")
             setTotalToPay(`Total MX$${cartTotal}`);
         else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
@@ -92,7 +91,7 @@ const Checkout = (props) => {
                         //     style: "currency",
                         //     currency: "MXN",
                         // }).format(
-                            res.data
+                        res.data
                         // )
                     );
                 })
@@ -143,7 +142,9 @@ const Checkout = (props) => {
                 }
             }
             //validate address
-            if (streetName.length < 5 && streetName != "" &&
+            if (
+                streetName.length < 5 &&
+                streetName != "" &&
                 addressNumber.length != 0
             ) {
                 setAddressAlertMessage("Por favor ingresa dirección completa");
@@ -161,9 +162,9 @@ const Checkout = (props) => {
                 CP &&
                 deliveryDay &&
                 deliverySchedule
-            )
-            {
+            ) {
                 setButtonIsActive(true);
+                setShowPayPalBtn(true);
                 // pass to PayPal btn
                 setOrderInfo({
                     order_name: orderName,
@@ -175,219 +176,261 @@ const Checkout = (props) => {
                     phone: phone,
                     cp: CP,
                     neighborhood: neighborhood,
-                    balance: paymentMode == 'on_delivery' ? upfrontPayPalPayment : 0,
+                    balance:
+                        paymentMode == "on_delivery" ? upfrontPayPalPayment : 0,
                 });
+            } else {
+                setButtonIsActive(false);
+                setShowPayPalBtn(false);
             }
-            else setButtonIsActive(false);
             // remind user payment method
-            paymentMode === 'on_delivery' && setPaymentModeReminder('Pago en efectivo contra entrega');
-            paymentMode === 'transfer' && setPaymentModeReminder('Pago del 100% por transferencia o depósito');
-            paymentMode === 'paypal' && setPaymentModeReminder('Pago del 100% por PayPal');
+            paymentMode === "on_delivery" &&
+                setPaymentModeReminder("Pago en efectivo contra entrega");
+            paymentMode === "transfer" &&
+                setPaymentModeReminder(
+                    "Pago del 100% por transferencia o depósito"
+                );
+            paymentMode === "paypal" &&
+                setPaymentModeReminder("Pago del 100% por PayPal");
         }
 
-        return () => isMounted = false;
-    }, [orderName, phone, CP, streetName, addressNumber, deliveryDay, deliverySchedule, addressDetails, paymentMode]);
+        return () => (isMounted = false);
+    }, [
+        orderName,
+        phone,
+        CP,
+        streetName,
+        addressNumber,
+        deliveryDay,
+        deliverySchedule,
+        addressDetails,
+        paymentMode,
+    ]);
 
-    const totalHeader = (
-        <h3>
-            {`Total ${cartTotal} `}
-        </h3>
-    );
+    const totalHeader = <h3>{`Total ${cartTotal} `}</h3>;
 
     return (
         <div className="container">
-            {props.loggedIn && cartTotal > 1500 ? (
-                <div style={{ marginBottom: "6rem" }}>
-                    {/* prompt user for payment method */}
+            {!loader ? (
+                props.loggedIn && cartTotal > 1500 ? (
+                    <div style={{ marginBottom: "6rem" }}>
+                        {/* prompt user for payment method */}
 
-                    {totalHeader && totalHeader}
+                        {totalHeader && totalHeader}
 
-                    <PaymentMode
-                        handlePaymentChange={handlePaymentChange}
-                        upfrontPayPalPayment={upfrontPayPalPayment}
-                    />
-
-                    {/* if user choses on_delivery */}
-                    {paymentMode == "on_delivery" && (
-                        <Alert variant={"warning"}>
-                            Si eliges liquidar el saldo restante al recibir
-                            recuerda que nuestro repartidor{" "}
-                            <u>sólo acepta efectivo</u>.
-                        </Alert>
-                    )}
-
-                    {/* use laravel form method */}
-                    <Form className="mt-3 mb-5" action="/order/create" method="post">
-                        {/* place csrf token */}
-                        <input type="hidden" value={csrfToken} name="_token" />
-                        <input
-                            type="hidden"
-                            value={paymentMode}
-                            name="payment_mode"
+                        <PaymentMode
+                            handlePaymentChange={handlePaymentChange}
+                            upfrontPayPalPayment={upfrontPayPalPayment}
                         />
-                        <Form.Group>
-                            <Form.Label>Tu nombre</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={orderName}
-                                onChange={(e) => setOrderName(e.target.value)}
-                                name="order_name"
-                            />
 
-                            <Form.Label className="mt-2">Email</Form.Label>
-                            <Form.Control
-                                type="text"
-                                disabled={true}
-                                value={`${props.userInfo["userEmail"]}`}
-                            />
-                            <Form.Text className="text-muted success">
-                                A este correo te enviaremos la confirmación
-                            </Form.Text>
-
-                            <Form.Label className="mt-2">
-                                Tu teléfono
-                            </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="ingresa tu teléfono"
-                                value={phone}
-                                name="phone"
-                                onChange={(e) => setPhone(e.target.value)}
-                            />
-                            <Form.Text className="text-muted success">
-                                Sólo lo usaremos para mantenerte informado sobre tu orden
-                            </Form.Text>
-                            {phoneAlertMessage && (
-                                <Alert variant={"warning"} className="m-1">
-                                    {phoneAlertMessage}
-                                </Alert>
-                            )}
-                        </Form.Group>
-
-                        <Form.Group>
-                            <Form.Label>Tu Código Postal</Form.Label>
-                            <CheckCP getCpInfo={getCpInfo} />
-                            <input type="hidden" name="cp" value={CP} />
-                            <input
-                                type="hidden"
-                                name="neighborhood"
-                                value={neighborhood}
-                            />
-
-                            {/* Pop Over */}
-                            <Button
-                                variant="link"
-                                ref={target}
-                                onClick={() => setShow(!show)}
-                            >
-                                ¿No encuentras tu código postal?
-                            </Button>
-                            <Overlay
-                                target={target.current}
-                                show={show}
-                                placement="top"
-                            >
-                                {(props) => (
-                                    <Tooltip id="overlay-cp" {...props}>
-                                        Significa que aún no llegamos a tu
-                                        ubicación :(
-                                    </Tooltip>
-                                )}
-                            </Overlay>
-                        </Form.Group>
-
-                        {/* address */}
-                        <Form.Group className="mt-2">
-                            <Form.Label>
-                                Calle o avenida
-                            </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="La dirección de tu casa"
-                                value={streetName}
-                                onChange={(e) => {
-                                    setStreetName(e.target.value);
-                                }}
-                            />
-                            <Form.Label>
-                                Número exterior{" "}
-                                <i>(e interior si tienes)</i>
-                            </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="El número de la dirección"
-                                value={addressNumber}
-                                onChange={(e) => {
-                                    setAddressNumber(e.target.value);
-                                }}
-                            />
-                            <input type="hidden" value={`${streetName} - ${addressNumber}`} name="address" />
-                        </Form.Group>
-                        {addressAlertMessage && (
-                            <Alert variant={"warning"} className="m-1">
-                                {addressAlertMessage}
+                        {/* if user choses on_delivery */}
+                        {paymentMode == "on_delivery" && (
+                            <Alert variant={"warning"}>
+                                Si eliges liquidar el saldo restante al recibir
+                                recuerda que nuestro repartidor{" "}
+                                <u>sólo acepta efectivo</u>.
                             </Alert>
                         )}
 
-                        <DeliverySchedule getDeliveryInfo={getDeliveryInfo} />
-                        <input
-                            type="hidden"
-                            name="delivery_day"
-                            value={deliveryDay}
-                        />
-                        <input
-                            type="hidden"
-                            name="delivery_schedule"
-                            value={deliverySchedule}
-                        />
-
-                        {/* more address info */}
-                        <Form.Group className="mt-2">
-                            <Form.Label>
-                                Opcional - Condominio, faccionamiento, o
-                                edificio <i>(detalles)</i>
-                            </Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Para dar más fácilmente contigo"
-                                name="address_details"
-                                value={addressDetails}
-                                onChange={(e) => {
-                                    setAddressDetails(e.target.value);
-                                }}
-                            />
-                        </Form.Group>
-
-                        {/* let user pay if all information is set */}
-                        {console.log(buttonIsActive, addressAlertMessage, phone.length)}
-                        {!buttonIsActive && (addressAlertMessage || phone.length != 10) &&
-                            <Alert variant={"warning"} className="m-1">
-                                Por favor completa tu información
-                            </Alert>
-                        }
-                        {totalHeader && totalHeader}
-                        <p>Tipo de pago: <b>{paymentModeReminder}</b></p>
-                        <Button
-                            className="mb-5"
-                            variant="primary"
-                            type="submit"
-                            disabled={buttonIsActive ? false : true}
+                        {/* use laravel form method */}
+                        <Form
+                            className="mt-3 mb-5"
+                            action="/order/create"
+                            method="post"
                         >
-                            Proceder a pago
-                        </Button>
-                    </Form>
-                    <PaypalPayment orderInfo={orderInfo}/>
-                </div>
+                            {/* place csrf token */}
+                            <input
+                                type="hidden"
+                                value={csrfToken}
+                                name="_token"
+                            />
+                            <input
+                                type="hidden"
+                                value={paymentMode}
+                                name="payment_mode"
+                            />
+                            <Form.Group>
+                                <Form.Label>Tu nombre</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={orderName}
+                                    onChange={(e) =>
+                                        setOrderName(e.target.value)
+                                    }
+                                    name="order_name"
+                                />
+
+                                <Form.Label className="mt-2">Email</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    disabled={true}
+                                    value={`${props.userInfo["userEmail"]}`}
+                                />
+                                <Form.Text className="text-muted success">
+                                    A este correo te enviaremos la confirmación
+                                </Form.Text>
+
+                                <Form.Label className="mt-2">
+                                    Tu teléfono
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="ingresa tu teléfono"
+                                    value={phone}
+                                    name="phone"
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                                <Form.Text className="text-muted success">
+                                    Sólo lo usaremos para mantenerte informado
+                                    sobre tu orden
+                                </Form.Text>
+                                {phoneAlertMessage && (
+                                    <Alert variant={"warning"} className="m-1">
+                                        {phoneAlertMessage}
+                                    </Alert>
+                                )}
+                            </Form.Group>
+
+                            <Form.Group>
+                                <Form.Label>Tu Código Postal</Form.Label>
+                                <CheckCP getCpInfo={getCpInfo} />
+                                <input type="hidden" name="cp" value={CP} />
+                                <input
+                                    type="hidden"
+                                    name="neighborhood"
+                                    value={neighborhood}
+                                />
+
+                                {/* Pop Over */}
+                                <Button
+                                    variant="link"
+                                    ref={target}
+                                    onClick={() => setShow(!show)}
+                                >
+                                    ¿No encuentras tu código postal?
+                                </Button>
+                                <Overlay
+                                    target={target.current}
+                                    show={show}
+                                    placement="top"
+                                >
+                                    {(props) => (
+                                        <Tooltip id="overlay-cp" {...props}>
+                                            Significa que aún no llegamos a tu
+                                            ubicación :(
+                                        </Tooltip>
+                                    )}
+                                </Overlay>
+                            </Form.Group>
+
+                            {/* address */}
+                            <Form.Group className="mt-2">
+                                <Form.Label>Calle o avenida</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="La dirección de tu casa"
+                                    value={streetName}
+                                    onChange={(e) => {
+                                        setStreetName(e.target.value);
+                                    }}
+                                />
+                                <Form.Label>
+                                    Número exterior{" "}
+                                    <i>(e interior si tienes)</i>
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="El número de la dirección"
+                                    value={addressNumber}
+                                    onChange={(e) => {
+                                        setAddressNumber(e.target.value);
+                                    }}
+                                />
+                                <input
+                                    type="hidden"
+                                    value={`${streetName} - ${addressNumber}`}
+                                    name="address"
+                                />
+                            </Form.Group>
+                            {addressAlertMessage && (
+                                <Alert variant={"warning"} className="m-1">
+                                    {addressAlertMessage}
+                                </Alert>
+                            )}
+
+                            <DeliverySchedule
+                                getDeliveryInfo={getDeliveryInfo}
+                            />
+                            <input
+                                type="hidden"
+                                name="delivery_day"
+                                value={deliveryDay}
+                            />
+                            <input
+                                type="hidden"
+                                name="delivery_schedule"
+                                value={deliverySchedule}
+                            />
+
+                            {/* more address info */}
+                            <Form.Group className="mt-2">
+                                <Form.Label>
+                                    Opcional - Condominio, faccionamiento, o
+                                    edificio <i>(detalles)</i>
+                                </Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Para dar más fácilmente contigo"
+                                    name="address_details"
+                                    value={addressDetails}
+                                    onChange={(e) => {
+                                        setAddressDetails(e.target.value);
+                                    }}
+                                />
+                            </Form.Group>
+
+                            {/* let user pay if all information is set */}
+                            {console.log(
+                                buttonIsActive,
+                                addressAlertMessage,
+                                phone.length
+                            )}
+                            {!buttonIsActive &&
+                                (addressAlertMessage || phone.length != 10) && (
+                                    <Alert variant={"warning"} className="m-1">
+                                        Por favor completa tu información
+                                    </Alert>
+                                )}
+                            {totalHeader && totalHeader}
+                            <p>
+                                Tipo de pago: <b>{paymentModeReminder}</b>
+                            </p>
+                            <Button
+                                className="mb-5"
+                                variant="primary"
+                                type="submit"
+                                disabled={buttonIsActive ? false : true}
+                            >
+                                Proceder a pago
+                            </Button>
+                        </Form>
+                    </div>
+                ) : (
+                    <div>
+                        <Alert variant="warning">
+                            Tu carrito de compras está vacío
+                        </Alert>
+                        <Link to="/">
+                            <Button variant="primary">Regresar</Button>
+                        </Link>
+                    </div>
+                )
             ) : (
-                <div>
-                    <Alert variant="warning">
-                        Tu carrito de compras está vacío
-                    </Alert>
-                    <Link to="/">
-                        <Button variant="primary">Regresar</Button>
-                    </Link>
-                </div>
+                <CustomLoader />
             )}
+            <div style={{ display: showPayPalBtn ? '' : 'none' }}>
+                <PaypalPayment orderInfo={orderInfo} setLoader={setLoader} setShowPayPalBtn={setShowPayPalBtn} />
+            </div>
         </div>
     );
 };

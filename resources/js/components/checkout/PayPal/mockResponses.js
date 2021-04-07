@@ -136,3 +136,30 @@ const captureCompleted = {
         },
     ],
 };
+
+const errorCreatingOrder = {
+    errorx: "Error processing order 2564",
+    order: {
+        id: 2564,
+        total: 1530,
+        total_items: 3,
+        payment_mode: "on_delivery",
+        is_paid: 0,
+        address: "MONZA11 #1152",
+        address_details: "xxxx",
+        phone: "3331673150",
+        cp: 25688,
+        user_id: 1,
+        created_at: "2021-04-06T01:14:09.000000Z",
+        updated_at: "2021-04-06T01:14:09.000000Z",
+        order_name: "Haleigh Kutch",
+        delivery_day: "Próximo Viernes",
+        delivery_schedule: "2pm a 4pm",
+        neighborhood: "asdNorth Jaimechester",
+        balance: 102,
+    },
+};
+
+if (errorCreatingOrder?.error) console.log('ja!!!');
+else console.log('oh noooo');
+

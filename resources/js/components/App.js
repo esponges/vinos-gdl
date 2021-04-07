@@ -23,6 +23,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Context } from "./Context";
+import CancelPayment from "./checkout/PayPal/CancelPayment";
+import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
+import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -38,8 +41,8 @@ const App = (props) => {
     const addToCart = (id, itemCount) => {
         setLoader(true);
         axios
-        .get(`cart/${id}/add/${itemCount}`)
-        .then(() => {
+            .get(`cart/${id}/add/${itemCount}`)
+            .then(() => {
                 console.log("add to cart! ", id, "item count ", itemCount);
                 cartCountUpdate(itemCount);
                 getCartContent();
@@ -182,10 +185,9 @@ const App = (props) => {
                     userInfo={userInfo}
                     logout={logout}
                 />
-                <ToastContainer />
+                <ToastContainer position="top-center"/>
                 <div
                     className="container mb-5 body-margin-top"
-                    // style={{ marginTop: `22%` }}
                 >
                     <Switch>
                         <Route path="/products/:id">
@@ -195,6 +197,19 @@ const App = (props) => {
 
                         <Route path="/categories/:name">
                             <Category />
+                        </Route>
+
+
+                        <Route path="/checkout">
+                            <Route path="/checkout/cancel">
+                                <CancelPayment />
+                            </Route>
+                            <Route path="/checkout/success/:id">
+                                <SuccessfulPayment />
+                            </Route>
+                            <Route path="/checkout/fail">
+                                <UnsuccessfulPayment />
+                            </Route>
                         </Route>
 
                         <Route path="/cart/checkout">

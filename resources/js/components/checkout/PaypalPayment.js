@@ -4,16 +4,36 @@ import ReactDOM from "react-dom";
 import { withRouter } from "react-router";
 import { Context } from "../Context";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 
 const PaypalPayment = ({ orderInfo, ...props }) => {
     const context = useContext(Context);
 
+    const localhost = window.location.protocol + "//" + window.location.host;
+
+    const notifyToaster = (variant, msg) => {
+        if (variant === 'warn') {
+            return toast.warn(msg);
+        } else if (variant === 'success') {
+            return toast.success(msg);
+        } else if (variant === 'error') {
+            return toast.error(msg);
+        } else {
+            return toast.info(msg);
+        }
+    }
+
+
     const createOrder = (data, actions) => {
         // create order at server side
-        {
-            console.log("create order!!!");
-        }
+        console.log("create order!!!", 'actions ', actions);
+        notifyToaster(
+            "info",
+            "Iniciando proceso de pago"
+        );
         return axios
             .post("/order/rest-api/create", {
                 order_name: orderInfo.order_name,
@@ -28,7 +48,7 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                 balance: orderInfo.balance,
             })
             .then((res) => {
-                if (res.data.orderID) {
+                if (res.data?.orderID) {
                     return axios
                         .post(
                             "/paypal/rest-api/checkout",
@@ -42,52 +62,48 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                             }
                         )
                         .then((res) => {
-                            console.log(res.data);
+                            console.log('success', res.data);
+                            if (res.data?.error) {
+                                notifyToaster(
+                                    "warn",
+                                    "Tuvimos problemas creando la orden. Intenta más tarde."
+                                );
+                            }
                             return res.data.id;
                         })
                         .catch((err) => {
                             console.error("error getting ID from api", err);
+                            notifyToaster(
+                                "warn",
+                                "Paypal está fallando. Intenta más tarde o con otro método."
+                            );
+                            props.setLoader(false);
                         });
-                } else console.log("error creating order");
+                } else {
+                    notifyToaster(
+                        "warn",
+                        "Tuvimos problemas creando la orden. Intenta más tarde."
+                    );
+                    props.setLoader(false);
+                }
             })
             .catch((err) => {
                 console.error(err);
+                notifyToaster(
+                    "warn",
+                    "Tuvimos problemas creando la orden. Intenta más tarde."
+                );
+                props.setLoader(false);
             });
     };
 
     const onApprove = (data, actions) => {
-        console.log("payment approved by user", data);
+        console.log("payment approved by user", data, actions);
         const orderID = data.orderID;
 
-        /* SUCCESS */
-
-        const accessToken = document.head
-            .querySelector('meta[name="paypaltoken"]')
-            .getAttribute("content");
-
-        // return axios
-        //     .post(
-        //         `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderID}/capture`,
-        //         {},
-        //         {
-        //             headers: {
-        //                 "Content-Type": "application/json",
-        //                 Authorization: "Bearer " + accessToken,
-        //                 "PayPal-Mock-Response":
-        //                     '{"mock_application_codes":"INSTRUMENT_DECLINED"}',
-        //             },
-        //         }
-        //     )
-        //     .then((res) => {
-        //         console.log('response from caputre ', res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err.response);
-        //         if (err?.response?.data?.details?.[0]?.issue) { // it works!!!
-        //             console.log('catched the issue!!');
-        //             return actions.restart();
-        //         }
-        //     });
+        notifyToaster("success", 'Procesando aprobación');
+        props.setShowPayPalBtn(false);
+        props.setLoader(true);
 
         return axios
             .post("/paypal/rest-api/capture-order", {
@@ -95,28 +111,57 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
             })
             .then((res) => {
                 console.log("success capturing order", res.data);
+                notifyToaster(
+                    'success',
+                    'Pago y orden procesados correctamente'
+                )
+                const vinoreoOrderID = res.data.vinoreo_orderID;
                 // take user to success view
+                return actions.redirect(`${localhost}/#/checkout/success/${vinoreoOrderID}`);
             })
             .catch((err) => {
-                if (err?.response?.data?.error?.details?.[0]?.issue === 'INSTRUMENT_DECLINED') {
-                    console.error('gotcha!!! INSTRUMENT')
+                if (
+                    err?.response?.data?.error?.details?.[0]?.issue ===
+                    "INSTRUMENT_DECLINED"
+                ) {
+                    console.error("gotcha!!! INSTRUMENT");
+                    notifyToaster(
+                        "warn",
+                        "Tu método de pago fue rechazado. Prueba con otro."
+                    );
                     // propmt the user to use a different payment method
-                    return actions.restart();
+                    const restartPayment = () => {
+                        console.log('restart timeouttt');
+                        props.setLoader(false);
+                        actions.restart();
+                    }
+                    return setTimeout(() => restartPayment(), 3500);
                 }
                 // tell user about the error
-                console.log('oh nooooo, a differente error');
+                console.log("oh nooooo, a differente error: ", err);
+                props.setLoader(false);
+                return notifyToaster(
+                    "error",
+                    "Problemas con el servidor de Paypal. Intenta más tarde."
+                );
+                // redirect user to unsuccessful view
             });
     };
 
     const onCancel = (data, actions) => {
-        console.log(data);
-        console.log(actions);
+        // console.log(data);
+        // console.log(actions);
+        props.setLoader(false);
+
+        notifyToaster("warn", "Proceso de pago interrumpido");
+        // return actions.redirect(`${localhost}/#/checkout/cancel`);
         // return actions.redirect("https://vinoreo.mx");
     };
 
     return (
         <div>
             {orderInfo && console.log(orderInfo, props)}
+            <ToastContainer position="top-center"/>
 
             <PayPalButton
                 createOrder={(data, actions) => createOrder(data, actions)}
