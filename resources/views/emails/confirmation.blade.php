@@ -6,18 +6,22 @@ El resumen de tu compra:
 | Producto       | Precio     | Cantidad         | Subtotal  |
 | ------------- |:----------:|:-------------:| --------:|
 @foreach ($products as $product)
-| {{$product->name}}     | {{$product->price}} | {{$product->quantity}}      | {{$product->quantity * $product->price}}     |
+| {{$product->name}}     | MX${{$product->price}} | {{$product->quantity}}      | MX${{$product->quantity * $product->price}}     |
 @endforeach
 
 @endcomponent
 
-El total de tu compra fue: <b>{{$grandTotal}}</b>
+El total de tu compra fue: MX$<b>{{$grandTotal}}</b>
 
-Tu pago por Paypal: <b>{{$paidWithPayPal}}</b>
+@if ($order['payment_mode'] !== 'transfer')
+
+Tu pago por Paypal: MX$<b>{{$paidWithPayPal}}</b>
+
+@endif
 
 @if ($order['payment_mode'] == "on_delivery")
 
-Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
+Tu saldo a liquidar en la entrega: MX$<b>{{$balanceToPay}}</b>
 
 <u>Recuerda que el repartidor sólo recibe efectivo</u>
 

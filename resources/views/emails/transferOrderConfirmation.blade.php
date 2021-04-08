@@ -6,16 +6,16 @@ El resumen de tu compra:
 | Producto       | Precio     | Cantidad         | Subtotal  |
 | ------------- |:----------:|:-------------:| --------:|
 @foreach ($products as $product)
-| {{$product->name}}     | {{$product->price}} | {{$product->quantity}}      | {{$product->quantity * $product->price}}     |
+| {{$product->name}}     | MX${{$product->price}} | {{$product->quantity}}      | MX${{$product->quantity * $product->price}}     |
 @endforeach
 
 @endcomponent
 
-El total de tu compra fue: <b>{{$grandTotal}}</b>
+El total de tu compra fue: MX$<b>{{$grandTotal}}</b>
 
-Total a transferir o depositar: <b>{{$balanceToPay}}</b>
+Total a transferir o depositar: MX$<b>{{$balanceToPay}}</b>
 
-Tu N° de orden: <b>{{$order->id}}</b>
+N° de orden: <b>{{$order->id}}</b>
 
 <b>Información de depósito/transferencia</b>
 

@@ -6,7 +6,7 @@ Resumen:
 | Producto       | Precio     | Cantidad         | Subtotal  |
 | ------------- |:----------:|:-------------:| --------:|
 @foreach ($products as $product)
-| {{$product->name}}     | {{$product->price}} | {{$product->quantity}}      | {{$product->quantity * $product->price}}     |
+| {{$product->name}}     | MX${{$product->price}} | {{$product->quantity}}      | MX${{$product->quantity * $product->price}}     |
 @endforeach
 
 @endcomponent
@@ -31,11 +31,11 @@ Revisar el saldo por cobrar contra entrega.
 
 @endif
 
-Total: <b>{{$grandTotal}}</b> mxn
+Total: MX$<b>{{$grandTotal}}</b>
 
 @if($order['payment_mode'] == "paypal" || $order['payment_mode'] == "on_delivery")
 
-Pago por Paypal: <b>{{$paidWithPayPal}}</b> mxn
+Pago por Paypal: MX$<b>{{$paidWithPayPal}}</b>
 
 @endif
 
@@ -43,7 +43,7 @@ Pago por Paypal: <b>{{$paidWithPayPal}}</b> mxn
 
 El cliente liquidará su orden en efectivo en la entrega.
 
-Saldo por cobrar en la entrega: <b>{{$balanceToPay}}</b>
+Saldo por cobrar en la entrega: MX$<b>{{$balanceToPay}}</b>
 
 @endif
 
