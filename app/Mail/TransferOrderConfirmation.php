@@ -14,7 +14,6 @@ class TransferOrderConfirmation extends Mailable
     public $order;
     public $products;
     public $grandTotal;
-    public $cartTotal;
     public $balanceToPay;
 
     /**
@@ -26,14 +25,12 @@ class TransferOrderConfirmation extends Mailable
         $order,
         $products,
         $grandTotal,
-        $cartTotal,
         $balanceToPay
     )
     {
         $this->order = $order;
         $this->products = $products;
         $this->grandTotal = $grandTotal;
-        $this->cartTotal = $cartTotal;
         $this->balanceToPay = $balanceToPay;
 
     }

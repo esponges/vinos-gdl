@@ -13,6 +13,7 @@ use App\Mail\AdminOrderConfirmationEmail;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\BadResponseException;
+use PharIo\Manifest\Email;
 use Srmklive\PayPal\Facades\PayPal as PayPalClient;
 
 class PaypalRestApiController extends Controller
@@ -200,6 +201,9 @@ class PaypalRestApiController extends Controller
                     'headers' => [
                         'Content-Type' => 'application/json',
                         'Authorization' => 'Bearer ' . $access_token,
+
+                        /* TESTING - Headers to mock responses and fake errors */
+
                         // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INTERNAL_SERVER_ERROR"]),
                         // 'PayPal-Mock-Response' => json_encode(["mock_application_codes" => "INSTRUMENT_DECLINED"]),
                     ],
@@ -212,13 +216,15 @@ class PaypalRestApiController extends Controller
             //prepare email data
             $order = Order::where('paypal_id', $request->orderID)->first();
             $products = \Cart::getContent();
-            $paidWithPayPal = $order->balance;
+            $paidWithPayPal = $order->payment_mode === 'on_delivery' ? $order->balance : $order->total;
             $grandTotal = \Cart::getTotal();
             $balanceToPay = $grandTotal - $paidWithPayPal;
             $user = auth()->user();
+            $paymentType = $order->payment_mode;
 
             /* success email for user and staff */
-            $this->prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user);
+            $emailController = new EmailController();
+            $emailController->prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user, $paymentType);
 
             //clear cart
 
@@ -311,37 +317,5 @@ class PaypalRestApiController extends Controller
             'type' => $type,
             'user_id' => auth()->user()->id,
         ]);
-    }
-
-    public function prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user)
-    {
-        // customer email
-        Mail::to($user->email)->queue(new ConfirmationEmail(
-            $paidWithPayPal,
-            $products,
-            $grandTotal,
-            $balanceToPay,
-            $order,
-        ));
-
-        // staff email
-        $adminEmails = [
-            'vinoreomx@gmail.com',
-            'ventas@vinosdivisa.com',
-            // 'spalafox@vinosdivisa.com',
-            'jrodriguez@vinosdivisa.com',
-            'blancacarretero@vinosdivisa.com',
-        ];
-
-        foreach ($adminEmails as $email) {
-            sleep(1);
-            Mail::to($email)->queue(new AdminOrderConfirmationEmail(
-                $order,
-                $products,
-                $grandTotal,
-                $paidWithPayPal,
-                $balanceToPay,
-            ));
-        }
     }
 }
