@@ -10,6 +10,8 @@ const SuccessfulPayment = (props) => {
     const vinoreoOrderID = props.match.params.id;
 
     useEffect(() => {
+        let isMounted = true;
+
         axios
             .post("/order/info", {
                 vinoreoOrderID: vinoreoOrderID,
@@ -22,6 +24,8 @@ const SuccessfulPayment = (props) => {
                 setOrderInfo(null);
                 setCartItems(null);
             });
+
+        return () => (isMounted = false);
     }, []);
 
     return (
@@ -68,29 +72,39 @@ const SuccessfulPayment = (props) => {
                                 <b>Total de tu orden MX$ {orderInfo.total}</b>
                             </p>
                             <p>
-                                <b>Anticipo Pagado MX$ </b>{" "}
-                                {orderInfo?.balance ?? 0}
+                                {orderInfo.payment_mode === "transfer" && (
+                                    <b>
+                                        Anticipo Pagado MX$
+                                        {orderInfo?.balance ?? 0}
+                                    </b>
+                                )}
                             </p>
-                            <h5 className="mt-3">
-                                <b>
-                                    Total a pagar{" "}
-                                    {orderInfo.payment_mode === "transfer"
-                                        ? ""
-                                        : "contra entrega"}
-                                    &nbsp;
-                                    <u>MX$</u>
-                                    &nbsp;
-                                    <u>
-                                        {orderInfo.total - orderInfo.balance ??
-                                            0}
-                                    </u>
-                                </b>
-                            </h5>
-                            {orderInfo.payment_mode === "on_delivery" && (
+                            <h3 className="mt-3">
+                                Total{" "}
+                                {orderInfo.payment_mode !== "transfer"
+                                    ? "pagado con PayPal"
+                                    : "a transferir"}
+                                &nbsp;
+                                <u>MX$</u>
+                                &nbsp;
                                 <u>
-                                    Recuerda que el repartidor sólo recibe
-                                    efectivo
+                                    {orderInfo.payment_mode === 'transfer' && orderInfo.total}
+                                    {orderInfo.payment_mode === 'on_delivery' && orderInfo.total - orderInfo.balance}
+                                    {orderInfo.payment_mode === 'paypal' && orderInfo.total}
                                 </u>
+                            </h3>
+                            {orderInfo.payment_mode === "on_delivery" ? (
+                                <div>
+                                    <h3>
+                                        <b>Saldo a pagar contra entrega MX${orderInfo.total - orderInfo.balance}</b>
+                                    </h3>
+                                    <u>
+                                        Recuerda que el repartidor sólo recibe
+                                        efectivo
+                                    </u>
+                                </div>
+                            ) : (
+                                orderInfo.payment_mode === 'paypal' && <u>Tu orden está pagada</u>
                             )}
                             <br />
                         </Card>
@@ -108,22 +122,23 @@ const SuccessfulPayment = (props) => {
                                         </h3>
                                         <ul style={{ listStyle: "none" }}>
                                             <li>
-                                                CLABE interbancaria{" "}
+                                                CLABE interbancaria <br />
                                                 <b>0723 2000 3244 528134</b>
                                                 <br />
                                             </li>
                                             <li>
-                                                Nombre{" "}
+                                                Nombre <br />
                                                 <b>
                                                     Licoret Occidental SA de CV
                                                 </b>
                                             </li>
                                             <li>
-                                                N° de cuenta <b>032 445 2813</b>
+                                                N° de cuenta <br />
+                                                <b>032 445 2813</b>
                                                 <br />
                                             </li>
                                             <li>
-                                                Banco <b>Banorte</b>
+                                                Banco <br/><b>Banorte</b>
                                                 <br />
                                                 <br />
                                             </li>
@@ -131,9 +146,9 @@ const SuccessfulPayment = (props) => {
                                         <p>
                                             Por favor envía tu comprobante de
                                             pago junto a tu número de orden al
-                                            Whatsapp
-                                            <b>33 20 19 24 20</b>o al correo
-                                            electrónico
+                                            Whatsapp&nbsp;
+                                            <b>33 20 19 24 20</b> o al correo
+                                            electrónico&nbsp;
                                             <b>hola@vinoreo.mx</b>
                                             &nbsp;para procesar tu envío
                                         </p>
@@ -143,7 +158,8 @@ const SuccessfulPayment = (props) => {
                                     <em>
                                         Si no se confirma tu pago para tu fecha
                                         de entrega deseada, ésta será
-                                        reprogramada.
+                                        reprogramada. <br />
+                                        <br />
                                     </em>{" "}
                                     No te preocupes, nos pondremos en contacto
                                     contigo.

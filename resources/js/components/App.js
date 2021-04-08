@@ -23,6 +23,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Context } from "./Context";
+
 import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
@@ -129,6 +130,19 @@ const App = (props) => {
         }
     };
 
+    /* General notification */
+    const notifyToaster = (variant, msg) => {
+        if (variant === "warn") {
+            return toast.warn(msg);
+        } else if (variant === "success") {
+            return toast.success(msg);
+        } else if (variant === "error") {
+            return toast.error(msg);
+        } else {
+            return toast.info(msg);
+        }
+    };
+
     const getCartTotal = async () => {
         const res = await axios
             .get("/cart/get-total")
@@ -177,6 +191,7 @@ const App = (props) => {
                     notifyMinAmountRemaining: notifyMinAmountRemaining,
                     loader: loader,
                     setLoader: setLoader,
+                    notifyToaster: notifyToaster,
                 }}
             >
                 <IndexNavbar

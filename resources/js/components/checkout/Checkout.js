@@ -1,20 +1,19 @@
 import axios from "axios";
+import { Link, withRouter } from "react-router-dom";
+
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Form, Button, Alert, Overlay, Tooltip } from "react-bootstrap";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-
 library.add(fab);
 
-import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
 import PaypalPayment from "./PaypalPayment";
+import CustomLoader from "../CustomLoader";
 
 import { Context } from "../Context";
-import { Link } from "react-router-dom";
-import CustomLoader from "../CustomLoader";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
@@ -22,7 +21,6 @@ const Checkout = (props) => {
     const [CP, setCP] = useState("");
     const [neighborhood, setNeighborhood] = useState("");
     const [cartTotal, setCartTotal] = useState("");
-    const [address, setAddress] = useState("");
     const [addressNumber, setAddressNumber] = useState("");
     const [streetName, setStreetName] = useState("");
     const [paymentMode, setPaymentMode] = useState("on_delivery");
@@ -43,8 +41,6 @@ const Checkout = (props) => {
     const [totalToPay, setTotalToPay] = useState(false);
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
 
-    const [csrfToken, setCsrfToken] = useState("");
-
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
 
@@ -60,6 +56,41 @@ const Checkout = (props) => {
         else if (e.target.value === "transfer")
             setTotalToPay(`Total MX$${cartTotal}`);
         else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
+    };
+
+    const handleTransferSubmit = () => {
+        setLoader(true);
+
+        axios
+            .post("/order/rest-api/create", {
+                order_name: orderInfo.order_name,
+                payment_mode: orderInfo.payment_mode,
+                address: orderInfo.address,
+                address_details: orderInfo.address_details,
+                delivery_day: orderInfo.delivery_day,
+                delivery_schedule: orderInfo.delivery_schedule,
+                phone: orderInfo.phone,
+                cp: orderInfo.cp,
+                neighborhood: orderInfo.neighborhood,
+                balance: orderInfo.balance,
+            })
+            .then((res) => {
+                console.log(res.data);
+                const vinoreoOrderID = res.data.orderID;
+
+                axios.get(`/order/success/admin-email/${vinoreoOrderID}`);
+                context.notifyToaster("success", "Orden creada exitosamente");
+                setLoader(false);
+
+                props.history.push(`/checkout/success/${vinoreoOrderID}`);
+            })
+            .catch((err) => {
+                console.error(err);
+                context.notifyToaster(
+                    "warn",
+                    "Tuvimos problemas creando tu orden :("
+                );
+            });
     };
 
     // validate CP
@@ -86,14 +117,7 @@ const Checkout = (props) => {
             axios
                 .get("/cart/get-total")
                 .then((res) => {
-                    setCartTotal(
-                        // new Intl.NumberFormat("en-US", {
-                        //     style: "currency",
-                        //     currency: "MXN",
-                        // }).format(
-                        res.data
-                        // )
-                    );
+                    setCartTotal(res.data);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -108,15 +132,6 @@ const Checkout = (props) => {
                     console.error(err);
                 });
         }
-
-        axios
-            .get("/api/csrf-token")
-            .then((res) => {
-                setCsrfToken(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
 
         return () => (isMounted = false);
     }, []);
@@ -163,9 +178,10 @@ const Checkout = (props) => {
                 deliveryDay &&
                 deliverySchedule
             ) {
+                // show proper btn and pass info in case of paypal payment
+                context.notifyToaster("info", "¡Información completa!");
                 setButtonIsActive(true);
-                setShowPayPalBtn(true);
-                // pass to PayPal btn
+                setShowPayPalBtn(paymentMode !== "transfer" ? true : false);
                 setOrderInfo({
                     order_name: orderName,
                     payment_mode: paymentMode,
@@ -185,7 +201,7 @@ const Checkout = (props) => {
             }
             // remind user payment method
             paymentMode === "on_delivery" &&
-                setPaymentModeReminder("Pago en efectivo contra entrega");
+                setPaymentModeReminder("Anticipo con PayPal");
             paymentMode === "transfer" &&
                 setPaymentModeReminder(
                     "Pago del 100% por transferencia o depósito"
@@ -207,13 +223,13 @@ const Checkout = (props) => {
         paymentMode,
     ]);
 
-    const totalHeader = <h3>{`Total ${cartTotal} `}</h3>;
+    const totalHeader = <h3>{`Total MX$${cartTotal} `}</h3>;
 
     return (
         <div className="container">
             {!loader ? (
                 props.loggedIn && cartTotal > 1500 ? (
-                    <div style={{ marginBottom: "6rem" }}>
+                    <div>
                         {/* prompt user for payment method */}
 
                         {totalHeader && totalHeader}
@@ -232,18 +248,11 @@ const Checkout = (props) => {
                             </Alert>
                         )}
 
-                        {/* use laravel form method */}
                         <Form
                             className="mt-3 mb-5"
                             action="/order/create"
                             method="post"
                         >
-                            {/* place csrf token */}
-                            <input
-                                type="hidden"
-                                value={csrfToken}
-                                name="_token"
-                            />
                             <input
                                 type="hidden"
                                 value={paymentMode}
@@ -405,14 +414,6 @@ const Checkout = (props) => {
                             <p>
                                 Tipo de pago: <b>{paymentModeReminder}</b>
                             </p>
-                            <Button
-                                className="mb-5"
-                                variant="primary"
-                                type="submit"
-                                disabled={buttonIsActive ? false : true}
-                            >
-                                Proceder a pago
-                            </Button>
                         </Form>
                     </div>
                 ) : (
@@ -428,11 +429,39 @@ const Checkout = (props) => {
             ) : (
                 <CustomLoader />
             )}
-            <div style={{ display: showPayPalBtn ? '' : 'none' }}>
-                <PaypalPayment orderInfo={orderInfo} setLoader={setLoader} setShowPayPalBtn={setShowPayPalBtn} />
+
+            {/* show btns accordingly */}
+            <div style={{ display: buttonIsActive ? "" : "none" }}>
+                {showPayPalBtn ? (
+                    <div>
+                        {paymentMode === "on_delivery" && (
+                            <Alert variant="info">
+                                Se te cobrará <b>MX${upfrontPayPalPayment}</b> a
+                                través de PayPal y el resto (MX$
+                                {cartTotal - upfrontPayPalPayment}) lo debes de
+                                liquidar <u>en efectivo</u> al recibir el pedido.
+                            </Alert>
+                        )}
+                        <PaypalPayment
+                            orderInfo={orderInfo}
+                            setLoader={setLoader}
+                            setShowPayPalBtn={setShowPayPalBtn}
+                            setButtonIsActive={setButtonIsActive}
+                        />
+                    </div>
+                ) : (
+                    <Button
+                        // className="mb-5"
+                        variant="primary"
+                        // disabled={buttonIsActive ? false : true}
+                        onClick={handleTransferSubmit}
+                    >
+                        Generar orden
+                    </Button>
+                )}
             </div>
         </div>
     );
 };
 
-export default Checkout;
+export default withRouter(Checkout);

@@ -1,18 +1,29 @@
-import React from 'react'
-import { Card, Button } from 'react-bootstrap';
-import { withRouter, Link } from 'react-router';
+import React from "react";
+import { Card, Button } from "react-bootstrap";
+import { withRouter, Link } from "react-router-dom";
 
 const UnsuccessfulPayment = (details) => {
-    <Card>
-        <Card.Img variant="top" src="holder.js/100px180" />
-        <Card.Body>
-            <Card.Title>Card Title</Card.Title>
-            <Card.Text>
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
-            </Card.Text>
-            <Button variant="primary">Go somewhere</Button>
-        </Card.Body>
-    </Card>;
-}
-export default withRouter(UnsuccessfulPayment);
+    return (
+        <Card>
+            <Card.Body>
+                <Card.Title>Paypal falló en procesar tu pago</Card.Title>
+                <Card.Text>
+                    No te preocupes. <b>No se generó ningún cargo.</b>
+                </Card.Text>
+                <Card.Text>
+                    Tu carrito sigue disponible para pago. Puedes reintentar con
+                    PayPal u otro método.
+                </Card.Text>
+                <Link to="/cart/checkout">
+                    <Button variant="primary">Reintentar pago</Button> <br />
+                </Link>
+                <Link to="/">
+                    <Button variant="secondary" className="mt-4">
+                        Página principal
+                    </Button>
+                </Link>
+            </Card.Body>
+        </Card>
+    );
+};
+export default UnsuccessfulPayment;

@@ -10,7 +10,7 @@ const PaymentMode = (props) => {
 
     return (
         <Alert variant={"success"}>
-            ¿Cómo deseas pagar?
+            <h2>Elige método de pago</h2>
             <div className="container">
                 <ul style={{ listStyle: "none" }}>
                     <li className="mt-2 mb-2">
@@ -27,7 +27,7 @@ const PaymentMode = (props) => {
                         )}
                         &nbsp; con <b>PayPal</b> &nbsp;
                         <FontAwesomeIcon icon={faPaypal} /> y liquida la
-                        diferencia en efectivo cuando te entreguemos
+                        diferencia en efectivo cuando te entreguemos.
                     </li>
                     <li className="mt-2 mb-2">
                         <input
@@ -46,7 +46,7 @@ const PaymentMode = (props) => {
                             name="payment_mode"
                             onClick={props.handlePaymentChange}
                         />
-                        El total (100%) con <b>PayPal</b> &nbsp;
+                        El total (100%) con <b>PayPal</b> &nbsp;.
                         <FontAwesomeIcon icon={faPaypal} />
                     </li>
                 </ul>

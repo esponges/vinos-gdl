@@ -4,33 +4,16 @@ import ReactDOM from "react-dom";
 import { withRouter } from "react-router";
 import { Context } from "../Context";
 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 const PayPalButton = paypal.Buttons.driver("react", { React, ReactDOM });
 
 const PaypalPayment = ({ orderInfo, ...props }) => {
     const context = useContext(Context);
-
     const localhost = window.location.protocol + "//" + window.location.host;
-
-    const notifyToaster = (variant, msg) => {
-        if (variant === 'warn') {
-            return toast.warn(msg);
-        } else if (variant === 'success') {
-            return toast.success(msg);
-        } else if (variant === 'error') {
-            return toast.error(msg);
-        } else {
-            return toast.info(msg);
-        }
-    }
-
 
     const createOrder = (data, actions) => {
         // create order at server side
         console.log("create order!!!", 'actions ', actions);
-        notifyToaster(
+        context.notifyToaster(
             "info",
             "Iniciando proceso de pago"
         );
@@ -64,7 +47,7 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                         .then((res) => {
                             console.log('success', res.data);
                             if (res.data?.error) {
-                                notifyToaster(
+                                context.notifyToaster(
                                     "warn",
                                     "Tuvimos problemas creando la orden. Intenta más tarde."
                                 );
@@ -73,14 +56,14 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                         })
                         .catch((err) => {
                             console.error("error getting ID from api", err);
-                            notifyToaster(
+                            context.notifyToaster(
                                 "warn",
                                 "Paypal está fallando. Intenta más tarde o con otro método."
                             );
                             props.setLoader(false);
                         });
                 } else {
-                    notifyToaster(
+                    context.notifyToaster(
                         "warn",
                         "Tuvimos problemas creando la orden. Intenta más tarde."
                     );
@@ -89,7 +72,7 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
             })
             .catch((err) => {
                 console.error(err);
-                notifyToaster(
+                context.notifyToaster(
                     "warn",
                     "Tuvimos problemas creando la orden. Intenta más tarde."
                 );
@@ -99,27 +82,30 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
 
     const onApprove = (data, actions) => {
         console.log("payment approved by user", data, actions);
-        const orderID = data.orderID;
 
-        notifyToaster("success", 'Procesando aprobación');
-        props.setShowPayPalBtn(false);
+        context.notifyToaster("success", 'Procesando aprobación');
+        props.setShowPayPalBtn(true);
+        props.setButtonIsActive(false);
         props.setLoader(true);
 
+        const orderID = data.orderID;
         return axios
             .post("/paypal/rest-api/capture-order", {
                 orderID: orderID,
             })
             .then((res) => {
+                const vinoreoOrderID = res.data.vinoreo_orderID;
+                //send admin email async
+                axios.get(`/order/success/admin-email/${vinoreoOrderID}`);
+
                 console.log("success capturing order", res.data);
-                notifyToaster(
+                context.notifyToaster(
                     'success',
                     'Pago y orden procesados correctamente'
                 )
                 props.setLoader(false);
-                const vinoreoOrderID = res.data.vinoreo_orderID;
                 // take user to success view
-                // return actions.redirect(`${localhost}/#/checkout/success/${vinoreoOrderID}`);
-                // props.history.push(`/checkout/success/${vinoreoOrderID}`);
+                props.history.push(`/checkout/success/${vinoreoOrderID}`);
             })
             .catch((err) => {
                 if (
@@ -127,7 +113,8 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                     "INSTRUMENT_DECLINED"
                 ) {
                     console.error("gotcha!!! INSTRUMENT");
-                    notifyToaster(
+
+                    context.notifyToaster(
                         "warn",
                         "Tu método de pago fue rechazado. Prueba con otro."
                     );
@@ -137,34 +124,28 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                         props.setLoader(false);
                         actions.restart();
                     }
-                    return setTimeout(() => restartPayment(), 3500);
+                    return setTimeout(() => restartPayment(), 3000);
                 }
                 // tell user about the error
                 console.log("oh nooooo, a differente error: ", err);
                 props.setLoader(false);
-                return notifyToaster(
+                context.notifyToaster(
                     "error",
                     "Problemas con el servidor de Paypal. Intenta más tarde."
                 );
                 // redirect user to unsuccessful view
+                props.history.push(`/checkout/fail`);
             });
     };
 
     const onCancel = (data, actions) => {
-        // console.log(data);
-        // console.log(actions);
         props.setLoader(false);
 
-        notifyToaster("warn", "Proceso de pago interrumpido");
-        // return actions.redirect(`${localhost}/#/checkout/cancel`);
-        // return actions.redirect("https://vinoreo.mx");
+        context.notifyToaster("warn", "Proceso de pago interrumpido");
     };
 
     return (
         <div>
-            {orderInfo && console.log(orderInfo, props)}
-            <ToastContainer position="top-center"/>
-
             <PayPalButton
                 createOrder={(data, actions) => createOrder(data, actions)}
                 onApprove={(data, actions) => onApprove(data, actions)}
