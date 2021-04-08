@@ -115,9 +115,11 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                     'success',
                     'Pago y orden procesados correctamente'
                 )
+                props.setLoader(false);
                 const vinoreoOrderID = res.data.vinoreo_orderID;
                 // take user to success view
-                return actions.redirect(`${localhost}/#/checkout/success/${vinoreoOrderID}`);
+                // return actions.redirect(`${localhost}/#/checkout/success/${vinoreoOrderID}`);
+                // props.history.push(`/checkout/success/${vinoreoOrderID}`);
             })
             .catch((err) => {
                 if (

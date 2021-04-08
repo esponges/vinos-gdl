@@ -60,35 +60,40 @@ const SuccessfulPayment = (props) => {
                                 })}
                             </tbody>
                         </table>
-                        <p className="mt-4">
-                            Orden N° <b>{orderInfo.id}</b>{" "}
-                        </p>
-                        <p>
-                            <b>Total de tu orden $ {orderInfo.total}</b>
-                        </p>
-                        <p>
-                            <b>Total Pagado $ </b> {orderInfo?.balance ?? 0}
-                        </p>
-                        <h5 className="mt-3">
-                            <b>
-                                Total a pagar &nsbp;
-                                {orderInfo.payment_mode === "transfer"
-                                    ? ""
-                                    : "contra entrega"}
-                                &nsbp;
+                        <Card style={{ marginLeft: "3%" }}>
+                            <p className="mt-4">
+                                Orden N° <b>{orderInfo.id}</b>{" "}
+                            </p>
+                            <p>
+                                <b>Total de tu orden MX$ {orderInfo.total}</b>
+                            </p>
+                            <p>
+                                <b>Anticipo Pagado MX$ </b>{" "}
+                                {orderInfo?.balance ?? 0}
+                            </p>
+                            <h5 className="mt-3">
+                                <b>
+                                    Total a pagar{" "}
+                                    {orderInfo.payment_mode === "transfer"
+                                        ? ""
+                                        : "contra entrega"}
+                                    &nbsp;
+                                    <u>MX$</u>
+                                    &nbsp;
+                                    <u>
+                                        {orderInfo.total - orderInfo.balance ??
+                                            0}
+                                    </u>
+                                </b>
+                            </h5>
+                            {orderInfo.payment_mode === "on_delivery" && (
                                 <u>
-                                    MX$&nsbp;
-                                    {orderInfo.total - orderInfo.balance ?? 0}
+                                    Recuerda que el repartidor sólo recibe
+                                    efectivo
                                 </u>
-                            </b>
-                        </h5>
-                        <br />
-
-                        {orderInfo.payment_mode === "on_delivery" && (
-                            <u>
-                                Recuerda que el repartidor sólo recibe efectivo
-                            </u>
-                        )}
+                            )}
+                            <br />
+                        </Card>
 
                         {orderInfo.payment_mode === "transfer" && (
                             <div>
@@ -181,7 +186,9 @@ const SuccessfulPayment = (props) => {
             )}
             <Card.Body>Tienes un correo de confirmación de compra</Card.Body>
             <Link to="/">
-                <Button variant="primary">Regresar</Button>
+                <Button variant="primary" style={{ margin: "0 3% 3%" }}>
+                    Regresar
+                </Button>
             </Link>
         </Card>
     );
