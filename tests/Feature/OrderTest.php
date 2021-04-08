@@ -11,7 +11,6 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OrderTest extends TestCase
@@ -46,15 +45,20 @@ class OrderTest extends TestCase
         $this->mockCart();
 
         $order = new Order;
-        $order->order_name = Factory::create()->name();
-        $order->address = Factory::create()->sentence(2);
+        $user = User::first()->toArray();
+
+        $order->total = \Cart::getTotal();
+        $order->total_items = \Cart::getContent()->count();
         $order->payment_mode = Factory::create()->randomElement(['on_delivery', 'paypal']);
+        $order->address = Factory::create()->sentence(2);
         $order->address_details = Factory::create()->sentence(2);
-        $order->neighborhood = Factory::create()->sentence(2);
-        $order->cp = Factory::create()->numberBetween(20000, 30000);
         $order->phone = Factory::create()->numberBetween('123456', '123443');
+        $order->cp = Factory::create()->numberBetween(20000, 30000);
+        $order->user_id = $user['id'];
+        $order->order_name = Factory::create()->name();
         $order->delivery_day = "Lunes";
         $order->delivery_schedule = "10 am a 2pm";
+        $order->neighborhood = Factory::create()->sentence(2);
 
         if($order->payment_mode == 'on_delivery'){
             $cart = \Cart::getContent();
@@ -71,15 +75,9 @@ class OrderTest extends TestCase
             foreach ($cartItems as $item) {
                 $subtotal += $item['price'] * $item['qty'];
             }
-
-            $order->balance = $subtotal;
         }
+        $order->balance = $subtotal ?? 0;
 
-        $user = User::first()->toArray();
-
-        $order->total = \Cart::getTotal();
-        $order->total_items = \Cart::getContent()->count();
-        $order->user_id = $user['id'];
         $order->save();
 
         $orderInfo = [
@@ -90,109 +88,39 @@ class OrderTest extends TestCase
         return $orderInfo;
     }
 
-    public function test_order_gets_created()
-    {
-        $this->withoutExceptionHandling();
-        $this->mockOrder();
-
-        $response = $this->actingAs(User::first())->post('order/create', [
-            'address' => Factory::create()->sentence(6),
-            'payment_mode' => 'on_delivery',
-            'order_name' => Factory::create()->name(),
-            'phone' => "1258245689",
-            'neighborhood' => 'Barrio Bravo',
-            'cp' => '25678',
-            'delivery_day' => "lunes",
-            'delivery_schedule' => '10am a 12pm',
-        ]);
-
-        $response->assertStatus(302);
-    }
-
-    public function test_transfer_payment_works()
-    {
-        $this->withoutExceptionHandling();
-        $orderInfo = $this->mockOrder();
-        $user = User::first();
-
-        // dd($orderInfo['order']['phone']);
-
-        $response = $this->actingAs($user)->post('/order/create', [
-            'total' => \Cart::getTotal(),
-            'total_items' => \Cart::getContent()->count(),
-            'payment_mode' => 'transfer',
-            'address' => $orderInfo['order']['address'],
-            'phone' => $orderInfo['order']['phone'],
-            'cp' => $orderInfo['order']['cp'],
-            'user_id' => $orderInfo['user']['id'],
-            'order_name' => $orderInfo['user']['name'],
-            'neighborhood' => $orderInfo['order']['neighborhood'],
-            'delivery_day' => $orderInfo['order']['delivery_day'],
-            'delivery_schedule' => $orderInfo['order']['delivery_schedule'],
-        ]);
-
-        $response->assertStatus(302); //
-    }
-
-    public function test_transfer_payment_route()
-    {
-        $this->withoutExceptionHandling();
-        $this->mockOrder();
-        $orderId = Order::first()->id;
-
-        $response = $this->actingAs(User::first())->get(route('paypal.transfer', $orderId));
-
-        $response->assertOk();
-    }
-
-    public function test_if_unauth_user_cant_create_order_not_auth()
-    {
-        $this->withoutExceptionHandling();
-
-        $this->expectException(AuthenticationException::class);
-
-        $this->postJson('/order/create');
-    }
-
-
-    public function test_get_cart_total()
-    {
-        $this->withoutExceptionHandling();
-        $this->mockCart();
-
-        $response = $this->get('cart/get-total');
-
-        // $response->dump();
-        // $response->dumpHeaders();
-        $response->assertOk();
-    }
-
-    public function test_createPayPalApiOrder()
+    public function test_paypalApiOrder()
     {
         $this->withoutExceptionHandling();
         $order = $this->mockOrder()['order'];
 
-        $response = $this->actingAs(User::first())->post(route('order.paypalApiOrder', [
+        $response = $this->actingAs(User::first())->post('/order/rest-api/create', [
             'total' => $order['total'],
             'total_items' => $order['total_items'],
-            'user_id' => $order['user_id'],
-            'order_name' => $order['order_name'],
             'payment_mode' => $order['payment_mode'],
             'address' => $order['address'],
             'address_details' => $order['address_details'],
-            'delivery_day' => $order['delivery_day'],
-            'delivery_schedule' => $order['delivery_schedule'],
             'phone' => $order['phone'],
             'cp' => $order['cp'],
-            'neighborhood' => $order['neighborhood'],
-            'balance' => $order['balance'] ?? 0,
-        ]));
+            'user_id' => $order['total'],
+            'order_name' => $order['total'],
+            'delivery_day' => $order['delivery_day'],
+            'delivery_schedule' => $order['delivery_schedule'],
+            'neighborhood' => $order['total'],
+            'balance' => $order['balance'],
+        ]);
 
-        $response->assertOk();
-        $response->assertJsonFragment(['status' => 'CREATED']);
+        $response->assertStatus(200);
+
+        if ($order['payment_mode'] !== 'transfer') {
+
+            $response->assertJsonFragment(['status' => 'CREATED']);
+        } else {
+
+            $response->assertJsonFragment(['status' => 'Transfer Order Created']);
+        }
     }
 
-    public function test_createNotAuthPayPalApiOrder()
+    public function test_paypalApiOrder_notAuth()
     {
         $this->withoutExceptionHandling();
         $order = $this->mockOrder()['order'];

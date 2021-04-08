@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\EmailController;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Order;
@@ -9,11 +10,7 @@ use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TransferOrderConfirmation;
-use App\Http\Controllers\OrderController;
 use App\Mail\AdminOrderConfirmationEmail;
-use App\Http\Controllers\PaypalController;
-use Illuminate\Foundation\Testing\WithFaker;
-use App\Http\Controllers\PaypalRestApiController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class EmailTest extends TestCase
@@ -32,24 +29,25 @@ class EmailTest extends TestCase
         $grandTotal = $order->total;
         $balanceToPay = $grandTotal - $paidWithPayPal;
         $user = User::first();
+        $paymentType = $order->payment_mode;
 
         Mail::fake();
 
-        $paypalProvider = new PaypalRestApiController();
-        $paypalProvider->prepareConfirmationEmails(
+        $emailController = new EmailController();
+        $emailController->prepareConfirmationEmails(
             $order,
             $products,
             $paidWithPayPal,
             $grandTotal,
             $balanceToPay,
             $user,
+            $paymentType
         );
 
-        Mail::assertQueued(ConfirmationEmail::class);
-        Mail::assertQueued(AdminOrderConfirmationEmail::class);
+        Mail::assertSent(ConfirmationEmail::class);
     }
 
-    public function test_prepareConfirmationEmails()
+    public function test_prepareConfirmationEmails_transfer()
     {
         $this->withoutExceptionHandling();
         $orderTest =  new OrderTest();
@@ -62,22 +60,40 @@ class EmailTest extends TestCase
         $products = \Cart::getContent();
         $grandTotal = \Cart::getTotal();
         $balanceToPay = 0;
-        $order = Order::where('paypal_id', '9TH63882B06784722')->first();
+        $order = Order::where('payment_mode', 'transfer')->first();
         $user = User::find($userID);
+        $paymentType = $order->payment_mode;
 
         Mail::fake();
 
-        $orderProvider = new OrderController();
-        $orderProvider->prepareConfirmationEmails(
-            $user,
+        $emailController = new EmailController();
+        $emailController->prepareConfirmationEmails(
             $order,
             $products,
-            $grandTotal,
             $paidWithPayPal,
-            $balanceToPay
+            $grandTotal,
+            $balanceToPay,
+            $user,
+            $paymentType,
         );
 
-        Mail::assertQueued(TransferOrderConfirmation::class);
-        Mail::assertQueued(AdminOrderConfirmationEmail::class);
+        Mail::assertSent(TransferOrderConfirmation::class);
+    }
+
+    public function test_sendAdminEmails()
+    {
+        $this->withoutExceptionHandling();
+
+        $orderTest =  new OrderTest();
+        $orderTest->mockCart();
+        $orderMock = $orderTest->mockOrder();
+        $orderID = $orderMock['order']['id'];
+
+        Mail::fake();
+
+        $response = $this->actingAs(User::first())->get('/order/success/admin-email/' . $orderID);
+
+        $response->assertOk();
+        Mail::assertSent(AdminOrderConfirmationEmail::class);
     }
 }
