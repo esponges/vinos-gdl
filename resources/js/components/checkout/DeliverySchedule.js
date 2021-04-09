@@ -15,17 +15,17 @@ const DeliverySchedule = (props) => {
     ]);
     const [selectedDay, setSelectedDay] = useState(null);
     const [schedule, setSchedule] = useState([]);
-    const [selectedHours, setSelectedHours] = useState(null)
+    const [selectedHours, setSelectedHours] = useState(null);
     const [depDropIsSelected, setDepDropIsSelected] = useState(null);
     const date = new Date();
 
     const handleDayChange = (day) => {
-
         setSelectedDay(day);
         setSelectedHours(null);
-        console.log('setting hours to null!!');
-        console.log('setting day to ', day.value);
-        if(depDropIsSelected) { // avoid submit btn = active
+        console.log("setting hours to null!!");
+        console.log("setting day to ", day.value);
+        if (depDropIsSelected) {
+            // avoid submit btn = active
             props.getDeliveryInfo(false, false);
         }
 
@@ -56,11 +56,25 @@ const DeliverySchedule = (props) => {
         let isMounted = true;
 
         if (isMounted) {
-            const removeToday = days.filter((day) => day.value != date.getDay());
-            setDays(removeToday);
+            axios
+                .get("/api/delivery-days")
+                .then((res) => {
+                    /* Don't show current day in days options */
+                    const removeToday = res.data.filter(
+                        (day) => day.value != date.getDay()
+                    );
+                    setDays(removeToday);
+                })
+                .catch((err) => {
+                    console.error(err);
+                    const removeToday = days.filter(
+                        (day) => day.value != date.getDay()
+                    );
+                    setDays(removeToday);
+                });
         }
 
-        return () => isMounted = false;
+        return () => (isMounted = false);
     }, []);
 
     return (

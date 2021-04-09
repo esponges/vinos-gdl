@@ -44,8 +44,11 @@ const Login = (props) => {
                         }
                     })
                     .catch((err) => {
-                        console.error(err, "error de inicio de sesión");
-                        setSessionError(true);
+                        // console.error(err.response.status, "error de inicio de sesión");
+                        if (err.response.status === 401) {
+                            return setSessionError({'msg': 'Credenciales incorrectas'});
+                        };
+                        setSessionError({'msg': 'Problemas con el servidor. Intenta más tarde.'});
                     });
             })
             .catch((err) => {
@@ -93,9 +96,8 @@ const Login = (props) => {
                         />
                     </Form.Group>
                     {sessionError && (
-                        <Alert variant={"warning"} className="m-5">
-                            Problemas en el servidor. Intenta más tarde por
-                            favor.
+                        <Alert variant={"warning"} className="mt-2 mb-4">
+                            {sessionError.msg && sessionError.msg}
                         </Alert>
                     )}
                     <Button variant="primary" type="submit">

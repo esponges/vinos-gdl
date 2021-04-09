@@ -89,20 +89,23 @@ class PaypalController extends Controller
 
                 $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
-                if (in_array($status, ['Completed', 'Processed', 'Completed_Funds_Held'])) {
-                    $order = Order::find($orderId);
-                    $order->is_paid = 1;
-                    $order->save();
-                    $products = \Cart::getContent();
-                    $grandTotal = \Cart::getTotal();
-                    $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
-                    $user = auth()->user();
+                if (isset($payment_status['ACK'])) {
 
-                    // send success email
-                    $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
+                    if (in_array($status, ['Completed', 'Processed', 'Completed_Funds_Held'])) {
+                        $order = Order::find($orderId);
+                        $order->is_paid = 1;
+                        $order->save();
+                        $products = \Cart::getContent();
+                        $grandTotal = \Cart::getTotal();
+                        $balanceToPay = $grandTotal - $cartTotal; // if (100% paypal) &&  0
+                        $user = auth()->user();
 
-                    return redirect()->route('order.success', [$order->id, $cartTotal]);
-                    // return view('order.success', compact('order', 'products', 'grandTotal', 'balanceToPay', 'cartTotal', 'user', 'orderId'));
+                        // send success email
+                        $this->preparePaypalConfirmationEmails($order, $products, $cartTotal, $grandTotal, $balanceToPay, $user);
+
+                        return redirect()->route('order.success', [$order->id, $cartTotal]);
+                    }
+                    return redirect()->route('paypal.fail', [$orderId, 'ACK not present in PAYMENTINFO_0_PAYMENTSTATUS array']);
                 }
                 return redirect()->route('paypal.fail', [$orderId, 'Missing status: Completed, Processed, or Completed_Funds_Held', 'missing_status']);
             }
@@ -128,6 +131,7 @@ class PaypalController extends Controller
             'ventas@vinosdivisa.com',
             'spalafox@vinosdivisa.com',
             'jrodriguez@vinosdivisa.com',
+            'blancacarretero@vinosdivisa.com',
         ];
 
         foreach ($adminEmails as $email) {
@@ -138,6 +142,7 @@ class PaypalController extends Controller
                 $cartTotal,
                 $balanceToPay
             ));
+            sleep(2);
         }
     }
 

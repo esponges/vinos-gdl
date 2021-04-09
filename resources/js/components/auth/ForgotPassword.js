@@ -6,15 +6,16 @@ import sanctumApi from "../../sanctum-api";
 
 const ForgotPassword = (props) => {
     const [email, setEmail] = useState("");
-    const [emailSuccess, setEmailSuccess] = useState('await');
-    const [attemptSubmit, setAttemptSubmit] = useState("");
+    const [emailSuccess, setEmailSuccess] = useState(false);
+    const [error, setError] = useState(false);
+    // const [attemptSubmit, setAttemptSubmit] = useState("");
 
     const localhost = window.location.protocol + "//" + window.location.host; // set correct protocol for request http/localhost - https/live
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log(email);
-        setAttemptSubmit(true);
+        e.preventDefault();
+        setEmailSuccess(false);
+        setError(false);
 
         sanctumApi
             .get('sanctum/csrf-cookie')
@@ -28,17 +29,19 @@ const ForgotPassword = (props) => {
                     },
                 })
                 .then((res) => {
-                    console.log('successfully sent link', res.data);
-                    setEmailSuccess(true);
+                    // console.log('successfully sent link', res.data);
+                    setEmailSuccess({'msg': 'Hemos enviado un correo electrónico de recuperación'});
                 })
-                .catch((err) => {
-                    console.error('problem sending link', err);
-                    setEmailSuccess(false);
+                .catch(() => {
+                    // console.error('problem sending link', err);
+                    // setEmailSuccess(false);
+                    setError({'msg': 'No existe ningún usuario con ese correo'});
                 })
             })
             .catch(err => {
-                console.error('problem in sanctum cookie', err);
-                setEmailSuccess(false);
+                // console.error('problem in sanctum cookie', err);
+                // setEmailSuccess(false);
+                setError({'msg': 'Tenemos problemas con el servidor.'});
             })
     }
 
@@ -61,14 +64,14 @@ const ForgotPassword = (props) => {
                 <Button variant="primary" type="submit">
                     Enviar correo de restablecimiento
                 </Button>
-                {attemptSubmit && emailSuccess &&
+                {emailSuccess &&
                     <Alert variant="success" className="mt-4">
-                        Hemos enviado un link de restablecimiento a tu correo
+                        {emailSuccess.msg}
                     </Alert>
                 }
-                {attemptSubmit && !emailSuccess &&
+                {error &&
                     <Alert variant="warning" className="mt-4">
-                        Tenemos problemas con el servidor, inténtalo más tarde por favor.
+                        {error.msg}
                     </Alert>
                 }
                 <br />

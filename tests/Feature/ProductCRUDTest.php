@@ -32,7 +32,9 @@ class ProductCRUDTest extends TestCase
 
         $response->assertOk();
 
-        $products = Product::all()->toArray();
+        $products = Product::all()
+            ->where('is_available', 1)
+            ->toArray();
         // $productsWithCategories = [];
 
         // foreach ($products as $prod) {

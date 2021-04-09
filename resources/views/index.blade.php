@@ -14,7 +14,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Vinoreo</title>
+    
+    {{-- SEO --}}
+    <title>Vinoreomx</title>
+    <meta name="description" content="Tienda online. Entrega gratis de vinos y licores a domicilio en Guadalajara. Precios de mayoreo con la mayor selección de tequila, whisky, gin, vodka y más.">
+
     @php
         use Srmklive\PayPal\Facades\PayPal as PayPalClient;
 

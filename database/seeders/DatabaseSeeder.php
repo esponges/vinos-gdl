@@ -327,5 +327,14 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Cp::factory(50)->create();
+
+        DB::table('delivery_days')->insert([
+            ['label' => 'Lunes', 'value' => 1],
+            ['label' => 'Martes', 'value' => 2],
+            ['label' => 'Miércoles', 'value' => 3],
+            ['label' => 'Jueves', 'value' => 4],
+            ['label' => 'Viernes', 'value' => 5],
+            ['label' => 'Sábado', 'value' => 6],
+        ]);
     }
 }

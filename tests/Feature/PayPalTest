@@ -179,11 +179,22 @@ class PayPalTest extends TestCase
 
         $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
+        // dd (isset($payment_status['ACK']));
+
         if (in_array($status, ['Completed', 'Processed'])) {
             $fetchStatus = true;
         } else $fetchStatus = false;
 
-        $this->assertTrue($fetchStatus);
+        $this->assertTrue($fetchStatus, $payment_status['ACK']);
+    }
+
+    public function test_issetACKindex () {
+        $paypal_payment_response = [];
+
+        if (isset($paypal_payment_response['ACK'])) $success = true;
+        else $success = false;
+
+        $this->assertFalse($success);
     }
 
     public function test_orderSuccess_paypal()
