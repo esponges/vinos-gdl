@@ -39,8 +39,8 @@ const App = (props) => {
     const addToCart = (id, itemCount) => {
         setLoader(true);
         axios
-        .get(`cart/${id}/add/${itemCount}`)
-        .then(() => {
+            .get(`cart/${id}/add/${itemCount}`)
+            .then(() => {
                 console.log("add to cart! ", id, "item count ", itemCount);
                 cartCountUpdate(itemCount);
                 getCartContent();
@@ -127,6 +127,19 @@ const App = (props) => {
         }
     };
 
+    /* General notification */
+    const notifyToaster = (variant, msg) => {
+        if (variant === "warn") {
+            return toast.warn(msg);
+        } else if (variant === "success") {
+            return toast.success(msg);
+        } else if (variant === "error") {
+            return toast.error(msg);
+        } else {
+            return toast.info(msg);
+        }
+    };
+
     const getCartTotal = async () => {
         const res = await axios
             .get("/cart/get-total")
@@ -175,6 +188,7 @@ const App = (props) => {
                     notifyMinAmountRemaining: notifyMinAmountRemaining,
                     loader: loader,
                     setLoader: setLoader,
+                    notifyToaster: notifyToaster,
                 }}
             >
                 <IndexNavbar

@@ -8,4 +8,5 @@ export const Context = createContext({
     cartCountUpdate: () => {},
     getCartContent: () => {},
     notifyMinAmountRemaining: () => {},
+    notifyToaster: () => {},
 });
