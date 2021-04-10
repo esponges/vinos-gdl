@@ -28,7 +28,7 @@ const Checkout = (props) => {
     const [address, setAddress] = useState("");
     const [addressNumber, setAddressNumber] = useState("");
     const [streetName, setStreetName] = useState("");
-    const [paymentMode, setPaymentMode] = useState("on_delivery");
+    const [paymentMode, setPaymentMode] = useState("transfer"); // while fixing paypal
     const [addressDetails, setAddressDetails] = useState("");
     const [deliveryDay, setDeliveryDay] = useState("");
     const [deliverySchedule, setDeliverySchedule] = useState("");
@@ -36,7 +36,7 @@ const Checkout = (props) => {
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
-    const [paymentModeReminder, setPaymentModeReminder] = useState("on_delivery");
+    const [paymentModeReminder, setPaymentModeReminder] = useState("transfer"); // while fixing paypal
 
     const [totalToPay, setTotalToPay] = useState(false);
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
