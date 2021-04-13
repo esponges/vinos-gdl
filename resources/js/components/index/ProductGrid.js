@@ -102,7 +102,7 @@ const ProductGrid = (props) => {
                                                                     </b>
                                                                 </Card.Text>
                                                                 <div className="btn-group">
-                                                                    <div className="d-none d-lg-block">
+                                                                    <div className="d-none d-xl-block">
                                                                         <input
                                                                             type="number"
                                                                             min="1"
