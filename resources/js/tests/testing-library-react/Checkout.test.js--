@@ -1,0 +1,16 @@
+import React from "react";
+import "@testing-library/jest-dom";
+import { screen, render, cleanup } from "@testing-library/react";
+
+import Checkout from "../../components/checkout/Checkout";
+import { HashRouter } from "react-router-dom";
+
+afterAll(cleanup);
+
+describe("Checkout", () => {
+    it("it  shows warning when not logged in or having 1500 below min amount", () => {
+        render (<HashRouter>
+            <Checkout />
+        </HashRouter>);
+    });
+});
