@@ -7,25 +7,43 @@ import CustomLoader from "../../CustomLoader";
 const SuccessfulPayment = (props) => {
     const [orderInfo, setOrderInfo] = useState(null);
     const [cartItems, setCartItems] = useState(null);
+    const [cartTotal, setCartTotal] = useState(null);
+    const [paidWithPayPal, setPaidWithPayPal] = useState(null);
+    const [toPayOnDelivery, setToPayOnDelivery] = useState(null);
+
     const vinoreoOrderID = props.match.params.id;
 
     useEffect(() => {
-        let isMounted = true;
-
         axios
             .post("/order/info", {
                 vinoreoOrderID: vinoreoOrderID,
             })
             .then((res) => {
+                // console.log(res.data);
                 setOrderInfo(res.data.order);
                 setCartItems(res.data.cartItems);
+                setCartTotal(res.data.order.total);
+
+                res.data.order.payment_mode !== "transfer"
+                    ? setPaidWithPayPal(
+                        res.data.order.payment_mode === "on_delivery"
+                            ? res.data.order.balance
+                            : res.data.order.total
+                    )
+                    : setPaidWithPayPal(0);
+
+                res.data.order.payment_mode !== "transfer"
+                    ? setToPayOnDelivery(
+                        res.data.order.payment_mode === "on_delivery"
+                            ? res.data.order.total - res.data.order.balance
+                            : 0
+                    )
+                    : setToPayOnDelivery(0);
             })
             .catch(() => {
                 setOrderInfo(null);
                 setCartItems(null);
             });
-
-        return () => (isMounted = false);
     }, []);
 
     return (
@@ -40,7 +58,7 @@ const SuccessfulPayment = (props) => {
                         <p className="mt-4">
                             <b>Resumen de compra</b>
                         </p>
-                        <table className="table mt-2 mb-2">
+                        <table className="table mt-2 mb-4">
                             <thead>
                                 <tr>
                                     <th>Producto</th>
@@ -65,38 +83,44 @@ const SuccessfulPayment = (props) => {
                             </tbody>
                         </table>
                         <Card style={{ marginLeft: "3%" }}>
-                            <p className="mt-4">
+                            <p className="mt-2">
                                 Orden N° <b>{orderInfo.id}</b>{" "}
                             </p>
                             <p>
-                                <b>Total de tu orden MX$ {orderInfo.total}</b>
+                                <b>Total de tu orden MX$ {cartTotal}</b>
                             </p>
                             <p>
                                 {orderInfo.payment_mode === "transfer" && (
-                                    <b>
-                                        Anticipo Pagado MX$
-                                        {orderInfo?.balance ?? 0}
-                                    </b>
+                                    <b>Anticipo Pagado MX$0</b>
                                 )}
                             </p>
-                            <h3 className="mt-3">
-                                Total{" "}
+                            <h3 className="mt-1">
+                                {orderInfo.payment_mode !== "transfer" &&
+                                orderInfo.payment_mode === "paypal"
+                                    ? "Total"
+                                    : "Anticipo"}
                                 {orderInfo.payment_mode !== "transfer"
-                                    ? "pagado con PayPal"
-                                    : "a transferir"}
+                                    ? " pagado con PayPal"
+                                    : "Total a transferir"}
                                 &nbsp;
                                 <u>MX$</u>
                                 &nbsp;
                                 <u>
-                                    {orderInfo.payment_mode === 'transfer' && orderInfo.total}
-                                    {orderInfo.payment_mode === 'on_delivery' && orderInfo.total - orderInfo.balance}
-                                    {orderInfo.payment_mode === 'paypal' && orderInfo.total}
+                                    {orderInfo.payment_mode === "transfer" &&
+                                        cartTotal}
+                                    {orderInfo.payment_mode === "on_delivery" &&
+                                        paidWithPayPal}
+                                    {orderInfo.payment_mode === "paypal" &&
+                                        cartTotal}
                                 </u>
                             </h3>
                             {orderInfo.payment_mode === "on_delivery" ? (
-                                <div>
+                                <div className="mt-4">
                                     <h3>
-                                        <b>Saldo a pagar contra entrega MX${orderInfo.total - orderInfo.balance}</b>
+                                        <b>
+                                            Saldo a pagar contra entrega MX$
+                                            {toPayOnDelivery}
+                                        </b>
                                     </h3>
                                     <u>
                                         Recuerda que el repartidor sólo recibe
@@ -104,7 +128,9 @@ const SuccessfulPayment = (props) => {
                                     </u>
                                 </div>
                             ) : (
-                                orderInfo.payment_mode === 'paypal' && <u>Tu orden está pagada</u>
+                                orderInfo.payment_mode === "paypal" && (
+                                    <u>Tu orden está pagada</u>
+                                )
                             )}
                             <br />
                         </Card>
@@ -138,7 +164,8 @@ const SuccessfulPayment = (props) => {
                                                 <br />
                                             </li>
                                             <li>
-                                                Banco <br/><b>Banorte</b>
+                                                Banco <br />
+                                                <b>Banorte</b>
                                                 <br />
                                                 <br />
                                             </li>
@@ -201,7 +228,7 @@ const SuccessfulPayment = (props) => {
                 <CustomLoader />
             )}
             <Card.Body>Tienes un correo de confirmación de compra</Card.Body>
-            <Link to="/">
+            <Link to="/" data-testid="back-btn">
                 <Button variant="primary" style={{ margin: "0 3% 3%" }}>
                     Regresar
                 </Button>

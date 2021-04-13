@@ -121,7 +121,7 @@ const FAQ = () => {
                     a nuestro Whatsapp
                 </h5>
 
-                <Link to="/">
+                <Link to="/" id="back-btn">
                     <Button variant={"primary"}>Regresar</Button>
                 </Link>
             </div>

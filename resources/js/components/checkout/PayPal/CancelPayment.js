@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 
 const CancelPayment = (params) => {
     return (
-        <Card>
+        <Card data-testid="card">
             <Card.Body>
-                <Card.Title>
+                <Card.Title data-testid="title">
                     <b>Cancelaste el pago</b>{" "}
                 </Card.Title>
                 <Card.Text>
@@ -15,7 +15,9 @@ const CancelPayment = (params) => {
                 </Card.Text>
                 <div className="btn-group">
                     <Link to="/cart">
-                        <Button variant="primary" className="mr-3">Regresa al carrito</Button>
+                        <Button variant="primary" className="mr-3">
+                            Regresa al carrito
+                        </Button>
                     </Link>
                     <Link to="/">
                         <Button variant="secondary">Regresa al inicio</Button>
