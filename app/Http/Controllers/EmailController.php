@@ -47,7 +47,14 @@ class EmailController extends Controller
         $order = Order::find($orderID);
         $products = \Cart::getContent();
         $grandTotal = $order->total;
-        $paidWithPayPal = $grandTotal - $order->balance;
+
+        if ($order->payment_mode === 'paypal') {
+            $paidWithPayPal =  $order->total;
+        } else if ($order->payment_mode === 'on_delivery') {
+            $paidWithPayPal = $order->balance;
+        } else {
+            $paidWithPayPal = 0;
+        }
         $balanceToPay = $grandTotal - $paidWithPayPal;
 
         // staff email

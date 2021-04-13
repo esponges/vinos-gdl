@@ -2,18 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Srmklive\PayPal\Services\PayPal;
-use App\Mail\AdminOrderConfirmationEmail;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Exception\BadResponseException;
-use PharIo\Manifest\Email;
 use Srmklive\PayPal\Facades\PayPal as PayPalClient;
 
 class PaypalRestApiController extends Controller
