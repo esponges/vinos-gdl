@@ -45,7 +45,6 @@ const ProductGrid = (props) => {
             {/* {console.log('product grid context', context.allProducts)} */}
             <div>
                 <BestSellers
-                    products={categories}
                     itemCount={itemCount}
                     setItemCount={setItemCount}
                     handleItemAddClick={handleItemAddClick}

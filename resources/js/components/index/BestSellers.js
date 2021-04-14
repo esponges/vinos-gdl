@@ -11,9 +11,11 @@ library.add(fas);
 
 import CustomLoader from "../CustomLoader";
 
-const BestSellers = ({ products, ...props }) => {
+const BestSellers = (props) => {
     const context = useContext(Context);
     const bestSellers = context.allProducts;
+
+    console.log('best sellers ', context.allProducts);
 
     return (
         <div>
