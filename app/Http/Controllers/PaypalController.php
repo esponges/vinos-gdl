@@ -129,7 +129,7 @@ class PaypalController extends Controller
         $adminEmails = [
             'vinoreomx@gmail.com',
             'ventas@vinosdivisa.com',
-            'spalafox@vinosdivisa.com',
+            // 'spalafox@vinosdivisa.com',
             'jrodriguez@vinosdivisa.com',
             'blancacarretero@vinosdivisa.com',
         ];
