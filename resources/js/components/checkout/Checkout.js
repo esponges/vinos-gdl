@@ -188,7 +188,7 @@ const Checkout = (props) => {
         }
 
         return () => isMounted = false;
-    });
+    }, []);
 
     return (
         <div className="container">
@@ -229,7 +229,7 @@ const Checkout = (props) => {
                             <Form.Label>Tu nombre</Form.Label>
                             <Form.Control
                                 type="text"
-                                value={`${props.userInfo["userName"]}`}
+                                defaultValue={`${props.userInfo["userName"]}`}
                                 onChange={(e) => setOrderName(e.target.value)}
                                 name="order_name"
                             />
