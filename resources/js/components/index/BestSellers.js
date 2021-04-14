@@ -17,9 +17,8 @@ const BestSellers = ({ products, ...props }) => {
 
     return (
         <div>
-            {console.log('bestSellers',context.allProducts)}
-            {!context.loader && bestSellers ? (
-
+            {!context.loader && bestSellers.length > 0 ? (
+            /* somehow I was getting empty object for bestSellers which was crashing app */
                 <section className="container mb-2" id="best_sellers">
                     <h1
                         className="mt-5 center"
@@ -33,7 +32,7 @@ const BestSellers = ({ products, ...props }) => {
                         </span>
                     </h1>
                     <div className="row mt-3">
-                        {console.log('im gonna map now')}
+                        {console.log('im gonna map now', 'best sellers btw is ', bestSellers)}
                         {bestSellers.map((product) => {
                             if (product.best_seller === 1) {
                                 return (
@@ -136,7 +135,7 @@ const BestSellers = ({ products, ...props }) => {
                     </div> */}
                 </section>
             ) : (
-                <CustomLoader />
+                bestSellers.length > 0 ? <CustomLoader /> : ""
             )}
         </div>
     );
