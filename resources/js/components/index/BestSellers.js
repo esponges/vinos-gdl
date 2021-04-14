@@ -17,6 +17,7 @@ const BestSellers = ({ products, ...props }) => {
 
     return (
         <div>
+            {console.log('bestSellers', bestSellers)}
             {!context.loader && bestSellers ? (
                 <section className="container mb-2" id="best_sellers">
                     <h1
