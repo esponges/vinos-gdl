@@ -8,7 +8,6 @@ const CustomLoader = ({ size }) => {
 
     return (
         <div id="loader-container">
-            {console.log(params)}
             <Loader type="ThreeDots" color="#3490dc" height={params ?? 100} width={params ?? 100} />
         </div>
     );

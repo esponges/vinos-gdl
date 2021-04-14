@@ -47,7 +47,8 @@ class CategoryTest extends TestCase
             ));
         }
 
-        $this->assertEquals(json_encode($response->original), json_encode($categoriesProducts));
+        $response->assertJsonFragment([$categoriesProducts]);
+        // $this->assertEquals(json_encode($response->original), json_encode($categoriesProducts));
     }
 
     public function test_single_category_displayed()
