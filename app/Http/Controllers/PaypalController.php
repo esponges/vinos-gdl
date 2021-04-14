@@ -128,10 +128,9 @@ class PaypalController extends Controller
         // staff email
         $adminEmails = [
             'vinoreomx@gmail.com',
-            'ventas@vinosdivisa.com',
-            // 'spalafox@vinosdivisa.com',
-            'jrodriguez@vinosdivisa.com',
             'blancacarretero@vinosdivisa.com',
+            'ventas@vinosdivisa.com',
+            'jrodriguez@vinosdivisa.com',
         ];
 
         foreach ($adminEmails as $email) {
@@ -142,7 +141,6 @@ class PaypalController extends Controller
                 $cartTotal,
                 $balanceToPay
             ));
-            sleep(2);
         }
     }
 
