@@ -44,12 +44,12 @@ const ProductGrid = (props) => {
             */}
             {console.log('product grid context', context.allProducts)}
             <div>
-                <BestSellers
+                {/* <BestSellers
                     products={categories}
                     itemCount={itemCount}
                     setItemCount={setItemCount}
                     handleItemAddClick={handleItemAddClick}
-                />
+                /> */}
             </div>
             {categories &&
                 categories[0].map((category) => {
