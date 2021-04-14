@@ -19,6 +19,7 @@ const BestSellers = ({ products, ...props }) => {
         <div>
             {console.log('bestSellers',context.allProducts)}
             {!context.loader && bestSellers ? (
+
                 <section className="container mb-2" id="best_sellers">
                     <h1
                         className="mt-5 center"
