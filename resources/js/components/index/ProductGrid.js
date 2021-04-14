@@ -42,6 +42,7 @@ const ProductGrid = (props) => {
                     best_sellers: onlyBestSellers
                 }
             */}
+            {console.log('product grid context', context.allProducts)}
             <div>
                 <BestSellers
                     products={categories}
