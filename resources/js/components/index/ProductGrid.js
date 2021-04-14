@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import CustomLoader from "../CustomLoader";
+import BestSellers from "./BestSellers.js";
 library.add(fas);
 
 const ProductGrid = (props) => {
@@ -15,28 +16,42 @@ const ProductGrid = (props) => {
 
     const categories = props.products;
 
-    const [productAddMsg, setProductAddMsg] = useState(false);
-    const [productAddId, setProductAddId] = useState("");
+    // const [productAddMsg, setProductAddMsg] = useState(false);
+    // const [productAddId, setProductAddId] = useState("");
 
     const context = useContext(Context);
 
     const handleItemAddClick = (e, id, price) => {
         e.preventDefault();
-        setProductAddMsg("Añadido al carrito");
-        setProductAddId(id);
+        // setProductAddMsg("Añadido al carrito");
+        // setProductAddId(id);
 
         context.addToCart(id, itemCount);
 
         context.getCartContent();
 
-        let productSubTotal = price*itemCount;
+        let productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);
     };
 
     return (
         <>
+            {/* categories prop =
+                {
+                    0: allProducts - within its categories,
+                    best_sellers: onlyBestSellers
+                }
+            */}
+            <div>
+                <BestSellers
+                    products={categories}
+                    itemCount={itemCount}
+                    setItemCount={setItemCount}
+                    handleItemAddClick={handleItemAddClick}
+                />
+            </div>
             {categories &&
-                categories.map((category) => {
+                categories[0].map((category) => {
                     return (
                         <div
                             className="mt-2"
@@ -107,7 +122,9 @@ const ProductGrid = (props) => {
                                                                             type="number"
                                                                             min="1"
                                                                             name="quantity"
-                                                                            value={itemCount}
+                                                                            value={
+                                                                                itemCount
+                                                                            }
                                                                             className="form-control input-number"
                                                                             onChange={async (
                                                                                 e
@@ -157,25 +174,6 @@ const ProductGrid = (props) => {
                                                                         </Button>
                                                                     </Link>
                                                                 </div>
-                                                                {productAddMsg &&
-                                                                    product.id ==
-                                                                        productAddId && (
-                                                                        <div>
-                                                                            <Card.Text
-                                                                                style={{
-                                                                                    color:
-                                                                                        "red",
-                                                                                    marginTop:
-                                                                                        "10px",
-                                                                                }}
-                                                                            >
-                                                                                {" "}
-                                                                                {
-                                                                                    productAddMsg
-                                                                                }
-                                                                            </Card.Text>
-                                                                        </div>
-                                                                    )}
                                                             </Card.Body>
                                                         </Card>
                                                     </div>
