@@ -85,7 +85,7 @@ class OrderController extends Controller
         $adminEmails = [
             'vinoreomx@gmail.com',
             'ventas@vinosdivisa.com',
-            'spalafox@vinosdivisa.com',
+            'blancacarretero@vinosdivisa.com',
             'jrodriguez@vinosdivisa.com',
         ];
 
