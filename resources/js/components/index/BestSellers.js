@@ -17,7 +17,7 @@ const BestSellers = ({ products, ...props }) => {
 
     return (
         <div>
-            {console.log('bestSellers', bestSellers)}
+            {console.log('bestSellers',context.allProducts)}
             {!context.loader && bestSellers ? (
                 <section className="container mb-2" id="best_sellers">
                     <h1
@@ -32,6 +32,7 @@ const BestSellers = ({ products, ...props }) => {
                         </span>
                     </h1>
                     <div className="row mt-3">
+                        {console.log('im gonna map now')}
                         {bestSellers.map((product) => {
                             if (product.best_seller === 1) {
                                 return (
