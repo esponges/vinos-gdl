@@ -15,7 +15,9 @@ const BestSellers = (props) => {
     const context = useContext(Context);
     const bestSellers = context.allProducts;
 
-    console.log('best sellers ', context.allProducts);
+    // console.log('best sellers ', context.allProducts);
+    // if(context.allProducts?.length > 0) console.log('> 0 context.AllProducts' , context.allProducts);
+    // if(bestSellers.length > 0) console.log('> 0 bestSellers', bestSellers);
 
     return (
         <div>
@@ -34,7 +36,7 @@ const BestSellers = (props) => {
                         </span>
                     </h1>
                     <div className="row mt-3">
-                        {console.log('im gonna map now', 'best sellers btw is ', bestSellers)}
+                        {/* {console.log('im gonna map now', 'best sellers btw is ', bestSellers)} */}
                         {bestSellers.map((product) => {
                             if (product.best_seller === 1) {
                                 return (

@@ -21,6 +21,8 @@ const DownShiftSearch = (props) => {
 
     return (
         <div>
+            {/* {products.allProducts && console.log(products.allProducts)}
+            {console.log('is array? ', Array.isArray(products.allProducts)), console.log('length is ', products.allProducts?.length)} */}
             {products.allProducts?.length > 0 ? (
                 <Downshift
                     onChange={onChange}
@@ -38,7 +40,7 @@ const DownShiftSearch = (props) => {
                         getRootProps,
                     }) => (
                         <div>
-                            {console.log('im rendering allProducts ', products.allProducts)}
+                            {/* {console.log('im rendering allProducts ', products.allProducts)} */}
                             <div
                                 style={{ display: "inline-block" }}
                                 {...getRootProps(
