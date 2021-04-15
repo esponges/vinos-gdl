@@ -32,9 +32,8 @@ class ProductCRUDTest extends TestCase
 
         $response->assertOk();
 
-        $products = Product::all()
-            ->where('is_available', 1)
-            ->toArray();
+        $products = Product::where('is_available', 1)
+            ->get();
         // $productsWithCategories = [];
 
         // foreach ($products as $prod) {
@@ -44,8 +43,9 @@ class ProductCRUDTest extends TestCase
         //     dd ($product->category->name);
         //     array_push($productsWithCategories, array_merge($productCategory, $prod));
         // }
+        // dd($products);
 
-        $response->assertJson($products);
+        $response->assertJson($products->toArray());
     }
 
     public function test_single_product()

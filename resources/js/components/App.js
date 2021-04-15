@@ -25,6 +25,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { Context } from "./Context";
 import Legal from "./elements/Legal";
 
+import { allProducts } from './mockResponses/allProducts';
+
 const App = (props) => {
     const [products, setProducts] = useState(null);
     const [prods, setProds] = useState("");
@@ -99,6 +101,7 @@ const App = (props) => {
         axios
             .get("/products")
             .then((res) => {
+                // setProds(Object.values(allProducts));
                 setProds(res.data);
             })
             .catch((err) => {
