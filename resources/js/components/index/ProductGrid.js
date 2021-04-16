@@ -42,7 +42,7 @@ const ProductGrid = (props) => {
                     best_sellers: onlyBestSellers
                 }
             */}
-            {/* {console.log('product grid context', context.allProducts)} */}
+            {console.log("product grid context", context.allProducts)}
             <div>
                 <BestSellers
                     itemCount={itemCount}
@@ -116,6 +116,15 @@ const ProductGrid = (props) => {
                                                                         )}
                                                                     </b>
                                                                 </Card.Text>
+                                                                {product.comp_price && (
+                                                                    <Card.Text id="grid-competitor-price">
+                                                                        Prom.
+                                                                        competencia: $
+                                                                        {
+                                                                            product.comp_price
+                                                                        }*
+                                                                    </Card.Text>
+                                                                )}
                                                                 <div className="btn-group">
                                                                     <div className="d-none d-lg-block">
                                                                         <input

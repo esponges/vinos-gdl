@@ -22,7 +22,7 @@ const About = () => {
             <ul id="about-ul">
                 <h3 className="mt-4">¿Quiénes somos?</h3>
                 <li>
-                    Hola! <br /> Somos Fer y Tomás. Somos millenials y
+                    ¡Hola! <br /> Somos Fer y Tomás. Somos millenials y
                     treintones (¿ups?). Nos encanta pasar momentos divertidos
                     con la nuestra familia y con nuestros amigos acompañados de
                     un buen vino. Conocemos muy bien la industria de vinos y
@@ -52,7 +52,7 @@ const About = () => {
             <h5 className="mb-3">
                 <FontAwesomeIcon icon={faInfoCircle} />
                 ¿Tienes dudas? Contáctanos a{" "}
-                <a href="mailto: hola@vinoreo.mx">hola@vinoreo</a> o directo a
+                <a href="mailto: hola@vinoreo.mx">hola@vinoreo.mx</a> o directo a
                 nuestro Whatsapp/DM.
             </h5>
             <Link to="/">

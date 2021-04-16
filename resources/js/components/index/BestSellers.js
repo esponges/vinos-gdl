@@ -65,21 +65,32 @@ const BestSellers = (props) => {
                                                         {new Intl.NumberFormat(
                                                             "en-US",
                                                             {
-                                                                style: "currency",
+                                                                style:
+                                                                    "currency",
                                                                 currency: "MXN",
                                                             }
                                                         ).format(product.price)}
                                                     </b>
                                                 </Card.Text>
+                                                {product.comp_price && (
+                                                    <Card.Text id="grid-competitor-price">
+                                                        Prom. competencia: $
+                                                        {product.comp_price}*
+                                                    </Card.Text>
+                                                )}
                                                 <div className="btn-group">
                                                     <div className="d-none d-lg-block">
                                                         <input
                                                             type="number"
                                                             min="1"
                                                             name="quantity"
-                                                            value={props.itemCount}
+                                                            value={
+                                                                props.itemCount
+                                                            }
                                                             className="form-control input-number"
-                                                            onChange={async (e) =>
+                                                            onChange={async (
+                                                                e
+                                                            ) =>
                                                                 await props.setItemCount(
                                                                     parseInt(
                                                                         e.target
@@ -88,7 +99,8 @@ const BestSellers = (props) => {
                                                                 )
                                                             }
                                                             style={{
-                                                                maxWidth: "70px",
+                                                                maxWidth:
+                                                                    "70px",
                                                             }}
                                                         />
                                                     </div>
