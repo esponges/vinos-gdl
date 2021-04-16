@@ -98,6 +98,12 @@ const Category = (props) => {
                                                 ).format(product.price)}
                                             </b>
                                         </ListGroupItem>
+                                        {product.comp_price && (
+                                            <Card.Text id="grid-competitor-price">
+                                                Prom. competencia: $
+                                                {product.comp_price}*
+                                            </Card.Text>
+                                        )}
                                     </ListGroup>
                                     <Card.Body>
                                         <div className="row">
@@ -178,12 +184,12 @@ const Category = (props) => {
             )}
             <div className="container mt-5">
                 <ReactPaginate
-                    previousLabel={"previous"}
-                    nextLabel={"next"}
+                    previousLabel={"anterior"}
+                    nextLabel={"sig."}
                     breakLabel={"..."}
                     pageCount={pageCount}
                     marginPagesDisplayed={2} // # last pages buttons displayed - for long lists
-                    pageRangeDisplayed={5} // # total buttons displayed
+                    pageRangeDisplayed={4} // # total buttons displayed
                     onPageChange={handlePageClick}
                     // bootstrap class for every item
                     breakClassName={"page-item"}
@@ -196,7 +202,7 @@ const Category = (props) => {
                     nextLinkClassName={"page-link"}
                 />
 
-                <Link className="ml-5" to="/">
+                <Link to="/">
                     <Button variant="outline-primary" size="lg">
                         Regresar
                     </Button>

@@ -308,7 +308,7 @@ const Checkout = (props) => {
                                     setStreetName(e.target.value);
                                 }}
                             />
-                            <Form.Label>
+                            <Form.Label className="mt-2">
                                 Número exterior <i>(e interior si tienes)</i>
                             </Form.Label>
                             <Form.Control
