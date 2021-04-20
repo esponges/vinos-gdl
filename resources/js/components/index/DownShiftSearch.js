@@ -1,6 +1,6 @@
 import Downshift from "downshift";
 
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../Context";
 
 import { withRouter } from "react-router";
@@ -12,7 +12,9 @@ import { fas, faSearch } from "@fortawesome/free-solid-svg-icons";
 library.add(fab, fas);
 
 const DownShiftSearch = (props) => {
+    const [inputProduct, setInputProduct] = useState("");
     const products = useContext(Context);
+
 
     const onChange = (selectedProduct) => {
         console.log("redirecting to ", selectedProduct.id);
@@ -52,6 +54,8 @@ const DownShiftSearch = (props) => {
                                     {...getInputProps()}
                                     placeholder={`Busca tu  vino`}
                                     id="product-search-input"
+                                    // value={inputProduct}
+                                    // onSubmit={e => console.log('submit query')}
                                 />
                                 &nbsp;{" "}
                                 <FontAwesomeIcon
@@ -67,9 +71,14 @@ const DownShiftSearch = (props) => {
                                                 (item) =>
                                                     !inputValue ||
                                                     item.name
+                                                        // remove uppercase and special characters then compare
+                                                        // search value
                                                         .toLowerCase()
+                                                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                                                         .includes(
+                                                            // compare with input value
                                                             inputValue.toLowerCase()
+                                                            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                                                         )
                                             )
                                             .map((item, index) => (

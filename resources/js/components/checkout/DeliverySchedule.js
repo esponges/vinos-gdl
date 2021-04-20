@@ -44,7 +44,6 @@ const DeliverySchedule = (props) => {
     };
 
     const weekdayHourSchedule = [
-        { value: "10am a 12pm", label: "10am a 12pm" },
         { value: "12pm a 2pm", label: "12pm a 2pm" },
         { value: "2pm a 4pm", label: "2pm a 4pm" },
         { value: "4pm a 6pm", label: "4pm a 6pm" },
