@@ -58,7 +58,6 @@ const Login = (props) => {
 
     return (
         <div className="container">
-            {console.log(localhost)}
             {!props.loggedIn ? (
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formBasicEmail">
