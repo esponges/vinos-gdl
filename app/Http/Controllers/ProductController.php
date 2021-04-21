@@ -15,9 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all()
-            ->where('is_available', '=', 1)
-            ->toArray();
+        $products = Product::where('is_available', '=', 1)
+            ->get();
 
         return response()->json($products, 200);
     }

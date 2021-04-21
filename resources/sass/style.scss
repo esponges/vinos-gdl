@@ -325,7 +325,7 @@
 
 @media (max-width: 415px) {
     #add-one-more-cart {
-        padding: 2%
+        padding: 2%;
     }
 }
 
@@ -342,7 +342,7 @@
 
 /* Loader */
 
-#loader-container{
+#loader-container {
     text-align: center;
     margin-top: 50%;
     margin-bottom: 50%;
@@ -355,4 +355,27 @@
 
 #faq-list-container {
     margin-left: 0%;
+}
+
+/* Product Grid */
+
+@media (max-width: 415px) {
+    #grid-competitor-price {
+        font-size: 0.7rem;
+        margin-bottom: 0.5rem;
+    }
+}
+
+#single-competitor-price {
+    font-size: 0.9rem;
+    padding-left: 1.3rem;
+}
+
+#grid-competitor-price {
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+}
+
+.card-body {
+    padding: 0.5rem;
 }

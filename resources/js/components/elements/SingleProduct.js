@@ -1,25 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import { Context } from '../Context';
-import axios from 'axios';
+import React, { useContext, useEffect, useState } from "react";
+import { withRouter, Link } from "react-router-dom";
+import { Context } from "../Context";
+import axios from "axios";
 
-import { Card, ListGroup, ListGroupItem, Button } from 'react-bootstrap';
-import CustomLoader from '../CustomLoader';
+import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import CustomLoader from "../CustomLoader";
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
     // const product = props.location.state;
-    const [product, setProduct] = useState({})
+    const [product, setProduct] = useState({});
     const [competidorsInfo, setCompetidorsInfo] = useState([]);
 
-    const [productAddMsg, setProductAddMsg] = useState(false);
     const [productAddId, setProductAddId] = useState("");
 
     const context = useContext(Context);
 
     const handleItemAddClick = (e, id, price) => {
         e.preventDefault();
-        setProductAddMsg("Añadido al carrito");
         setProductAddId(id);
 
         context.addToCart(id, itemCount);
@@ -72,91 +70,24 @@ const SingleProduct = (props) => {
                         <Card.Title>{product.name}</Card.Title>
                         {/* <Card.Text>{product.description}</Card.Text> */}
                     </Card.Body>
-                    <ListGroup className="list-group-flush">
+                    <ListGroup
+                        className="list-group-flush"
+                        style={{ fontSize: "1.2rem" }}
+                    >
                         <ListGroupItem>
-                            Precio:
-                            {new Intl.NumberFormat("en-US", {
-                                style: "currency",
-                                currency: "MXN",
-                            }).format(product.price)}
+                            <b>
+                                Precio: &nbsp;
+                                {new Intl.NumberFormat("en-US", {
+                                    style: "currency",
+                                    currency: "MXN",
+                                }).format(product.price)}
+                            </b>
                         </ListGroupItem>
-                        <ListGroupItem>
-                            {competidorsInfo.length != 0 && (
-                                <div>
-                                    <b>Compara la competencia</b>
-                                    <ul>
-                                        {competidorsInfo[0] && (
-                                            <li>
-                                                <button
-                                                    className="btn btn-secondary-sm"
-                                                    target="_blank"
-                                                    onClick={(e) => {
-                                                        e.preventDefault;
-                                                        window.open(
-                                                            competidorsInfo[0]
-                                                                .link
-                                                        );
-                                                    }}
-                                                >
-                                                    <img
-                                                        src="/img/superama.png"
-                                                        alt="superama"
-                                                        style={{
-                                                            width: "75px",
-                                                            height: "35px",
-                                                        }}
-                                                    />
-                                                    <span>&nbsp;&nbsp;</span>
-                                                    {new Intl.NumberFormat(
-                                                        "en-US",
-                                                        {
-                                                            style: "currency",
-                                                            currency: "MXN",
-                                                        }
-                                                    ).format(
-                                                        competidorsInfo[0].price
-                                                    )}
-                                                </button>
-                                            </li>
-                                        )}
-                                        {competidorsInfo[1] && (
-                                            <li>
-                                                <button
-                                                    className="btn btn-secondary-sm"
-                                                    target="_blank"
-                                                    onClick={(e) => {
-                                                        e.preventDefault;
-                                                        window.open(
-                                                            competidorsInfo[1]
-                                                                .link
-                                                        );
-                                                    }}
-                                                >
-                                                    <img
-                                                        src="/img/consuvino.png"
-                                                        alt="consuvino"
-                                                        style={{
-                                                            width: "75px",
-                                                            height: "25px",
-                                                        }}
-                                                    />
-                                                    <span>&nbsp;&nbsp;</span>
-                                                    {new Intl.NumberFormat(
-                                                        "en-US",
-                                                        {
-                                                            style: "currency",
-                                                            currency: "MXN",
-                                                        }
-                                                    ).format(
-                                                        competidorsInfo[1].price
-                                                    )}
-                                                </button>
-                                            </li>
-                                        )}
-                                    </ul>
-                                </div>
-                            )}
-                        </ListGroupItem>
+                        {product.comp_price && (
+                            <Card.Text id="single-competitor-price">
+                                Prom. competencia: ${product.comp_price}*
+                            </Card.Text>
+                        )}
                     </ListGroup>
                     <Card.Body>
                         <div className="row">
@@ -193,16 +124,6 @@ const SingleProduct = (props) => {
                                 </p>
                             </div>
                         </div>
-                        {productAddMsg && product.id == productAddId && (
-                            <div>
-                                <Card.Text
-                                    style={{ color: "red", marginTop: "10px" }}
-                                >
-                                    {" "}
-                                    {productAddMsg}
-                                </Card.Text>
-                            </div>
-                        )}
                     </Card.Body>
                 </Card>
             ) : (
@@ -211,12 +132,12 @@ const SingleProduct = (props) => {
             <div className="container mt-5">
                 <Link className="ml-2" to="/">
                     <Button variant="outline-primary" size="lg">
-                        Regresar al inicio
+                        Regresar
                     </Button>
                 </Link>
             </div>
         </div>
     );
-}
+};
 
 export default withRouter(SingleProduct); // HOC to access match, location and history

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<url><loc>http://vinoreo.mx/</loc></url>
+<url><loc>http://vinoreo.mx/#/</loc></url>
+<url><loc>http://vinoreo.mx/#/categories/Tequila</loc></url>
+<url><loc>http://vinoreo.mx/#/Whisky</loc></url>
+<url><loc>http://vinoreo.mx/#/Gin</loc></url>
+<url><loc>http://vinoreo.mx/#/Vodka</loc></url>
+<url><loc>http://vinoreo.mx/#/Cerveza%20Artesanal</loc></url>
+<url><loc>http://vinoreo.mx/#/FAQ</loc></url>
+<url><loc>http://vinoreo.mx/#/about</loc></url>
+<url><loc>http://vinoreo.mx/#/legales</loc></url>
+<url><loc>http://vinoreo.mx/#/cart</loc></url>
+<url><loc>http://vinoreo.mx/#/cart/checkout</loc></url>
+</urlset>

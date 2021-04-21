@@ -103,6 +103,7 @@ const App = (props) => {
         axios
             .get("/products")
             .then((res) => {
+                // setProds(Object.values(allProducts));
                 setProds(res.data);
             })
             .catch((err) => {

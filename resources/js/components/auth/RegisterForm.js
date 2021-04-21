@@ -1,8 +1,12 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+
 import { Button, Form, Alert } from "react-bootstrap";
 import { Link, withRouter } from "react-router-dom";
+import CustomLoader from '../CustomLoader';
+
 import sanctumApi from "../../sanctum-api";
+import { Context } from '../Context';
 
 const RegisterForm = (props) => {
     const [name, setName] = useState("");
@@ -21,12 +25,17 @@ const RegisterForm = (props) => {
 
     const [isRegistered, setIsRegistered] = useState(null);
     const [error, setError] = useState(false);
-    const [completedForm, setCompletedForm] = useState(null);
+
+    const [loader, setLoader] = useState(false);
 
     const localhost = window.location.protocol + "//" + window.location.host;
 
+    const context = useContext(Context);
+
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoader(true);
+
         console.log("submitting form");
         console.log('mkt emails is ', mktEmails);
         const fullName = name + " " + familyName;
@@ -74,22 +83,28 @@ const RegisterForm = (props) => {
                                             })
                                                 .then((res) => {
                                                     console.log(res.data);
-                                                    props.login()
-                                                    props.history.push("/login");
+                                                    props.login();
+                                                    context.notifyToaster('success', 'Usuario registrado exitosamente');
+                                                    setTimeout(props.history.push("/cart"), 3000);
+                                                    // props.history.push("/login");
                                                 })
                                                 .catch((err) => {
                                                     console.error(err);
-                                                    setError(true);
+                                                    context.notifyToaster('warn', 'Tuvimos problemas con tu registro');
+                                                    setLoader(false);
                                                 });
                                         })
                                         .catch(err => {
-                                            console.error('error with sanctum before login')
+                                            console.error('error with sanctum before login');
+                                            context.notifyToaster('warn', 'Tuvimos problemas con tu registro');
+                                            setLoader(false);
                                         })
 
                                 })
                                 .catch((err) => {
                                     console.error(err, "error registering user");
-                                    setError(true);
+                                    context.notifyToaster('warn', 'Tuvimos problemas con tu registro');
+                                    setLoader(false);
                                 });
                         })
                         .catch((err) => {
@@ -97,13 +112,15 @@ const RegisterForm = (props) => {
                                 err,
                                 "problem with csrf-cookie route"
                             );
-                            setError(true);
+                            context.notifyToaster('warn', 'Tuvimos problemas con tu registro');
+                            setLoader(false);
                         });
                 }
             })
             .catch((err) => {
                 console.error(err);
-                setError(true);
+                context.notifyToaster('warn', 'Tuvimos problemas con tu registro');
+                setLoader(false);
             });
     };
 
@@ -145,185 +162,181 @@ const RegisterForm = (props) => {
 
     return (
         <div className="container" style={{ marginTop: "13%" }}>
-            <Form>
-                <Form.Group controlId="formBasicName">
-                    <Form.Label>
-                        <b>Tu nombre </b>
-                    </Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Tu nombre de pila"
-                        name="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <Form.Text className="text-muted">
-                        <b>Tu nombre de pila</b>
+            {loader ? <CustomLoader /> : (
+                <Form>
+                    <Form.Group controlId="formBasicName">
+                        <Form.Label>
+                            <b>Tu nombre </b>
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Tu nombre de pila"
+                            name="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        <Form.Text className="text-muted">
+                            <b>Tu nombre de pila</b>
+                        </Form.Text>
+                        {name != "" && name.length < 3 && (
+                            <Alert variant={"warning"} className="m-2">
+                                Ingresa correctamente la información
+                            </Alert>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formBasicFamilyName">
+                        <Form.Label>
+                            <b>Apellido(s)</b>
+                        </Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Tu(s) apellido(s)"
+                            value={familyName}
+                            onChange={(e) => setFamilyName(e.target.value)}
+                            required
+                        />
+                        {familyName != "" && familyName.length < 5 && (
+                            <Alert variant={"warning"} className="m-2">
+                                Ingresa correctamente la información
+                            </Alert>
+                        )}
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                        <Form.Label>
+                            <b>Correo electrónico</b>{" "}
+                        </Form.Label>
+                        <Form.Control
+                            type="email"
+                            placeholder="Enter email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+
+                        {emailValidationAlert && (
+                            <Alert variant={"warning"} className="m-2">
+                                {emailValidationAlert}
+                            </Alert>
+                        )}
+
+                        <Form.Label className="mt-4">
+                            <b>
+                                Tu edad <i>(opcional)</i>
+                            </b>
+                        </Form.Label>
+                        <div className="row">
+                            <div className="col-3">
+                                <Form.Check
+                                    type="radio"
+                                    onClick={() => setAge(1)}
+                                    label="18-25"
+                                    name="age"
+                                />
+                            </div>
+                            <div className="col-3">
+                                <Form.Check
+                                    type="radio"
+                                    onClick={() => setAge(2)}
+                                    label="26-35"
+                                    name="age"
+                                />
+                            </div>
+                            <div className="col-3">
+                                <Form.Check
+                                    type="radio"
+                                    onClick={() => setAge(3)}
+                                    label="36-45"
+                                    name="age"
+                                />
+                            </div>
+                            <div className="col-3">
+                                <Form.Check
+                                    type="radio"
+                                    onClick={() => setAge(4)}
+                                    label="+45"
+                                    name="age"
+                                />
+                            </div>
+                        </div>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicPassword">
+                        <Form.Label>
+                            <b> Contraseña</b>
+                        </Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Ingresa contraseña"
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </Form.Group>
+                    {!passwordsMatch &&
+                        password != "" &&
+                        confirmPassword != "" && (
+                            <Alert variant={"warning"} className="m-2">
+                                Las contraseñas no coinciden
+                            </Alert>
+                        )}
+                    <Form.Group controlId="confirmPassword">
+                        <Form.Label>
+                            <b>Confirma contraseña</b>
+                        </Form.Label>
+                        <Form.Control
+                            type="password"
+                            placeholder="Confirma contraseña"
+                            name="password_confirm"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                    </Form.Group>
+                    <Form.Text className="text-muted success">
+                        Nunca compartiremos tu información
                     </Form.Text>
-                    {name != "" && name.length < 3 && (
+                    <Form.Check
+                        className="mb-2"
+                        type="checkbox"
+                        label="Deseo recibir ofertas exclusivas"
+                        defaultChecked={mktEmails}
+                        onChange={() => {
+                            setMktEmails(!mktEmails);
+                        }}
+                    />
+                    {isRegistered && (
                         <Alert variant={"warning"} className="m-2">
-                            Ingresa correctamente la información
+                            Este usuario ya está registrado
                         </Alert>
                     )}
-                </Form.Group>
-                <Form.Group controlId="formBasicFamilyName">
-                    <Form.Label>
-                        <b>Apellido(s)</b>
-                    </Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Tu(s) apellido(s)"
-                        value={familyName}
-                        onChange={(e) => setFamilyName(e.target.value)}
-                        required
-                    />
-                    {familyName != "" && familyName.length < 5 && (
+                    {/* server error */}
+                    {error && (
                         <Alert variant={"warning"} className="m-2">
-                            Ingresa correctamente la información
+                            Error en el servidor intenta en un momento
                         </Alert>
                     )}
-                </Form.Group>
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>
-                        <b>Correo electrónico</b>{" "}
-                    </Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Enter email"
-                        name="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-
-                    {emailValidationAlert && (
+                    {/* incomplete form */}
+                    {!userDataIsValid && (
                         <Alert variant={"warning"} className="m-2">
-                            {emailValidationAlert}
+                            Por favor completa toda la información
                         </Alert>
                     )}
-
-                    <Form.Label className="mt-4">
-                        <b>
-                            Tu edad <i>(opcional)</i>
-                        </b>
-                    </Form.Label>
-                    <div className="row">
-                        <div className="col-3">
-                            <Form.Check
-                                type="radio"
-                                onClick={() => setAge(1)}
-                                label="18-25"
-                                name="age"
-                            />
-                        </div>
-                        <div className="col-3">
-                            <Form.Check
-                                type="radio"
-                                onClick={() => setAge(2)}
-                                label="26-35"
-                                name="age"
-                            />
-                        </div>
-                        <div className="col-3">
-                            <Form.Check
-                                type="radio"
-                                onClick={() => setAge(3)}
-                                label="36-45"
-                                name="age"
-                            />
-                        </div>
-                        <div className="col-3">
-                            <Form.Check
-                                type="radio"
-                                onClick={() => setAge(4)}
-                                label="+45"
-                                name="age"
-                            />
-                        </div>
-                    </div>
-                </Form.Group>
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>
-                        <b> Contraseña</b>
-                    </Form.Label>
-                    <Form.Control
-                        type="password"
-                        placeholder="Ingresa contraseña"
-                        name="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </Form.Group>
-                {!passwordsMatch && password != "" && confirmPassword != "" && (
-                    <Alert variant={"warning"} className="m-2">
-                        Las contraseñas no coinciden
-                    </Alert>
-                )}
-                <Form.Group controlId="confirmPassword">
-                    <Form.Label>
-                        <b>Confirma contraseña</b>
-                    </Form.Label>
-                    <Form.Control
-                        type="password"
-                        placeholder="Confirma contraseña"
-                        name="password_confirm"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                </Form.Group>
-
-                <Form.Text className="text-muted success">
-                    Nunca compartiremos tu información
-                </Form.Text>
-                <Form.Check
-                    className="mb-2"
-                    type="checkbox"
-                    label="Deseo recibir ofertas exclusivas"
-                    defaultChecked={mktEmails}
-                    onChange={() => {
-                        setMktEmails(!mktEmails);
-                    }}
-                />
-
-                {isRegistered && (
-                    <Alert variant={"warning"} className="m-2">
-                        Este usuario ya está registrado
-                    </Alert>
-                )}
-
-                {/* server error */}
-                {error && (
-                    <Alert variant={"warning"} className="m-2">
-                        Error en el servidor intenta en un momento
-                    </Alert>
-                )}
-
-                {/* incomplete form */}
-                {!userDataIsValid && (
-                    <Alert variant={"warning"} className="m-2">
-                        Por favor completa toda la información
-                    </Alert>
-                )}
-
-                <Button
-                    variant="success"
-                    type="submit"
-                    onClick={handleSubmit}
-                    disabled={userDataIsValid ? false : true}
-                >
-                    {/* {console.log(userDataIsValid)} */}
-                    Regístrate
-                </Button>
-
-                <Link to="/cart" className="btn btn-secondary ml-3">
-                    Regresar
-                </Link>{" "}
-                <br />
-
-
-            </Form>
+                    <Button
+                        variant="success"
+                        type="submit"
+                        onClick={handleSubmit}
+                        disabled={userDataIsValid ? false : true}
+                    >
+                        {/* {console.log(userDataIsValid)} */}
+                        Regístrate
+                    </Button>
+                    <Link to="/cart" className="btn btn-secondary ml-3">
+                        Regresar
+                    </Link>{" "}
+                    <br />
+                </Form>
+            )}
         </div>
     );
 };

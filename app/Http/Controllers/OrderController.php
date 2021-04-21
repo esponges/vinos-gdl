@@ -7,6 +7,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TransferOrderConfirmation;
 use GuzzleHttp\Exception\BadResponseException;
 
 class OrderController extends Controller
@@ -72,7 +74,37 @@ class OrderController extends Controller
             return response()->json(['order' => $order, 'cartItems' => $cartItems], 200);
         } catch (BadResponseException $ex) {
 
-            return response()->json(['error' => $ex], 500);
+            return response()->json([['exception' => $ex]]);
+        }
+    }
+
+    public function prepareConfirmationEmails($user, $order, $products, $grandTotal, $cartTotal,$balanceToPay)
+    {
+        // to user
+        Mail::to($user->email)->send(new TransferOrderConfirmation(
+            $order,
+            $products,
+            $grandTotal,
+            $cartTotal,
+            $balanceToPay,
+        ));
+
+        // to admin
+        $adminEmails = [
+            'vinoreomx@gmail.com',
+            'ventas@vinosdivisa.com',
+            'blancacarretero@vinosdivisa.com',
+            'jrodriguez@vinosdivisa.com',
+        ];
+
+        foreach ($adminEmails as $email) {
+            Mail::to($email)->send(new AdminOrderConfirmationEmail(
+                $order,
+                $products,
+                $grandTotal,
+                $cartTotal,
+                $balanceToPay
+            ));
         }
     }
 
