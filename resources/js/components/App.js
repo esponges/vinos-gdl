@@ -6,7 +6,7 @@ import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
 import Category from "./elements/Category";
-import Checkout from "./checkout/Checkout.js";
+import Checkout from "./checkout/PayPal/Checkout";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";

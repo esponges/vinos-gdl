@@ -43,12 +43,13 @@ const SuccessfulPayment = (props) => {
             .catch(() => {
                 setOrderInfo(null);
                 setCartItems(null);
+                console.log('we are null!!!')
             });
     }, []);
 
     return (
         <Card>
-            {console.log(vinoreoOrderID)}
+            {/* {console.log(vinoreoOrderID)} */}
             {orderInfo && cartItems ? (
                 <div>
                     <div className="container mt-2">

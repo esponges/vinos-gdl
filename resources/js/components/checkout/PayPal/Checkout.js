@@ -7,13 +7,13 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 library.add(fab);
 
-import CheckCP from "./CheckCP";
-import PaymentMode from "./PaymentMode";
-import DeliverySchedule from "./DeliverySchedule";
-import PaypalPayment from "./PaypalPayment";
-import CustomLoader from "../CustomLoader";
+import CheckCP from "../CheckCP";
+import PaymentMode from "../PaymentMode";
+import DeliverySchedule from "../DeliverySchedule";
+import PaypalPayment from "../PaypalPayment";
+import CustomLoader from "../../CustomLoader";
 
-import { Context } from "../Context";
+import { Context } from "../../Context";
 
 const Checkout = (props) => {
     const [phone, setPhone] = useState("");
