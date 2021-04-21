@@ -42,7 +42,6 @@ const ProductGrid = (props) => {
                     best_sellers: onlyBestSellers
                 }
             */}
-            {console.log("product grid context", context.allProducts)}
             <div>
                 <BestSellers
                     itemCount={itemCount}
@@ -155,6 +154,7 @@ const ProductGrid = (props) => {
                                                                     <Button
                                                                         variant="primary"
                                                                         id="main-add-btn"
+                                                                        data-testid={product.id}
                                                                         onClick={(
                                                                             e
                                                                         ) =>
