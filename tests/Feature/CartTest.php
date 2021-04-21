@@ -172,4 +172,18 @@ class CartTest extends TestCase
     //     $this->assertEquals($count, \Cart::getContent()->count());
     // }
 
+    public function test_getTotal()
+    {
+        $this->withoutExceptionHandling();
+        $mockCart = new OrderTest();
+
+        $mockCart->mockCart();
+
+        $response = $this->get('/cart/get-total');
+
+        // $response->dump();
+        // $response->dumpHeaders();
+        $response->assertOk();
+    }
+
 }

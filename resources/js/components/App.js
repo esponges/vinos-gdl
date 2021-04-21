@@ -6,7 +6,6 @@ import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
 import Category from "./elements/Category";
-import Checkout from "./checkout/Checkout.js";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";
@@ -17,6 +16,12 @@ import FAQ from "./elements/FAQ";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
 
+/* SmartPayPalbtn Checkout */
+// import Checkout from "./checkout/PayPal/Checkout";
+
+/* Actual checkout (old paypal) */
+import Checkout from "./checkout/Checkout";
+
 import axios from "axios";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -25,7 +30,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Context } from "./Context";
 import Legal from "./elements/Legal";
 
-import { allProducts } from './mockResponses/allProducts';
+import CancelPayment from "./checkout/PayPal/CancelPayment";
+import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
+import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 
 const App = (props) => {
     const [products, setProducts] = useState(null);
@@ -182,16 +189,17 @@ const App = (props) => {
         <HashRouter>
             <Context.Provider
                 value={{
-                    cartContent: cart,
-                    allProducts: prods,
-                    cartTotal: cartTotal,
                     addToCart: addToCart,
+                    allProducts: prods,
+                    cartContent: cart,
+                    cartTotal: cartTotal,
                     cartCountUpdate: cartCountUpdate,
                     getCartContent: getCartContent,
+                    setCartCount: setCartCount,
                     notifyMinAmountRemaining: notifyMinAmountRemaining,
+                    notifyToaster: notifyToaster,
                     loader: loader,
                     setLoader: setLoader,
-                    notifyToaster: notifyToaster,
                 }}
             >
                 <IndexNavbar
@@ -200,10 +208,9 @@ const App = (props) => {
                     userInfo={userInfo}
                     logout={logout}
                 />
-                <ToastContainer />
+                <ToastContainer position="top-center"/>
                 <div
                     className="container mb-5 body-margin-top"
-                    // style={{ marginTop: `22%` }}
                 >
                     <Switch>
                         <Route path="/products/:id">
@@ -213,6 +220,19 @@ const App = (props) => {
 
                         <Route path="/categories/:name">
                             <Category />
+                        </Route>
+
+
+                        <Route path="/checkout">
+                            <Route path="/checkout/cancel">
+                                <CancelPayment />
+                            </Route>
+                            <Route path="/checkout/success/:id">
+                                <SuccessfulPayment />
+                            </Route>
+                            <Route path="/checkout/fail">
+                                <UnsuccessfulPayment />
+                            </Route>
                         </Route>
 
                         <Route path="/cart/checkout">

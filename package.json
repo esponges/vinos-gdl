@@ -48,7 +48,8 @@
         "react-router-dom": "^5.2.0",
         "react-select": "^4.3.0",
         "react-test-renderer": "^16.14.0",
-        "react-toastify": "^7.0.3"
+        "react-toastify": "^7.0.3",
+        "identity-obj-proxy": "3.0.0"
     },
     "babel": {
         "presets": [

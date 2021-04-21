@@ -4,7 +4,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 
 const CustomLoader = ({ size }) => {
-    const [params, setParams] = useState(size);
+    const params = size;
 
     return (
         <div id="loader-container">

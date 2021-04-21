@@ -48,7 +48,7 @@ class AuthTest extends TestCase
 
         $response = $this->post('/login', [
             'email' => $user->email,
-            'password' => '123456',
+            'password' => 'tomasito',
             'remember' => 'on'
         ]);
 

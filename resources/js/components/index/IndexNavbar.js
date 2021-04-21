@@ -66,20 +66,20 @@ const IndexNavbar = (props) => {
     };
 
     useEffect(() => {
+        axios
+            .get("/category-list")
+            .then((res) => {
+                setCategories(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+    useEffect(() => {
         let isMounted = true;
         //transition effect dark/light and hide/show nav
         window.addEventListener("scroll", handleScroll);
-
-        if (isMounted) {
-            axios
-                .get("/category-list")
-                .then((res) => {
-                    setCategories(res.data);
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
-        }
 
         return () => {
             window.removeEventListener("scroll", handleScroll);

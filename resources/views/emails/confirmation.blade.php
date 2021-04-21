@@ -6,18 +6,22 @@ El resumen de tu compra:
 | Producto       | Precio     | Cantidad         | Subtotal  |
 | ------------- |:----------:|:-------------:| --------:|
 @foreach ($products as $product)
-| {{$product->name}}     | {{$product->price}} | {{$product->quantity}}      | {{$product->quantity * $product->price}}     |
+| {{$product->name}}     | MX${{$product->price}} | {{$product->quantity}}      | MX${{$product->quantity * $product->price}}     |
 @endforeach
 
 @endcomponent
 
-El total de tu compra fue: <b>{{$grandTotal}}</b>
+El total de tu compra fue: MX$<b>{{$grandTotal}}</b>
 
-Tu pago por Paypal: <b>{{$cartTotal}}</b>
+@if ($order['payment_mode'] !== 'transfer')
 
-@if ($order->payment_mode == "on_delivery")
+Tu pago por Paypal: MX$<b>{{$paidWithPayPal}}</b>
 
-Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
+@endif
+
+@if ($order['payment_mode'] == "on_delivery")
+
+Tu saldo a liquidar en la entrega: MX$<b>{{$balanceToPay}}</b>
 
 <u>Recuerda que el repartidor sólo recibe efectivo</u>
 
@@ -27,15 +31,15 @@ Tu saldo a liquidar en la entrega: <b>{{$balanceToPay}}</b>
 <br>
 Detalles de entrega <br>
 
-Nombre del pedido: <b>{{$order->order_name}}</b><br>
-Teléfono del comprador <b>{{$order->phone ? $order->phone : ""}}</b>
-Dirección de entrega: <b>{{$order->address}}</b><br>
-Detalles de la dirección: <b>{{ $order->address_details ? $order->address_details : 'No proporcionados' }}</b><br>
-Colonia: <b>{{$order->neighborhood . " " . $order->cp}}</b><br>
+Nombre del pedido: <b>{{$order['order_name']}}</b><br>
+Teléfono del comprador <b>{{$order['phone'] ? $order['phone'] : ""}}</b><br>
+Dirección de entrega: <b>{{$order['address']}}</b><br>
+Detalles de la dirección: <b>{{ $order['address_details'] ? $order->address_details : 'No proporcionados' }}</b><br>
+Colonia: <b>{{$order['neighborhood'] . " " . $order['cp']}}</b><br>
 
 <br>
-Día de entrega: <b>{{$order->delivery_day}}</b><br>
-Horario aproximado de entrega: <b>{{$order->delivery_schedule}}</b>
+Día de entrega: <b>{{$order['delivery_day']}}</b><br>
+Horario aproximado de entrega: <b>{{$order['delivery_schedule']}}</b>
 
 {{-- @component('mail::button', ['url' => ''])
 Button Text
