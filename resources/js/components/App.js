@@ -6,7 +6,6 @@ import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
 import Category from "./elements/Category";
-import Checkout from "./checkout/PayPal/Checkout";
 import IndexNavbar from "./index/IndexNavbar";
 import MastHead from "./index/MastHead";
 import ProductGrid from "./index/ProductGrid";
@@ -16,6 +15,12 @@ import ForgotPassword from "./auth/ForgotPassword";
 import FAQ from "./elements/FAQ";
 import Login from "./auth/Login";
 import RegisterForm from "./auth/RegisterForm";
+
+/* SmartPayPalbtn Checkout */
+// import Checkout from "./checkout/PayPal/Checkout";
+
+/* Actual checkout (old paypal) */
+import Checkout from "./checkout/Checkout";
 
 import axios from "axios";
 
@@ -184,16 +189,17 @@ const App = (props) => {
         <HashRouter>
             <Context.Provider
                 value={{
-                    cartContent: cart,
-                    allProducts: prods,
-                    cartTotal: cartTotal,
                     addToCart: addToCart,
+                    allProducts: prods,
+                    cartContent: cart,
+                    cartTotal: cartTotal,
                     cartCountUpdate: cartCountUpdate,
                     getCartContent: getCartContent,
+                    setCartCount: setCartCount,
                     notifyMinAmountRemaining: notifyMinAmountRemaining,
+                    notifyToaster: notifyToaster,
                     loader: loader,
                     setLoader: setLoader,
-                    notifyToaster: notifyToaster,
                 }}
             >
                 <IndexNavbar
