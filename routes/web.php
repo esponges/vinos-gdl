@@ -45,10 +45,14 @@ Route::prefix('cart')->group( function () {
 });
 
 Route::prefix('order')->group( function () {
+    /* v1 paypal */
+    Route::post('/create', [OrderController::class, 'create'])->middleware('auth:sanctum');
+    Route::get('/transfer/{orderId}', [OrderController::class, 'transferPaymentMode'])->name('paypal.transfer')->middleware('auth:sanctum');
+    Route::get('/success/{orderId}/{cartTotal}', [OrderController::class, 'orderSuccess'])->name('order.success');
     /* srmk paypal laravel v3 */
     Route::post('/info', [OrderController::class, 'getOrderInfo'])->name('order.info')->middleware('auth:sanctum');
     Route::post('/rest-api/create', [OrderController::class, 'paypalApiOrder'])->name('order.paypalApiOrder');
-    Route::get('/success/admin-email/{orderID}', [EmailController::class, 'sendAdminEmails'])->middleware('auth:sanctum');
+    Route::post('/success/admin-email/', [EmailController::class, 'sendAdminEmails'])->name('order.sendAdminEmails')->middleware('auth:sanctum');
 });
 
 Route::prefix('paypal')->group( function () {

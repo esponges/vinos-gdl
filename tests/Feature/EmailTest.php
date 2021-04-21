@@ -91,9 +91,15 @@ class EmailTest extends TestCase
 
         Mail::fake();
 
-        $response = $this->actingAs(User::first())->get('/order/success/admin-email/' . $orderID);
+        $response = $this->actingAs(User::first())->post(
+            '/order/success/admin-email/', [
+                'orderID' => $orderID
+            ]
+            // route('order.sendAdminEmails', $orderID)
+        );
 
         $response->assertOk();
+        // Mail::assertNothingSent();
         Mail::assertSent(AdminOrderConfirmationEmail::class);
     }
 }

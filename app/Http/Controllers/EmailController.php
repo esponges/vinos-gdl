@@ -42,8 +42,9 @@ class EmailController extends Controller
         ));
     }
 
-    public function sendAdminEmails($orderID)
+    public function sendAdminEmails(Request $request)
     {
+        $orderID = $request->orderID;
         $order = Order::find($orderID);
         $products = \Cart::getContent();
         $grandTotal = $order->total;
@@ -77,6 +78,7 @@ class EmailController extends Controller
                 ));
 
                 //clear cart
+                \Cart::clear();
             }
         } catch (BadResponseException $ex) {
 
