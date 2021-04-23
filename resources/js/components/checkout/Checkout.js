@@ -15,18 +15,24 @@ import { Link, withRouter } from "react-router-dom";
 import CustomLoader from "../CustomLoader";
 
 const Checkout = (props) => {
-    const [phone, setPhone] = useState("");
-    const [orderName, setOrderName] = useState(`${props.userInfo["userName"]}`);
-    const [CP, setCP] = useState("");
-    const [neighborhood, setNeighborhood] = useState("");
+    const [phone, setPhone] = useState(props.userInfo?.userPhone ?? "");
+    const [orderName, setOrderName] = useState(props.userInfo?.userName ?? "");
+    const [CP, setCP] = useState(props?.userInfo?.CP ?? "");
+    const [neighborhood, setNeighborhood] = useState(
+        props?.userInfo?.neighborhood ?? ""
+    );
     const [cartTotal, setCartTotal] = useState("");
     const [address, setAddress] = useState("");
     const [addressNumber, setAddressNumber] = useState("");
     const [streetName, setStreetName] = useState("");
     const [paymentMode, setPaymentMode] = useState("transfer"); // while fixing paypal
     const [addressDetails, setAddressDetails] = useState("");
-    const [deliveryDay, setDeliveryDay] = useState("");
-    const [deliverySchedule, setDeliverySchedule] = useState("");
+    const [deliveryDay, setDeliveryDay] = useState(
+        props?.userInfo?.deliveryDay ?? ""
+    ); // testing prop
+    const [deliverySchedule, setDeliverySchedule] = useState(
+        props?.userInfo?.deliverySchedule ?? ""
+    ); // testing prop
 
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
@@ -36,12 +42,14 @@ const Checkout = (props) => {
     const [totalToPay, setTotalToPay] = useState(false);
     const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
 
-    const [csrfToken, setCsrfToken] = useState("");
+    // const [csrfToken, setCsrfToken] = useState("");
+    // console.log('CP ', CP, 'delivDay ', deliveryDay, 'delivSchedule ', deliverySchedule);
+    // console.log('phone length is!!!', phone.length);
 
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
 
-    const [loader, setLoader] = useState(null);
+    const [loader, setLoader] = useState(false);
 
     const context = useContext(Context);
 
@@ -55,6 +63,19 @@ const Checkout = (props) => {
         else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
     };
 
+    // console.log(
+    //     orderName,
+    //     paymentMode,
+    //     streetName,
+    //     addressNumber,
+    //     addressDetails,
+    //     deliveryDay,
+    //     deliverySchedule,
+    //     phone,
+    //     CP,
+    //     neighborhood
+    // );
+
     const handleTransferSubmit = () => {
         context.notifyToaster("info", "Generando orden");
         setLoader(true);
@@ -63,7 +84,7 @@ const Checkout = (props) => {
             .post("/order/rest-api/create", {
                 order_name: orderName,
                 payment_mode: paymentMode,
-                address: `${address} #${addressNumber}`,
+                address: `${streetName} #${addressNumber}`,
                 address_details: addressDetails,
                 delivery_day: deliveryDay,
                 delivery_schedule: deliverySchedule,
@@ -104,7 +125,7 @@ const Checkout = (props) => {
     };
 
     const getDeliveryInfo = (day, schedule) => {
-        console.log(day, schedule);
+        // console.log(day, schedule);
         setDeliveryDay(day);
         setDeliverySchedule(schedule);
     };
@@ -114,13 +135,14 @@ const Checkout = (props) => {
         let isMounted = true;
 
         // if phone info available set it
-        props.userInfo["userPhone"] &&
-            setPhone(parseInt(props.userInfo["userPhone"]));
+        // props.userInfo?.userPhone &&
+        //     setPhone(parseInt(props.userInfo?.userPhone));
 
         if (isMounted) {
             axios
                 .get("/cart/get-total")
                 .then((res) => {
+                    // console.log('GET TOTAL MADAFAKAAAAAAAAA ', res.data);
                     setCartTotal(
                         // new Intl.NumberFormat("en-US", {
                         //     style: "currency",
@@ -132,15 +154,24 @@ const Checkout = (props) => {
                 })
                 .catch((err) => {
                     console.error(err);
+                    context.notifyToaster(
+                        "error",
+                        "Tenemos problemas con el servidor. Intenta más tarde"
+                    );
                 });
 
             axios
                 .get("/cart/get-subtotal")
                 .then((res) => {
+                    // console.log('GET TOAL MAFRENNN ', res.data);
                     setUpfrontPayPalPayment(res.data); // 7% comission
                 })
                 .catch((err) => {
                     console.error(err);
+                    context.notifyToaster(
+                        "error",
+                        "Tenemos problemas con el servidor. Intenta más tarde"
+                    );
                 });
         }
 
@@ -168,36 +199,58 @@ const Checkout = (props) => {
                 }
             }
             //validate address
-            console.log(
-                "streetname ",
-                streetName.length,
-                "street name is ",
-                streetName,
-                "address number len ",
-                addressNumber.length,
-                "address num",
-                addressNumber
-            );
+            // console.log(
+            //     "streetname ",
+            //     streetName,
+            //     'address ',
+            //     address,
+            //     "address num",
+            //     addressNumber,
+            //     'CP is ',
+            //     CP,
+            //     'delivery day is ',
+            //     deliveryDay,
+            //     'schedule is ',
+            //     deliverySchedule
+            // );
             if (
-                streetName.length < 5 &&
-                streetName != "" &&
-                addressNumber.length != 0
+                streetName.length > 3 &&
+                streetName.length < 6 &&
+                !addressNumber
             ) {
+                setAddressAlertMessage("Por favor ingresa dirección completa");
+            } else if (streetName.length > 5 && !addressNumber) {
                 setAddressAlertMessage("Por favor ingresa dirección completa");
             } else {
                 setAddressAlertMessage(false);
             }
 
             // activate proceed button - must check due to async
+            // states won't be updated until rerender
+            // don't bother trying to await setState
+
+            // console.log(
+            //     "active btn? ",
+            //     streetName.length,
+            //     addressNumber.length,
+            //     phonePattern.test(phone) ? true : false,
+            //     'phone is', phone,
+            //     'phone length', phone.length,
+            //     phone.length === 10 ? true : false,
+            //     CP ? true : false,
+            //     deliveryDay ? true : false,
+            //     deliverySchedule ? true : false
+            // );
             if (
-                streetName.length > 4 &&
+                streetName.length >= 5 &&
                 addressNumber.length > 0 &&
                 phonePattern.test(phone) &&
-                phone.length == 10 &&
+                phone.length === 10 &&
                 CP &&
                 deliveryDay &&
                 deliverySchedule
             ) {
+                // console.log("button is active");
                 setButtonIsActive(true);
             } else setButtonIsActive(false);
             // remind user payment method
@@ -233,23 +286,6 @@ const Checkout = (props) => {
         </h3>
     );
 
-    // useEffect(() => {
-    //     let isMounted = true;
-
-    //     if (isMounted) {
-    //         axios
-    //             .get("/api/csrf-token")
-    //             .then((res) => {
-    //                 setCsrfToken(res.data);
-    //             })
-    //             .catch((err) => {
-    //                 console.error(err);
-    //             });
-    //     }
-
-    //     return () => (isMounted = false);
-    // }, []);
-
     return (
         <div className="container">
             {!loader ? (
@@ -257,7 +293,9 @@ const Checkout = (props) => {
                     <div style={{ marginBottom: "6rem" }}>
                         {/* prompt user for payment method */}
 
-                        {totalHeader && totalHeader}
+                        <div data-testid="top-total-header">
+                            {totalHeader && totalHeader}
+                        </div>
 
                         <PaymentMode
                             handlePaymentChange={handlePaymentChange}
@@ -290,7 +328,7 @@ const Checkout = (props) => {
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    defaultValue={`${props.userInfo["userName"]}`}
+                                    defaultValue={props.userInfo?.userName}
                                     onChange={(e) =>
                                         setOrderName(e.target.value)
                                     }
@@ -312,9 +350,10 @@ const Checkout = (props) => {
                                 </Form.Label>
                                 <Form.Control
                                     type="text"
-                                    placeholder="ingresa tu teléfono"
+                                    placeholder="Ingresa tu teléfono"
                                     value={phone}
                                     name="phone"
+                                    aria-label="phone-input"
                                     onChange={(e) => setPhone(e.target.value)}
                                 />
                                 <Form.Text className="text-muted success">
@@ -367,6 +406,8 @@ const Checkout = (props) => {
                                     type="text"
                                     placeholder="La dirección de tu casa"
                                     value={streetName}
+                                    data-testid="streetName-input"
+                                    aria-label="streetName-input"
                                     onChange={(e) => {
                                         setStreetName(e.target.value);
                                     }}
@@ -379,15 +420,16 @@ const Checkout = (props) => {
                                     type="text"
                                     placeholder="El número de la dirección"
                                     value={addressNumber}
+                                    aria-label="addressNumber-input"
                                     onChange={(e) => {
                                         setAddressNumber(e.target.value);
                                     }}
                                 />
-                                <input
+                                {/* <input
                                     type="hidden"
                                     value={`${streetName} - ${addressNumber}`}
                                     name="address"
-                                />
+                                /> */}
                             </Form.Group>
                             {addressAlertMessage && (
                                 <Alert variant={"warning"} className="m-1">
@@ -420,6 +462,7 @@ const Checkout = (props) => {
                                     placeholder="Para dar más fácilmente contigo"
                                     name="address_details"
                                     value={addressDetails}
+                                    aria-label="addressDetails-input"
                                     onChange={(e) => {
                                         setAddressDetails(e.target.value);
                                     }}
@@ -427,11 +470,11 @@ const Checkout = (props) => {
                             </Form.Group>
 
                             {/* let user pay if all information is set */}
-                            {console.log(
+                            {/* {console.log(
                                 buttonIsActive,
                                 addressAlertMessage,
                                 phone.length
-                            )}
+                            )} */}
                             {!buttonIsActive &&
                                 (addressAlertMessage || phone.length != 10) && (
                                     <Alert variant={"warning"} className="m-1">
