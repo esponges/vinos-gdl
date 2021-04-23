@@ -30,7 +30,8 @@ const DeliverySchedule = (props) => {
             props.getDeliveryInfo(false, false);
         }
 
-        if (day.value === "6") {
+        if (day.value === 6) {
+            console.log('set to saturday!');
             setSchedule(saturdayHourSchedule);
         } else {
             setSchedule(weekdayHourSchedule);
@@ -50,7 +51,7 @@ const DeliverySchedule = (props) => {
         { value: "4pm a 6pm", label: "4pm a 6pm" },
     ];
 
-    const saturdayHourSchedule = [{ value: "10am a 3pm", label: "10am a 3pm" }];
+    const saturdayHourSchedule = [{ value: "11am a 3pm", label: "11am a 3pm" }];
 
     useEffect(() => {
         let isMounted = true;
