@@ -5,12 +5,12 @@ import { HashRouter } from "react-router-dom";
 
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import axiosMock from 'axios';
-import axios from 'axios';
+import axiosMock from "axios";
+import axios from "axios";
 
 import SuccessfulPayment from "../../../components/checkout/PayPal/SuccessfulPayment";
 
-jest.mock('axios');
+jest.mock("axios");
 
 const fakeOrderResponse = {
     order: {
@@ -57,39 +57,43 @@ const fakeOrderResponse = {
 //     });
 // });
 
-test('mock axios', async () => {
-    axios.post = jest.fn().mockResolvedValue({ data: { fakeOrderResponse } });
+test("mock axios", async () => {
+    // axios.post = jest.fn().mockResolvedValue({ data: { fakeOrderResponse } });
     // instead axios.get.mockResolvedValue({ data: { fakeOrderResponse } });
+    axiosMock.post.mockResolvedValueOnce({ data: fakeOrderResponse });
 
-    const url = "order/info";
-    render(
-        <HashRouter>
-            <SuccessfulPayment url={url} />
-        </HashRouter>
+    await act(async () =>
+        render(
+            <HashRouter>
+                <SuccessfulPayment />
+            </HashRouter>
+        )
     );
+    // await screen.debug();
 
-    // const renderedEl = await waitFor(() =>
-    //     useEffect()
+    // const resolvedEl = await waitFor(() => )
+    // await waitFor(() =>
+    //     axios.post
     // );
-    // expect(useEffect).toHaveBeenCalledTimes(1);
-
+    // expect(axios.post).toHaveBeenCalledTimes(1);
+    // screen.debug();
 });
 
-const server = setupServer(
-    rest.post("/order/info", (req, res, ctx) => {
-        return res(ctx.json(fakeOrderResponse));
-    })
-);
+// const server = setupServer(
+//     rest.post("/order/info", (req, res, ctx) => {
+//         return res(ctx.json(fakeOrderResponse));
+//     })
+// );
 
-beforeAll(() => {
-    server.listen();
-});
-afterEach(() => {
-    server.resetHandlers();
-    window.localStorage.removeItem("order");
-    window.localStorage.removeItem("cartItems");
-});
-afterAll(() => server.close());
+// beforeAll(() => {
+//     server.listen();
+// });
+// afterEach(() => {
+//     server.resetHandlers();
+//     window.localStorage.removeItem("order");
+//     window.localStorage.removeItem("cartItems");
+// });
+// afterAll(() => server.close());
 
 // describe("SuccessfulPayment", () => {
 //     it("renders", async () => {
@@ -114,7 +118,7 @@ afterAll(() => server.close());
 //         // expect(screen.getByText(/Tienes un correo/i)).toBeInTheDocument();
 //     });
 
-    // it('renders back btn', () => {
-    //     screen.getByRole('link', { hidden: true });
-    // });
+// it('renders back btn', () => {
+//     screen.getByRole('link', { hidden: true });
+// });
 // });

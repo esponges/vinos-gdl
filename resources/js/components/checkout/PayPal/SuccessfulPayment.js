@@ -19,7 +19,6 @@ const SuccessfulPayment = (props) => {
                 vinoreoOrderID: vinoreoOrderID,
             })
             .then((res) => {
-                // console.log(res.data);
                 setOrderInfo(res.data.order);
                 setCartItems(res.data.cartItems);
                 setCartTotal(res.data.order.total);
