@@ -1,50 +1,76 @@
 import axios from "axios";
 import React, { useEffect, useState, useRef, useContext } from "react";
+import { Context } from "../Context";
+import { Link, withRouter } from "react-router-dom";
+
 import { Form, Button, Alert, Overlay, Tooltip } from "react-bootstrap";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
-
 library.add(fab);
 
 import LoginOrRegister from "../auth/LoginOrRegister";
 import CheckCP from "./CheckCP";
 import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
-import { Context } from "../Context";
-import { Link, withRouter } from "react-router-dom";
 import CustomLoader from "../CustomLoader";
 
 const Checkout = (props) => {
-    const [phone, setPhone] = useState(props.userInfo?.userPhone ?? "");
-    const [orderName, setOrderName] = useState(props.userInfo?.userName ?? "");
-    const [CP, setCP] = useState(props?.userInfo?.CP ?? "");
-    const [neighborhood, setNeighborhood] = useState(
-        props?.userInfo?.neighborhood ?? ""
-    );
-    const [cartTotal, setCartTotal] = useState("");
-    const [address, setAddress] = useState("");
-    const [addressNumber, setAddressNumber] = useState("");
-    const [streetName, setStreetName] = useState("");
-    const [paymentMode, setPaymentMode] = useState("transfer"); // while fixing paypal
-    const [addressDetails, setAddressDetails] = useState("");
-    const [deliveryDay, setDeliveryDay] = useState(
-        props?.userInfo?.deliveryDay ?? ""
-    ); // testing prop
-    const [deliverySchedule, setDeliverySchedule] = useState(
-        props?.userInfo?.deliverySchedule ?? ""
-    ); // testing prop
+    // const [phone, setPhone] = useState(props.userInfo?.userPhone ?? "");
+    // const [orderName, setOrderName] = useState(props.userInfo?.userName ?? "");
+    // const [CP, setCP] = useState(props?.userInfo?.CP ?? "");
+    // const [neighborhood, setNeighborhood] = useState(
+    //     props?.userInfo?.neighborhood ?? ""
+    // );
+    // const [addressNumber, setAddressNumber] = useState("");
+    // const [streetName, setStreetName] = useState("");
+    // const [paymentMode, setPaymentMode] = useState("transfer"); // while fixing paypal
+    // const [addressDetails, setAddressDetails] = useState("");
+
+    // const [deliveryDay, setDeliveryDay] = useState(
+    //     props?.userInfo?.deliveryDay ?? ""
+    // ); // testing prop
+    // const [deliverySchedule, setDeliverySchedule] = useState(
+    //     props?.userInfo?.deliverySchedule ?? ""
+    // ); // testing prop
+
+    const [order, setOrder] = useState({
+        phone: props.userInfo?.userPhone ?? "",
+        orderName: props.userInfo?.userName ?? null,
+        CP: props?.userInfo?.CP ?? "",
+        neighborhood: props?.userInfo?.neighborhood ?? "",
+        streetName: "",
+        addressNumber: "",
+        paymentMode: "transfer",
+        addressDetails: "",
+        deliveryDay: props?.userInfo?.deliveryDay ?? "",
+        deliverySchedule: props?.userInfo?.deliverySchedule ?? "",
+        cartTotal: "",
+        upfrontPayPalPayment: "",
+    });
+
+    const {
+        phone,
+        orderName,
+        CP,
+        neighborhood,
+        streetName,
+        addressNumber,
+        paymentMode,
+        addressDetails,
+        deliveryDay,
+        deliverySchedule,
+        cartTotal,
+        upfrontPayPalPayment,
+    } = order;
 
     const [buttonIsActive, setButtonIsActive] = useState(false);
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
     const [paymentModeReminder, setPaymentModeReminder] = useState("transfer"); // while fixing paypal
 
-    const [totalToPay, setTotalToPay] = useState(false);
-    const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
-
-    // const [csrfToken, setCsrfToken] = useState("");
-    // console.log('CP ', CP, 'delivDay ', deliveryDay, 'delivSchedule ', deliverySchedule);
-    // console.log('phone length is!!!', phone.length);
+    // const [cartTotal, setCartTotal] = useState("");
+    // const [totalToPay, setTotalToPay] = useState(false);
+    // const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
 
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
@@ -55,26 +81,8 @@ const Checkout = (props) => {
 
     // from payment type radio input
     const handlePaymentChange = (e) => {
-        console.log(e.target.value);
-        setPaymentMode(e.target.value);
-        if (e.target.value === "paypal") setTotalToPay(`Total MX$${cartTotal}`);
-        else if (e.target.value === "transfer")
-            setTotalToPay(`Total MX$${cartTotal}`);
-        else setTotalToPay(`Sub-total MX$${upfrontPayPalPayment}`);
+        setOrder({ ...order, paymentMode: e.target.value });
     };
-
-    // console.log(
-    //     orderName,
-    //     paymentMode,
-    //     streetName,
-    //     addressNumber,
-    //     addressDetails,
-    //     deliveryDay,
-    //     deliverySchedule,
-    //     phone,
-    //     CP,
-    //     neighborhood
-    // );
 
     const handleTransferSubmit = () => {
         context.notifyToaster("info", "Generando orden");
@@ -82,19 +90,18 @@ const Checkout = (props) => {
 
         axios
             .post("/order/rest-api/create", {
-                order_name: orderName,
+                order_name: orderName ?? props.userInfo?.userName,
                 payment_mode: paymentMode,
                 address: `${streetName} #${addressNumber}`,
                 address_details: addressDetails,
-                delivery_day: deliveryDay,
-                delivery_schedule: deliverySchedule,
                 phone: phone,
                 cp: CP,
+                delivery_day: deliveryDay,
+                delivery_schedule: deliverySchedule,
                 neighborhood: neighborhood,
                 balance: 0,
             })
             .then((res) => {
-                console.log(res.data);
                 const vinoreoOrderID = res.data.orderID;
 
                 axios.post(`/order/success/admin-email`, {
@@ -104,6 +111,7 @@ const Checkout = (props) => {
                 context.setCartCount(0);
 
                 setTimeout(() => {
+                    console.log("redirecting user");
                     // setLoader(false);
                     props.history.push(`/checkout/success/${vinoreoOrderID}`);
                 }, 4000);
@@ -120,62 +128,42 @@ const Checkout = (props) => {
 
     // validate CP
     const getCpInfo = (cpData) => {
-        setCP(cpData.cp);
-        setNeighborhood(cpData.name);
+        setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name });
     };
 
     const getDeliveryInfo = (day, schedule) => {
-        // console.log(day, schedule);
-        setDeliveryDay(day);
-        setDeliverySchedule(schedule);
+        setOrder({ ...order, deliveryDay: day, deliverySchedule: schedule });
     };
 
     // get user info and cart total-subtotal
     useEffect(() => {
-        let isMounted = true;
-
-        // if phone info available set it
-        // props.userInfo?.userPhone &&
-        //     setPhone(parseInt(props.userInfo?.userPhone));
-
-        if (isMounted) {
-            axios
-                .get("/cart/get-total")
-                .then((res) => {
-                    // console.log('GET TOTAL MADAFAKAAAAAAAAA ', res.data);
-                    setCartTotal(
-                        // new Intl.NumberFormat("en-US", {
-                        //     style: "currency",
-                        //     currency: "MXN",
-                        // }).format(
-                        res.data
-                        // )
-                    );
-                })
-                .catch((err) => {
-                    console.error(err);
-                    context.notifyToaster(
-                        "error",
-                        "Tenemos problemas con el servidor. Intenta más tarde"
-                    );
-                });
-
-            axios
-                .get("/cart/get-subtotal")
-                .then((res) => {
-                    // console.log('GET TOAL MAFRENNN ', res.data);
-                    setUpfrontPayPalPayment(res.data); // 7% comission
-                })
-                .catch((err) => {
-                    console.error(err);
-                    context.notifyToaster(
-                        "error",
-                        "Tenemos problemas con el servidor. Intenta más tarde"
-                    );
-                });
-        }
-
-        return () => (isMounted = false);
+        axios
+            .get("/cart/get-total")
+            .then((res) => {
+                axios
+                    .get("/cart/get-subtotal")
+                    .then((response) => {
+                        setOrder({
+                            ...order,
+                            cartTotal: res.data,
+                            upfrontPayPalPayment: response.data,
+                        }); // 7% comission
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                        context.notifyToaster(
+                            "error",
+                            "Tenemos problemas con el servidor. Intenta más tarde"
+                        );
+                    });
+            })
+            .catch((err) => {
+                console.error(err);
+                context.notifyToaster(
+                    "error",
+                    "Tenemos problemas con el servidor. Intenta más tarde"
+                );
+            });
     }, []);
 
     // validations
@@ -199,20 +187,6 @@ const Checkout = (props) => {
                 }
             }
             //validate address
-            // console.log(
-            //     "streetname ",
-            //     streetName,
-            //     'address ',
-            //     address,
-            //     "address num",
-            //     addressNumber,
-            //     'CP is ',
-            //     CP,
-            //     'delivery day is ',
-            //     deliveryDay,
-            //     'schedule is ',
-            //     deliverySchedule
-            // );
             if (
                 streetName.length > 3 &&
                 streetName.length < 6 &&
@@ -229,18 +203,6 @@ const Checkout = (props) => {
             // states won't be updated until rerender
             // don't bother trying to await setState
 
-            // console.log(
-            //     "active btn? ",
-            //     streetName.length,
-            //     addressNumber.length,
-            //     phonePattern.test(phone) ? true : false,
-            //     'phone is', phone,
-            //     'phone length', phone.length,
-            //     phone.length === 10 ? true : false,
-            //     CP ? true : false,
-            //     deliveryDay ? true : false,
-            //     deliverySchedule ? true : false
-            // );
             if (
                 streetName.length >= 5 &&
                 addressNumber.length > 0 &&
@@ -265,26 +227,9 @@ const Checkout = (props) => {
         }
 
         return () => (isMounted = false);
-    }, [
-        orderName,
-        phone,
-        CP,
-        streetName,
-        addressNumber,
-        deliveryDay,
-        deliverySchedule,
-        addressDetails,
-        paymentMode,
-    ]);
+    }, [order]);
 
-    const totalHeader = (
-        <h3>
-            {/* {paymentMode == "on_delivery"
-                ? totalToPay + '<br />' + 'Total MX$' + cartTotal
-                : `Total MX$${cartTotal} `} */}
-            {`Total MX$${cartTotal}`}
-        </h3>
-    );
+    const totalHeader = <h3>{`Total MX$${cartTotal}`}</h3>;
 
     return (
         <div className="container">
@@ -311,26 +256,17 @@ const Checkout = (props) => {
                             </Alert>
                         )}
 
-                        {/* use laravel form method */}
-                        <Form
-                        // className="mt-3 mb-5"
-                        // action="/order/create"
-                        // method="post"
-                        >
-                            {/* place csrf token */}
-                            {/* <input type="hidden" value={csrfToken} name="_token" /> */}
-                            <input
-                                type="hidden"
-                                value={paymentMode}
-                                name="payment_mode"
-                            />
+                        <Form>
                             <Form.Group>
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
                                     defaultValue={props.userInfo?.userName}
                                     onChange={(e) =>
-                                        setOrderName(e.target.value)
+                                        setOrder({
+                                            ...order,
+                                            orderName: e.target.value,
+                                        })
                                     }
                                     name="order_name"
                                 />
@@ -354,7 +290,12 @@ const Checkout = (props) => {
                                     value={phone}
                                     name="phone"
                                     aria-label="phone-input"
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    onChange={(e) =>
+                                        setOrder({
+                                            ...order,
+                                            phone: e.target.value,
+                                        })
+                                    }
                                 />
                                 <Form.Text className="text-muted success">
                                     Sólo lo usaremos para mantenerte informado
@@ -370,13 +311,6 @@ const Checkout = (props) => {
                             <Form.Group>
                                 <Form.Label>Tu Código Postal</Form.Label>
                                 <CheckCP getCpInfo={getCpInfo} />
-                                <input type="hidden" name="cp" value={CP} />
-                                <input
-                                    type="hidden"
-                                    name="neighborhood"
-                                    value={neighborhood}
-                                />
-
                                 {/* Pop Over */}
                                 <Button
                                     variant="link"
@@ -409,7 +343,10 @@ const Checkout = (props) => {
                                     data-testid="streetName-input"
                                     aria-label="streetName-input"
                                     onChange={(e) => {
-                                        setStreetName(e.target.value);
+                                        setOrder({
+                                            ...order,
+                                            streetName: e.target.value,
+                                        });
                                     }}
                                 />
                                 <Form.Label className="mt-2">
@@ -422,14 +359,12 @@ const Checkout = (props) => {
                                     value={addressNumber}
                                     aria-label="addressNumber-input"
                                     onChange={(e) => {
-                                        setAddressNumber(e.target.value);
+                                        setOrder({
+                                            ...order,
+                                            addressNumber: e.target.value,
+                                        });
                                     }}
                                 />
-                                {/* <input
-                                    type="hidden"
-                                    value={`${streetName} - ${addressNumber}`}
-                                    name="address"
-                                /> */}
                             </Form.Group>
                             {addressAlertMessage && (
                                 <Alert variant={"warning"} className="m-1">
@@ -439,16 +374,6 @@ const Checkout = (props) => {
 
                             <DeliverySchedule
                                 getDeliveryInfo={getDeliveryInfo}
-                            />
-                            <input
-                                type="hidden"
-                                name="delivery_day"
-                                value={deliveryDay}
-                            />
-                            <input
-                                type="hidden"
-                                name="delivery_schedule"
-                                value={deliverySchedule}
                             />
 
                             {/* more address info */}
@@ -464,17 +389,14 @@ const Checkout = (props) => {
                                     value={addressDetails}
                                     aria-label="addressDetails-input"
                                     onChange={(e) => {
-                                        setAddressDetails(e.target.value);
+                                        setOrder({
+                                            ...order,
+                                            addressDetails: e.target.value,
+                                        });
                                     }}
                                 />
                             </Form.Group>
 
-                            {/* let user pay if all information is set */}
-                            {/* {console.log(
-                                buttonIsActive,
-                                addressAlertMessage,
-                                phone.length
-                            )} */}
                             {!buttonIsActive &&
                                 (addressAlertMessage || phone.length != 10) && (
                                     <Alert variant={"warning"} className="m-1">
@@ -488,7 +410,7 @@ const Checkout = (props) => {
                             <Button
                                 className="mb-5"
                                 variant="primary"
-                                type="submit"
+                                // type="submit"
                                 disabled={buttonIsActive ? false : true}
                                 onClick={handleTransferSubmit}
                             >

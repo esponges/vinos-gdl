@@ -12,7 +12,6 @@ const CheckCP = (props) => {
     };
 
     useEffect(() => {
-        let unMount = true;
 
         axios
         .get('api/get-CP')
@@ -23,7 +22,6 @@ const CheckCP = (props) => {
             console.error(err);
         })
 
-        return () => unMount = false;
     }, []);
 
     return (
