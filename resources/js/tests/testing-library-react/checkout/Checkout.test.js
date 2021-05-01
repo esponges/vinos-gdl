@@ -7,14 +7,17 @@ import {
     cleanup,
     getByRole,
     fireEvent,
+    waitFor,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import Checkout from "../../../components/checkout/Checkout";
 
 // jest.unmock("axios"); // unmock from previous test
 import axiosMock from "axios";
-jest.mock("axios");
+import { Context } from "../../../components/Context";
+import SuccessfulPayment from "../../../components/checkout/PayPal/SuccessfulPayment";
+// jest.mock("axios");
 
 // faked props
 const userInfo = {
@@ -26,7 +29,7 @@ const userInfo = {
     // via their respective components (dropdown-select)
     // and downshift select
     CP: "123",
-    neighborhood: 'Barrio bravo',
+    neighborhood: "Barrio bravo",
     deliveryDay: "Lunes",
     deliverySchedule: "10 a 2",
 };
@@ -43,23 +46,51 @@ const deliveryDays = [
     },
 ];
 
-let total = 1600;
+let total = 2250;
 const subtotal = 120;
 
 const setUp = async () => {
     const mock = axiosMock.get
         .mockResolvedValueOnce({ data: total })
         .mockResolvedValueOnce({ data: subtotal })
-        .mockResolvedValueOnce({ data: deliveryDays });
+        .mockResolvedValueOnce({ data: deliveryDays })
+        .mockResolvedValueOnce({ data: 'hey' });
 
     const utils = await act(async () => {
         render(
             <HashRouter>
-                <Checkout userInfo={userInfo} loggedIn={loggedIn} />
+                <Context.Provider>
+                    <Checkout userInfo={userInfo} loggedIn={loggedIn} />
+                    <Route path="/checkout/success/:id">
+                        <SuccessfulPayment />
+                    </Route>
+                </Context.Provider>
             </HashRouter>
         );
     });
     return { mock, ...utils };
+};
+
+const fillInputs = () => {
+    // phone input
+    const phoneInput = screen.getByPlaceholderText(/ingresa tu teléfono/i);
+
+    // streetName input
+    const streetNameInput = screen.getByPlaceholderText(
+        /La dirección de tu casa/i
+    );
+
+    // streetNumber input
+    const streetNumberInput = screen.getByPlaceholderText(
+        /El número de la dirección/i
+    );
+
+    // more address details
+    const addressDetails = screen.getByPlaceholderText(
+        /Para dar más fácilmente contigo/i
+    );
+
+    return { phoneInput, streetNameInput, streetNumberInput, addressDetails };
 };
 
 afterEach(cleanup);
@@ -73,34 +104,24 @@ describe("Checkout Component", () => {
         expect(totalHeading).toBeInTheDocument();
     });
 
-    it("user can fill all inputs and generate order", async () => {
+    it("user can fill all inputs and generate order and generates it correctly", async () => {
         await setUp();
 
-        // phone input
-        const phoneInput = screen.getByPlaceholderText(/ingresa tu teléfono/i);
+        const {
+            phoneInput,
+            streetNameInput,
+            streetNumberInput,
+            addressDetails,
+        } = fillInputs();
+
         userEvent.type(phoneInput, "1234567890");
         expect(phoneInput).toHaveValue("1234567890");
 
-        // streetName input
-        const streetNameInput = screen.getByPlaceholderText(
-            /La dirección de tu casa/i
-        );
-        // fireEvent.change(streetNameInput, { target: { value: 'Hidalguito' }});
         userEvent.type(streetNameInput, "Hidalguito"); // using type method from user-event library
         expect(streetNameInput).toHaveValue("Hidalguito");
 
-        // streetNumber input
-        const streetNumberInput = screen.getByPlaceholderText(
-            /El número de la dirección/i
-        );
-
         userEvent.type(streetNumberInput, "1");
         expect(streetNumberInput).toHaveValue("1");
-
-        // more address details
-        const addressDetails = screen.getByPlaceholderText(
-            /Para dar más fácilmente contigo/i
-        );
 
         userEvent.type(addressDetails, "Biiig house");
         expect(addressDetails).toHaveValue("Biiig house");
@@ -109,11 +130,9 @@ describe("Checkout Component", () => {
         const orderBtn = screen.getByRole("button", { name: /generar orden/i });
         expect(orderBtn).not.toBeDisabled();
 
-        //fire order!!
-        // screen.debug();
-        // fireEvent.click(orderBtn);
+        /* Generate order */
         // userEvent.click(orderBtn);
-        // expect(orderBtn).toHaveBeenCalled();
+        // waitFor(() => screen.render());
     });
 
     it("user can't generate order without completing form inputs (phone)", async () => {
@@ -124,26 +143,18 @@ describe("Checkout Component", () => {
         // userEvent.type(phoneInput, "1234567890");
         // expect(phoneInput).toHaveValue("1234567890");
 
-        // streetName input
-        const streetNameInput = screen.getByPlaceholderText(
-            /La dirección de tu casa/i
-        );
-        // fireEvent.change(streetNameInput, { target: { value: 'Hidalguito' }});
-        userEvent.type(streetNameInput, "Hidalguito"); // using type method from user-event library
-        expect(streetNameInput).toHaveValue("Hidalguito");
+        const {
+            // phoneInput,
+            streetNameInput,
+            streetNumberInput,
+            addressDetails,
+        } = fillInputs();
 
-        // streetNumber input
-        const streetNumberInput = screen.getByPlaceholderText(
-            /El número de la dirección/i
-        );
+        userEvent.type(streetNameInput, "Hidalguito");
+        expect(streetNameInput).toHaveValue("Hidalguito");
 
         userEvent.type(streetNumberInput, "1");
         expect(streetNumberInput).toHaveValue("1");
-
-        // more address details
-        const addressDetails = screen.getByPlaceholderText(
-            /Para dar más fácilmente contigo/i
-        );
 
         userEvent.type(addressDetails, "Biiig house");
         expect(addressDetails).toHaveValue("Biiig house");
@@ -155,20 +166,23 @@ describe("Checkout Component", () => {
         expect(orderBtn).toBeDisabled();
     });
 
-    it('cant see form if cartTotal < 1500', async () => {
+    it("cant see form if cartTotal < 1500", async () => {
         total = 1499;
         await setUp();
 
-        const minCartTotalAlert = screen.getByRole('alert', /No has completado tu compra mínima de MX$1,5000/i);
+        const minCartTotalAlert = screen.getByRole(
+            "alert",
+            /No has completado tu compra mínima de MX$1,5000/i
+        );
         expect(minCartTotalAlert).toBeInTheDocument();
     });
 
-    it('cant see form if not logged in', async () => {
+    it("cant see form if not logged in", async () => {
         loggedIn = false;
         await setUp();
 
         // screen.debug();
-        const pleaseLogIn = screen.getByRole('heading', /regístrate/i);
+        const pleaseLogIn = screen.getByRole("heading", /regístrate/i);
         expect(pleaseLogIn).toBeInTheDocument();
     });
 });

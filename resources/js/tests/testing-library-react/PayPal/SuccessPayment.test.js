@@ -1,18 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "@testing-library/jest-dom";
 import { screen, render, cleanup, act, waitFor } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 
-import { rest } from "msw";
-import { setupServer } from "msw/node";
 import axiosMock from "axios";
-import axios from "axios";
 
 import SuccessfulPayment from "../../../components/checkout/PayPal/SuccessfulPayment";
 
 jest.mock("axios");
 
-const fakeOrderResponse = {
+let fakeOrderResponse = {
     order: {
         id: 2139,
         total: 1530,
@@ -42,41 +39,93 @@ const fakeOrderResponse = {
     ],
 };
 
-// test('mock axios', async () => {
-//     const url = "/order/info";
-//     await act(async () => {
-//         render(
-//             <HashRouter>
-//                 <SuccessfulPayment url={url} />
-//             </HashRouter>
-//         );
+const setUp = async () => {
+    const mock = axiosMock.post.mockResolvedValueOnce({
+        data: fakeOrderResponse,
+    });
 
-//         axiosMock.post.mockResolvedValueOnce({
-//             data: fakeOrderResponse
-//         });
-//     });
-// });
-
-test("mock axios", async () => {
-    // axios.post = jest.fn().mockResolvedValue({ data: { fakeOrderResponse } });
-    // instead axios.get.mockResolvedValue({ data: { fakeOrderResponse } });
-    axiosMock.post.mockResolvedValueOnce({ data: fakeOrderResponse });
-
-    await act(async () =>
+    const utils = await act(async () =>
         render(
             <HashRouter>
                 <SuccessfulPayment />
             </HashRouter>
         )
     );
-    // await screen.debug();
 
-    // const resolvedEl = await waitFor(() => )
-    // await waitFor(() =>
-    //     axios.post
-    // );
-    // expect(axios.post).toHaveBeenCalledTimes(1);
-    // screen.debug();
+    return { mock, utils };
+};
+
+// beforeAll(() => setUp())
+afterEach(cleanup);
+
+describe("SuccessfulPayment", () => {
+    test("it renders", async () => {
+        await setUp();
+        const conf = screen.getByText(/confirmación de la orden/i);
+
+        expect(conf).toBeInTheDocument();
+    });
+
+    test("shows total heading correctly", async () => {
+        await setUp();
+        // const cartItems = screen.getByRole('paragraph', { name: /total de tu orden MX\$1530/i});
+        const total = screen.getByTestId("order-total");
+        const orderTotal = fakeOrderResponse.order.total;
+
+        expect(total).toHaveTextContent(`Total de tu orden MX$ ${orderTotal}`);
+    });
+
+    it("shows what was paid with paypal correctly", async () => {
+        await setUp();
+
+        const paidWithPaypal = screen.getByTestId("paid-with-paypal");
+        const paid = fakeOrderResponse.order.balance;
+
+        expect(paidWithPaypal).toHaveTextContent(
+            `Anticipo pagado con PayPal MX$${paid}`
+        );
+    });
+
+    it("shows user what's left to pay on delivery", async () => {
+        await setUp();
+
+        const payOnDelivery = screen.getByRole("heading", {
+            name: /saldo a pagar contra entrega/i,
+        });
+        const { total, balance } = fakeOrderResponse.order;
+        const toPay = total - balance;
+        expect(payOnDelivery).toHaveTextContent(
+            `Saldo a pagar contra entrega MX$${toPay}`
+        );
+    });
+});
+
+describe("transfer order", () => {
+    it("it shows the correct total if it's transfer", async () => {
+        fakeOrderResponse.order.payment_mode = "transfer";
+        await setUp();
+
+        const transferQty = screen.getByTestId("relevant-payment-info");
+        const total = fakeOrderResponse.order.total;
+
+        expect(transferQty).toHaveTextContent(`Por transferir MX$${total}`);
+    });
+
+    it("displays bank information on transfer", async () => {
+        await setUp();
+
+        const bankJumbotron = screen.getByRole("heading", {
+            name: /información de depósito\/transferencia/i,
+        });
+        expect(bankJumbotron).toBeInTheDocument();
+    });
+
+    it('doesn\'t say that your order was paid', async() => {
+        await setUp();
+
+        const orderPaidMsg = screen.queryByTestId('order-paid'); // use query instead get
+        expect(orderPaidMsg).not.toBeInTheDocument();
+    });
 });
 
 // const server = setupServer(
