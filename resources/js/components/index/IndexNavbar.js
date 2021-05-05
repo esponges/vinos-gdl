@@ -226,7 +226,7 @@ const IndexNavbar = (props) => {
             <Link to="/cart" className="material-icons floating-btn-cart">
                 <FontAwesomeIcon icon={["fas", "shopping-cart"]} />
                 &nbsp;
-                <Badge pill variant="warning">
+                <Badge pill variant="warning" data-testid="floating-cart-count">
                     {props.cartCount && props.cartCount}
                 </Badge>
             </Link>

@@ -24,6 +24,7 @@ const MastHead = () => {
                     src="/img/vinoreologo.png"
                     alt=""
                     id="vinoreo-logo-header"
+                    data-testid="vinoreo-logo-header"
                 />
             </div>
             <div className="container">

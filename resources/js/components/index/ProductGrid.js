@@ -30,7 +30,7 @@ const ProductGrid = (props) => {
 
         context.getCartContent();
 
-        let productSubTotal = price * itemCount;
+        const productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);
     };
 
@@ -154,7 +154,7 @@ const ProductGrid = (props) => {
                                                                     <Button
                                                                         variant="primary"
                                                                         id="main-add-btn"
-                                                                        data-testid={product.id}
+                                                                        data-testid={`main-add-btn-${product.id}`}
                                                                         onClick={(
                                                                             e
                                                                         ) =>
