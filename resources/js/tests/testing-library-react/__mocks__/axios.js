@@ -10,5 +10,6 @@
 export default {
     post: jest.fn().mockResolvedValue({ data: {} }),
     get: jest.fn().mockResolvedValue({ data: {} }),
+    create: jest.fn().mockResolvedValue({ data: {} }),
     // getAgain: jest.fn().mockResolvedValue({ data: {} }),
 };

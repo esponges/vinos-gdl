@@ -56,7 +56,13 @@ const setUp = async () => {
     const utils = await act(async () => {
         render(
             <HashRouter>
-                <Cart />
+                <Context.Provider
+                    value={{
+                        setLoader: jest.fn(),
+                    }}
+                >
+                    <Cart />
+                </Context.Provider>
             </HashRouter>
         );
     });
@@ -100,11 +106,9 @@ describe("Cart Component", () => {
 
         screen.getByText(/Te faltan MX\$200.00 para completar tu pedido/i);
     });
-
 });
 
-describe('add and remove items', () => {
-
+describe("add and remove items", () => {
     it("add one more on click", async () => {
         axiosMock.get
             .mockResolvedValueOnce({ data: data })
@@ -163,42 +167,40 @@ describe('add and remove items', () => {
     });
 });
 
+// it("test btn works", async () => {
+//     /* create a btn that onClick calls a 'testMethod'
+//     which increases count by every click, thus being able
+//     to test if userEvent.click is really triggering the
+//     method and asserting via toContainHTML assertion */
 
+//     /* in Cart.js */
+//     // const [testState, setTestState] = useState(1);
+//     // const testMethod = () => {
+//     //     setTestState(testState + 1);
+//     // };
+//     // <div>
+//     //     <button onClick={testMethod}>Test me!</button>
+//     //     <p data-testid="state-count">{testState}</p>
+//     // </div>;
 
-    // it("test btn works", async () => {
-    //     /* create a btn that onClick calls a 'testMethod'
-    //     which increases count by every click, thus being able
-    //     to test if userEvent.click is really triggering the
-    //     method and asserting via toContainHTML assertion */
+//     axiosMock.get.mockResolvedValueOnce({ data: data });
 
-    //     /* in Cart.js */
-    //     // const [testState, setTestState] = useState(1);
-    //     // const testMethod = () => {
-    //     //     setTestState(testState + 1);
-    //     // };
-    //     // <div>
-    //     //     <button onClick={testMethod}>Test me!</button>
-    //     //     <p data-testid="state-count">{testState}</p>
-    //     // </div>;
+//     // const mockedFn = jest.fn(() => Promise.resolve());
 
-    //     axiosMock.get.mockResolvedValueOnce({ data: data });
+//     await act(async () => {
+//         render(
+//             <HashRouter>
+//                 <Cart />
+//                 {/* <Cart testMethod={mockedFn}/> */}
+//             </HashRouter>
+//         );
+//     });
+//     // screen.debug(); // count 1
 
-    //     // const mockedFn = jest.fn(() => Promise.resolve());
-
-    //     await act(async () => {
-    //         render(
-    //             <HashRouter>
-    //                 <Cart />
-    //                 {/* <Cart testMethod={mockedFn}/> */}
-    //             </HashRouter>
-    //         );
-    //     });
-    //     // screen.debug(); // count 1
-
-    //     const testBtn = screen.getByRole("button", { name: /test me!/i });
-    //     userEvent.click(testBtn);
-    //     // expect(mockedFn).toHaveBeenCalled();
-    //     const stateCount = screen.getByTestId('state-count');
-    //     // screen.debug(); // count 2
-    //     expect(stateCount).toContainHTML('2');
-    // });
+//     const testBtn = screen.getByRole("button", { name: /test me!/i });
+//     userEvent.click(testBtn);
+//     // expect(mockedFn).toHaveBeenCalled();
+//     const stateCount = screen.getByTestId('state-count');
+//     // screen.debug(); // count 2
+//     expect(stateCount).toContainHTML('2');
+// });
