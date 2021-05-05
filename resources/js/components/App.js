@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
 import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
@@ -44,6 +44,8 @@ const App = (props) => {
     const [userInfo, setUserInfo] = useState("");
 
     const [loader, setLoader] = useState(false);
+
+    // const Context = createContext();
 
     const addToCart = (id, itemCount) => {
         setLoader(true);
@@ -221,7 +223,6 @@ const App = (props) => {
                         <Route path="/categories/:name">
                             <Category />
                         </Route>
-
 
                         <Route path="/checkout">
                             <Route path="/checkout/cancel">
