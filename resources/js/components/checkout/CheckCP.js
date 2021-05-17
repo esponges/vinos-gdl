@@ -3,12 +3,12 @@ import Downshift from "downshift";
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 
-const CheckCP = (props) => {
+const CheckCP = React.memo(({getCpInfo}) => {
     const [CP, setCP] = useState("");
 
     const onChange = (selectedCP) => { // will be passed by selectedItem - no need to pass as param in onChange method
-        console.log('get your cp!!! ', selectedCP);
-        props.getCpInfo(selectedCP); // pass cp to parent Checkout.js
+        // console.log('get your cp!!! ', selectedCP);
+        getCpInfo(selectedCP); // pass cp to parent Checkout.js
     };
 
     useEffect(() => {
@@ -43,6 +43,7 @@ const CheckCP = (props) => {
                 getRootProps,
             }) => (
                 <div>
+                    {/* {console.log('render checkCP')} */}
                     <div {...getRootProps({}, { suppressRefError: true })}>
                         <input {...getInputProps()} id="get-cp-input" />
                     </div>
@@ -89,6 +90,6 @@ const CheckCP = (props) => {
             )}
         </Downshift>
     );
-};
+});
 
 export default withRouter(CheckCP);

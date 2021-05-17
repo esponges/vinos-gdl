@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, {
+    useEffect,
+    useState,
+    useRef,
+    useContext,
+    useCallback,
+} from "react";
 import { Context } from "../Context";
 import { Link, withRouter } from "react-router-dom";
 
@@ -15,23 +21,6 @@ import DeliverySchedule from "./DeliverySchedule";
 import CustomLoader from "../CustomLoader";
 
 const Checkout = (props) => {
-    // const [phone, setPhone] = useState(props.userInfo?.userPhone ?? "");
-    // const [orderName, setOrderName] = useState(props.userInfo?.userName ?? "");
-    // const [CP, setCP] = useState(props?.userInfo?.CP ?? "");
-    // const [neighborhood, setNeighborhood] = useState(
-    //     props?.userInfo?.neighborhood ?? ""
-    // );
-    // const [addressNumber, setAddressNumber] = useState("");
-    // const [streetName, setStreetName] = useState("");
-    // const [paymentMode, setPaymentMode] = useState("transfer"); // while fixing paypal
-    // const [addressDetails, setAddressDetails] = useState("");
-
-    // const [deliveryDay, setDeliveryDay] = useState(
-    //     props?.userInfo?.deliveryDay ?? ""
-    // ); // testing prop
-    // const [deliverySchedule, setDeliverySchedule] = useState(
-    //     props?.userInfo?.deliverySchedule ?? ""
-    // ); // testing prop
 
     const [order, setOrder] = useState({
         phone: props.userInfo?.userPhone ?? "",
@@ -67,10 +56,6 @@ const Checkout = (props) => {
     const [phoneAlertMessage, setPhoneAlertMessage] = useState(null);
     const [addressAlertMessage, setAddressAlertMessage] = useState(null);
     const [paymentModeReminder, setPaymentModeReminder] = useState("transfer"); // while fixing paypal
-
-    // const [cartTotal, setCartTotal] = useState("");
-    // const [totalToPay, setTotalToPay] = useState(false);
-    // const [upfrontPayPalPayment, setUpfrontPayPalPayment] = useState("");
 
     const [show, setShow] = useState(false); // for Overlay Bootstrap element
     const target = useRef(null); // for Overlay Bootstrap element
@@ -127,9 +112,12 @@ const Checkout = (props) => {
     };
 
     // validate CP
-    const getCpInfo = (cpData) => {
-        setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name });
-    };
+    const getCpInfo = React.useCallback((cpData) =>
+    {
+        console.log(order, cpData);
+        setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name })
+    }
+    , [CP]);
 
     const getDeliveryInfo = (day, schedule) => {
         setOrder({ ...order, deliveryDay: day, deliverySchedule: schedule });
