@@ -90,40 +90,44 @@ const SingleProduct = (props) => {
                         )}
                     </ListGroup>
                     <Card.Body>
-                        <div className="row">
-                            <div className="col-6">
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    min="1"
-                                    value={itemCount}
-                                    className="form-control input-number"
-                                    onChange={async (e) =>
-                                        await setItemCount(
-                                            parseInt(e.target.value)
-                                        )
-                                    }
-                                    style={{ minWidth: "60px" }}
-                                />
+                        {product.is_available ? (
+                            <div className="row">
+                                <div className="col-6">
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        min="1"
+                                        value={itemCount}
+                                        className="form-control input-number"
+                                        onChange={async (e) =>
+                                            await setItemCount(
+                                                parseInt(e.target.value)
+                                            )
+                                        }
+                                        style={{ minWidth: "60px" }}
+                                    />
+                                </div>
+                                <div className="col-6">
+                                    <Button
+                                        variant="primary"
+                                        onClick={(e) =>
+                                            handleItemAddClick(
+                                                e,
+                                                product.id,
+                                                product.price
+                                            )
+                                        }
+                                    >
+                                        +
+                                    </Button>
+                                    <p>
+                                        <i>Añadir al carrito</i>
+                                    </p>
+                                </div>
                             </div>
-                            <div className="col-6">
-                                <Button
-                                    variant="primary"
-                                    onClick={(e) =>
-                                        handleItemAddClick(
-                                            e,
-                                            product.id,
-                                            product.price
-                                        )
-                                    }
-                                >
-                                    +
-                                </Button>
-                                <p>
-                                    <i>Añadir al carrito</i>
-                                </p>
-                            </div>
-                        </div>
+                        ) : (
+                            <div>Producto por el momento agotado</div>
+                        )}
                     </Card.Body>
                 </Card>
             ) : (
@@ -140,4 +144,4 @@ const SingleProduct = (props) => {
     );
 };
 
-export default withRouter(SingleProduct); // HOC to access match, location and history
+export default withRouter(SingleProduct);

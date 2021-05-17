@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
 import CustomLoader from '../CustomLoader';
+import ProductCard from './ProductCard';
 
 const Category = (props) => {
     const [products, setProducts] = useState({});
@@ -63,120 +64,21 @@ const Category = (props) => {
             {products != {} && !context.loader ? (
                 <div className="row mt-3">
                     {Object.values(products).map((product) => {
-                        return (
-                            <div
-                                key={product.id}
-                                className="col-lg-3 col-md-4 mt-3"
-                                id="product-card-mobile"
-                            >
-                                <Card>
-                                    <Link
-                                        to={{
-                                            pathname: `/products/${product.id}`,
-                                        }}
-                                    >
-                                        <Card.Img
-                                            variant="top"
-                                            src={`/img/products/${product.id}.jpg`}
-                                        />
-                                    </Link>
-                                    <Card.Body>
-                                        <Card.Title>
-                                            <b>{product.name}</b>
-                                        </Card.Title>
-                                    </Card.Body>
-                                    <ListGroup className="list-group-flush">
-                                        <ListGroupItem>
-                                            <b>
-                                                Precio
-                                                {new Intl.NumberFormat(
-                                                    "en-US",
-                                                    {
-                                                        style: "currency",
-                                                        currency: "MXN",
-                                                    }
-                                                ).format(product.price)}
-                                            </b>
-                                        </ListGroupItem>
-                                        {product.comp_price && (
-                                            <Card.Text id="grid-competitor-price">
-                                                Prom. competencia: $
-                                                {product.comp_price}*
-                                            </Card.Text>
-                                        )}
-                                    </ListGroup>
-                                    <Card.Body>
-                                        <div className="row">
-                                            <div className="col-3 d-none d-sm-block">
-                                                <input
-                                                    type="number"
-                                                    name="quantity"
-                                                    value={itemCount}
-                                                    min="1"
-                                                    className="form-control input-number"
-                                                    onChange={async (e) =>
-                                                        await setItemCount(
-                                                            parseInt(
-                                                                e.target.value
-                                                            )
-                                                        )
-                                                    }
-                                                    style={{
-                                                        minWidth: "60px",
-                                                    }}
-                                                />
-                                            </div>
-                                            <div className="col-3">
-                                                <Button
-                                                    variant="primary"
-                                                    onClick={(e) =>
-                                                        handleItemAddClick(
-                                                            e,
-                                                            product.id,
-                                                            product.price
-                                                        )
-                                                    }
-                                                >
-                                                    +
-                                                </Button>
-                                            </div>
-                                            <div className="col-6">
-                                                <Link
-                                                    to={{
-                                                        pathname: `/products/${product.id}`,
-                                                        state: {
-                                                            name: product.name,
-                                                            description:
-                                                                product.description,
-                                                            price:
-                                                                product.price,
-                                                        },
-                                                    }}
-                                                >
-                                                    <Button variant="secondary">
-                                                        Detalles
-                                                    </Button>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                        {productAddMsg &&
-                                            product.id == productAddId && (
-                                                <div>
-                                                    <Card.Text
-                                                        style={{
-                                                            color: "red",
-                                                            marginTop: "10px",
-                                                        }}
-                                                    >
-                                                        {" "}
-                                                        {productAddMsg}
-                                                    </Card.Text>
-                                                </div>
-                                            )}
-                                    </Card.Body>
-                                </Card>
-                            </div>
-                        );
+                        if (product.is_available) {
+                            return (
+                                <ProductCard
+                                    key={product.id}
+                                    product={product}
+                                    itemCount={itemCount}
+                                    setItemCount={
+                                        setItemCount
+                                    }
+                                    handleItemAddClick={
+                                        handleItemAddClick
+                                    }
+                                />
+                            );
+                        }
                     })}
                 </div>
             ) : (
