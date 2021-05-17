@@ -140,4 +140,4 @@ const SingleProduct = (props) => {
     );
 };
 
-export default withRouter(SingleProduct); // HOC to access match, location and history
+export default withRouter(SingleProduct);
