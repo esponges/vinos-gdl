@@ -20,22 +20,26 @@ import PaymentMode from "./PaymentMode";
 import DeliverySchedule from "./DeliverySchedule";
 import CustomLoader from "../CustomLoader";
 
-const Checkout = (props) => {
+const Checkout = ({ userInfo, ...props }) => {
+
+    console.log('set order and user name is ', userInfo?.userName, 'props are' , props)
 
     const [order, setOrder] = useState({
-        phone: props.userInfo?.userPhone ?? "",
-        orderName: props.userInfo?.userName ?? null,
-        CP: props?.userInfo?.CP ?? "",
-        neighborhood: props?.userInfo?.neighborhood ?? "",
+        phone: userInfo?.userPhone ?? "",
+        orderName: userInfo?.userName,
+        CP: userInfo?.CP ?? "",
+        neighborhood: userInfo?.neighborhood ?? "",
         streetName: "",
         addressNumber: "",
         paymentMode: "transfer",
         addressDetails: "",
-        deliveryDay: props?.userInfo?.deliveryDay ?? "",
-        deliverySchedule: props?.userInfo?.deliverySchedule ?? "",
+        deliveryDay: userInfo?.deliveryDay ?? "",
+        deliverySchedule: userInfo?.deliverySchedule ?? "",
         cartTotal: "",
         upfrontPayPalPayment: "",
     });
+
+    console.log('order was set, await for render');
 
     const {
         phone,
@@ -75,7 +79,7 @@ const Checkout = (props) => {
 
         axios
             .post("/order/rest-api/create", {
-                order_name: orderName ?? props.userInfo?.userName,
+                order_name: orderName ?? userInfo?.userName,
                 payment_mode: paymentMode,
                 address: `${streetName} #${addressNumber}`,
                 address_details: addressDetails,
@@ -96,7 +100,6 @@ const Checkout = (props) => {
                 context.setCartCount(0);
 
                 setTimeout(() => {
-                    console.log("redirecting user");
                     // setLoader(false);
                     props.history.push(`/checkout/success/${vinoreoOrderID}`);
                 }, 4000);
@@ -112,12 +115,10 @@ const Checkout = (props) => {
     };
 
     // validate CP
-    const getCpInfo = React.useCallback((cpData) =>
-    {
+    const getCpInfo = (cpData) => {
         console.log(order, cpData);
-        setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name })
-    }
-    , [CP]);
+        setOrder({ ...order, orderName: userInfo.userName, CP: cpData.cp, neighborhood: cpData.name });
+    };
 
     const getDeliveryInfo = (day, schedule) => {
         setOrder({ ...order, deliveryDay: day, deliverySchedule: schedule });
@@ -238,7 +239,7 @@ const Checkout = (props) => {
                         {/* if user choses on_delivery */}
                         {paymentMode == "on_delivery" && (
                             <Alert variant={"warning"}>
-                                Si eliges liquidar el saldo restante al recibir
+                                Si eliges liquidar el saldo propsante al recibir
                                 recuerda que nuestro repartidor{" "}
                                 <u>sólo acepta efectivo</u>.
                             </Alert>
@@ -249,7 +250,7 @@ const Checkout = (props) => {
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    defaultValue={props.userInfo?.userName}
+                                    defaultValue={userInfo?.userName}
                                     onChange={(e) =>
                                         setOrder({
                                             ...order,
@@ -263,7 +264,7 @@ const Checkout = (props) => {
                                 <Form.Control
                                     type="text"
                                     disabled={true}
-                                    value={`${props.userInfo["userEmail"]}`}
+                                    value={`${userInfo?.userEmail}`}
                                 />
                                 <Form.Text className="text-muted success">
                                     A este correo te enviaremos la confirmación
@@ -298,7 +299,7 @@ const Checkout = (props) => {
 
                             <Form.Group>
                                 <Form.Label>Tu Código Postal</Form.Label>
-                                <CheckCP getCpInfo={getCpInfo} />
+                                <CheckCP getCpInfo={getCpInfo} order={order}/>
                                 {/* Pop Over */}
                                 <Button
                                     variant="link"
