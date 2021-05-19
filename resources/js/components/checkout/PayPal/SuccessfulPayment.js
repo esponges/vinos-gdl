@@ -198,23 +198,21 @@ const SuccessfulPayment = (props) => {
                                         <ul style={{ listStyle: "none" }}>
                                             <li>
                                                 CLABE interbancaria <br />
-                                                <b>0723 2000 3244 528134</b>
+                                                <b>0123 2001 5371 445882</b>
                                                 <br />
                                             </li>
                                             <li>
                                                 Nombre <br />
-                                                <b>
-                                                    Licoret Occidental SA de CV
-                                                </b>
+                                                <b>Tomas Sanchez Garcia</b>
                                             </li>
                                             <li>
                                                 N° de cuenta <br />
-                                                <b>032 445 2813</b>
+                                                <b>153 714 4588</b>
                                                 <br />
                                             </li>
                                             <li>
                                                 Banco <br />
-                                                <b>Banorte</b>
+                                                <b>BBVA BANCOMER</b>
                                                 <br />
                                                 <br />
                                             </li>
