@@ -14,5 +14,6 @@ const mix = require('laravel-mix');
 mix.setPublicPath('html/')
     .js("resources/js/app.js", "js")
     .sass("resources/sass/app.scss", "css")
-    .react();
+    .react()
+    .webpackConfig(require('./webpack.config'));
     // .sass('resources/sass/app.scss', 'public/css'); //avoid losing changes canceling css compiling
