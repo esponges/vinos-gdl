@@ -33,19 +33,25 @@ import Legal from "./elements/Legal";
 import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
+import { useEffectProducts } from "./controls/hooks";
+import { fetchXML } from "./controls/xmltest";
 
 const App = (props) => {
-    const [products, setProducts] = useState(null);
-    const [prods, setProds] = useState("");
-    const [cart, setCart] = useState(null);
     const [cartTotal, setCartTotal] = useState(0);
-    const [cartCount, setCartCount] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
 
     const [loader, setLoader] = useState(false);
 
-    // const Context = createContext();
+    const {
+        products,
+        prods,
+        error,
+        cartCount,
+        cart,
+        setCartCount,
+        getCartContent,
+    } = useEffectProducts();
 
     const addToCart = (id, itemCount) => {
         setLoader(true);
@@ -66,19 +72,6 @@ const App = (props) => {
         setLoader(false);
     };
 
-    /* Remove this from context after setting paypal in back end  */
-    const getCartContent = async () => {
-        const res = await axios
-            .get("cart")
-            .then((res) => {
-                setCart(Object.values(res.data));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        return res;
-    };
-
     const login = () => {
         setLoggedIn(true);
         console.log("props.login");
@@ -96,33 +89,6 @@ const App = (props) => {
         setLoggedIn(false);
         setCartCount(0);
     };
-
-    useEffect(() => {
-        axios
-            .get("/categories")
-            .then((res) => {
-                setProducts(res.data);
-            })
-            .catch((err) => {
-                setError(err.message);
-            });
-
-        axios
-            .get("/products")
-            .then((res) => {
-                // setProds(Object.values(allProducts));
-                setProds(res.data);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
-        getCartContent();
-
-        axios.get("/cart/count").then((res) => {
-            setCartCount(res.data[0]);
-        });
-    }, []);
 
     /* Start of Cart total and its toaster */
     const notifyMinAmountRemaining = (amount) => {
@@ -165,13 +131,13 @@ const App = (props) => {
     };
 
     useEffect(() => {
+        fetchXML();
         getCartTotal();
     }, [cartTotal]);
     /* End of Cart total and its toaster */
 
     //cleanup will cause reloading hook so will create one separated
     useEffect(() => {
-        console.log("useeffect from App.js - loggedIn state changed.");
         axios.get("api/is-auth").then((res) => {
             if (res.data) {
                 setLoggedIn(true);
@@ -210,10 +176,8 @@ const App = (props) => {
                     userInfo={userInfo}
                     logout={logout}
                 />
-                <ToastContainer position="top-center"/>
-                <div
-                    className="container mb-5 body-margin-top"
-                >
+                <ToastContainer position="top-center" />
+                <div className="container mb-5 body-margin-top">
                     <Switch>
                         <Route path="/products/:id">
                             <div className="container"></div>
