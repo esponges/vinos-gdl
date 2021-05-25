@@ -34,6 +34,7 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
+import { fetchXML } from "./controls/xmltest";
 
 const App = (props) => {
     const [cartTotal, setCartTotal] = useState(0);
@@ -130,13 +131,13 @@ const App = (props) => {
     };
 
     useEffect(() => {
+        fetchXML();
         getCartTotal();
     }, [cartTotal]);
     /* End of Cart total and its toaster */
 
     //cleanup will cause reloading hook so will create one separated
     useEffect(() => {
-        console.log("useeffect from App.js - loggedIn state changed.");
         axios.get("api/is-auth").then((res) => {
             if (res.data) {
                 setLoggedIn(true);

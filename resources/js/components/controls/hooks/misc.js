@@ -34,8 +34,6 @@ export const useEffectProducts = () => {
         axios
             .get("/products")
             .then((res) => {
-                // setProds(Object.values(allProducts));
-                console.log("fetch products", res);
                 setProds(res.data);
             })
             .catch((err) => {
