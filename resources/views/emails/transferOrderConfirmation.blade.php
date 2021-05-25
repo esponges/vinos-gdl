@@ -19,10 +19,10 @@ N° de orden: <b>{{$order->id}}</b>
 
 <b>Información de depósito/transferencia</b>
 
-CLABE interbancaria <b>0723 2000 3244 528134</b><br>
-Nombre <b>Licoret Occidental SA de CV</b>
-N° de cuenta <b>032 445 2813</b><br>
-Banco <b>Banorte</b><br><br>
+CLABE interbancaria <b>0123 2001 5371 445882</b><br>
+Nombre <b>Tomas Sanchez Garcia</b>
+N° de cuenta <b>153 714 4588</b><br>
+Banco <b>BBVA BANCOMER</b><br><br>
 Por favor envía tu comprobante de pago junto a tu n° de orden al Whatsapp <b>33 20 19 24 20</b> o al correo electrónico <b>hola@vinoreo.mx</b> para procesar tu envío
 <br>
 

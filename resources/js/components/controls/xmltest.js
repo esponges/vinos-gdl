@@ -1,10 +1,15 @@
-const xmlFileUrl = "http://127.0.0.1:8000/Arkansas-Traveller.musicxml";
+// const xmlFileUrl = "http://127.0.0.1:8000/Arkansas-Traveller.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Black-Mountain-Rag.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Billy-in-the-Lowground.musicxml";
-// const xmlFileUrl =
-//     "http://127.0.0.1:8000/Wayfaring_Stranger-upload-uncompressed-musicxml-1bar-count-in-120BPM.musicxml";
+// const xmlFileUrl = "http://127.0.0.1:8000/Wayfaring_Stranger-upload-uncompressed-musicxml-1bar-count-in-120BPM.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Blue-Moon-of-Kentucky.musicxml";
+const xmlFileUrl = "http://127.0.0.1:8000/Wildwood-Flower-Crosspicking-without-tab-stems.musicxml";
 import { parseString } from "xml2js";
+
+let song = [];
+let m = 0;
+let timeCounter = 0;
+const bpm = 120;
 
 // Dot value extends the note duration by half
 // e.g. if it's quarter is duration will be
@@ -20,14 +25,20 @@ const setDotValue = (note) => {
     }
 };
 
-let song = [];
-let m = 0;
-let timeCounter = 0;
-const bpm = 120;
+const setChordTime = (song) => {
+    for(let i = 0; i < song.length; i++) {
+        if (song[i].isChord && i > 0) {
+            if(song[i].defaultXPos === song[i-1].defaultXPos) {
+                song[i].time = song[i - 1].time;
+            }
+        }
+    }
+    return song;
+}
 
 const incrementTimer = (noteDuration, dot = false, bpm) => {
     const msPerBeat = 60 / bpm;
-    console.log("last note duration is", noteDuration, 'dot true?', dot);
+    // console.log("last note duration is", noteDuration, 'dot true?', dot);
 
     // for a 4/4 song
     const noteLength = {
@@ -203,13 +214,13 @@ export const fetchXML = async () => {
                 }
 
                 // ending measure line
-                song.push({
-                    isLine: true,
-                    location: "end",
-                    show: false,
-                    time: 0,
-                    duration: 0,
-                });
+                // song.push({
+                //     isLine: true,
+                //     location: "end",
+                //     show: false,
+                //     time: 0,
+                //     duration: 0,
+                // });
             });
             // getLastNoteLength();
             console.log(getOnlyNotesAndRests().length, getOnlyNotesAndRests());
@@ -236,8 +247,9 @@ export const fetchXML = async () => {
                     else console.log(cropSong[i].time, cropSong[i].pitch);
                 }
             };
+            // console.log("im a song ", song);
+            console.log(setChordTime(song));
             logNoteByNote(cropSong);
-            console.log("im a song ", song);
         });
     };
     parseXML();
