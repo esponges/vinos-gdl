@@ -1,13 +1,121 @@
 // const xmlFileUrl = "http://127.0.0.1:8000/Arkansas-Traveller.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Black-Mountain-Rag.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Billy-in-the-Lowground.musicxml";
-const xmlFileUrl = "http://127.0.0.1:8000/Wayfaring_Stranger-upload-uncompressed-musicxml-1bar-count-in-120BPM.musicxml";
+const xmlFileUrl =
+    "http://127.0.0.1:8000/Wayfaring_Stranger-upload-uncompressed-musicxml-1bar-count-in-120BPM.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Blue-Moon-of-Kentucky.musicxml";
 import { parseString } from "xml2js";
 
-export const fetchXML = async () => {
+// Dot value extends the note duration by half
+// e.g. if it's quarter is duration will be
+// quarter + eighth (5/16)
+const setDotValue = (note) => {
+    switch (note.type) {
+        case "half":
+            return "quarter";
+        case "quarter":
+            return "eighth";
+        case "eighth":
+            return "16th";
+    }
+};
 
-    const loadXML = async () => {
+// const getSongFirstNote = (song) => {
+//     const measures = song['score-partwise'].part[1].measure[1].note.map(nt => {
+//         if (nt?.notations?.technical?fret !== undefined) return
+//     });
+//     console.log(measures);
+// };
+let song = [];
+let m = 0;
+let timeCounter = 0;
+const bpm = 120;
+
+const incrementTimer = (noteDuration, dot = false, bpm) => {
+    const msPerBeat = 60 / bpm;
+    console.log("last note duration is", noteDuration, 'dot true?', dot);
+
+    // for a 4/4 song
+    const noteLength = {
+        complete: msPerBeat * 4,
+        whole: msPerBeat * 4,
+        half: msPerBeat * 2,
+        quarter: msPerBeat * 1,
+        eighth: msPerBeat * 0.5,
+        "16th": msPerBeat * 0.25,
+        "32th": msPerBeat * 0.125,
+    };
+
+    switch (noteDuration) {
+        case "complete":
+            return (timeCounter += !dot
+                ? noteLength.complete
+                : noteLength.complete * 1.5);
+        case "whole":
+            return (timeCounter += !dot
+                ? noteLength.whole
+                : noteLength.whole * 1.5);
+        case "half":
+            console.log(
+                "half and we are adding",
+                !dot ? noteLength.half : noteLength.half * 1.5
+            );
+            return (timeCounter += !dot
+                ? noteLength.half
+                : noteLength.half * 1.5);
+        case "quarter":
+            return (timeCounter += !dot
+                ? noteLength.quarter
+                : noteLength.quarter * 1.5);
+        case "eighth":
+            return (timeCounter += !dot
+                ? noteLength.eighth
+                : noteLength.eighth * 1.5);
+        case "16th":
+            return (timeCounter += !dot
+                ? noteLength["16th"]
+                : noteLength["16th"] * 1.5);
+        case "32th":
+            return (timeCounter += !dot
+                ? noteLength["32th"]
+                : noteLength.complete * 1.5);
+        default:
+            break;
+    }
+};
+
+const getLastNoteLength = () => {
+    const onlyNotesAndRests = getOnlyNotesAndRests();
+    // console.log(onlyNotesAndRests);
+    const lastNoteLength =
+        onlyNotesAndRests[onlyNotesAndRests.length - 1].duration;
+    // console.log(lastNoteLength);
+    return lastNoteLength;
+};
+
+const getOnlyNotesAndRests = () => song.filter((el) => el.isRest || el.fret);
+
+const timerAction = (m, hasDot, bpm) => {
+    // console.log('first check if has dot!', hasDot);
+
+    if (m === 1) return 0;
+
+    const partialSong = getOnlyNotesAndRests();
+    if (
+        m > 1 &&
+        partialSong[partialSong.length - 2]?.addToTimer !== undefined
+    ) {
+        // console.log('we\'ve got a chord!!', partialSong, timeCounter);
+        return timeCounter;
+    }
+    // console.log(partialSong);
+
+    const incrementNormally = incrementTimer(getLastNoteLength(), hasDot, bpm);
+    return incrementNormally;
+};
+
+export const fetchXML = async () => {
+    const parseXML = async () => {
         const result = await fetch(xmlFileUrl);
         if (!result.ok) {
             console.error("Error fetching file");
@@ -19,10 +127,10 @@ export const fetchXML = async () => {
             console.dir(result);
 
             const parsedSong = result;
-            let song = [];
+
+            // getSongFirstNote(parsedSong);
 
             parsedSong["score-partwise"]?.part[1]?.measure.map((ms, idx) => {
-
                 // starting measure line
                 song.push({
                     isLine: true,
@@ -41,26 +149,51 @@ export const fetchXML = async () => {
                     });
                 }
                 // loop through notes from the measure
-                ms.note.map((nt) => {
-                    let lastNote = song[song.length - 1];
+                ms.note.map(async(nt) => {
+
+                    const songWithOnlyNotes = getOnlyNotesAndRests();
+                    let lastNote = songWithOnlyNotes[songWithOnlyNotes.length - 1];
+                    console.log('the last note is', lastNote);
+                    const lastNoteHasDot = lastNote?.dot ? true : false;
+                    if (lastNoteHasDot)
+                        console.log("has a dot!!", lastNoteHasDot, lastNote);
+                    const actualNoteHasDot =
+                        nt?.dot === "" ? setDotValue(nt) : false;
+
+                    // if (
+                    //     nt?.notations?.technical?.fret !== undefined ||
+                    //     nt?.rest === "" ||
+                    //     nt?.rest
+                    // )
+                    //     console.log(
+                    //         "before pushing the note ",
+                    //         getOnlyNotesAndRests()
+                    //     );
 
                     // check if note is rest -silence- note
                     if (nt?.rest === "" || nt?.rest) {
                         // only if rest is staff == 1 add
                         // otherwise there's repetition of the note
                         if (nt.staff == 1) {
+                            console.log('add rest')
+                            m += 1;
+                            const restLength = nt?.type ?? "complete";
                             song.push({
                                 isRest: true,
-                                dot: nt?.dot === "" ? setDotValue(nt) : false,
-                                duration: nt?.type ?? 'complete',
+                                dot: actualNoteHasDot,
+                                duration: restLength,
                                 measure: idx + 1,
                                 staff: nt?.staff ?? false,
+                                time: timerAction(m, lastNoteHasDot, bpm),
                             });
                         }
                     }
 
                     // check if it's tab note
                     if (nt?.notations?.technical?.fret !== undefined) {
+                        console.log('add note');
+                        m += 1;
+                        const noteLength = nt?.type;
                         song.push({
                             defaultXPos: nt?.$["default-x"],
                             isChord:
@@ -69,14 +202,34 @@ export const fetchXML = async () => {
                                     : false,
                             tie: nt?.tie ?? false,
                             pitch: `${nt?.pitch?.step}${nt?.pitch?.octave}`,
-                            dot: nt?.dot === "" ? setDotValue(nt) : false,
+                            dot: actualNoteHasDot,
                             fret: nt?.notations?.technical?.fret,
                             string: nt?.notations?.technical?.string,
-                            duration: nt?.type,
+                            duration: noteLength,
                             measure: idx + 1,
+                            time: timerAction(m, lastNoteHasDot, bpm),
                         });
-                        if (nt?.$["default-x"] === lastNote.defaultXPos)
+                        if (nt?.$["default-x"] === lastNote.defaultXPos) {
                             lastNote.isChord = true;
+                            lastNote.addToTimer = false;
+                        }
+                        console.log('last note has changed?', lastNote);
+                        if (lastNoteHasDot)
+                            console.log(
+                                "after pushing the note!!",
+                                lastNoteHasDot,
+                                song
+                            );
+                        // if (
+                        //     nt?.notations?.technical?.fret !== undefined ||
+                        //     nt?.rest === "" ||
+                        //     nt?.rest
+                        // )
+                        //     console.log(
+                        //         "after pushing the note ",
+                        //         getOnlyNotesAndRests()
+                        //     );
+                        // give a value to tell that they are the same note /* addToTimer */
                     }
                 });
 
@@ -101,36 +254,35 @@ export const fetchXML = async () => {
                     time: 0,
                     duration: 0,
                 });
-
-                // // search for back rest components (avoid double rest)
-                // if (ms?.backup) {
-                //     const restEls = song.filter(el => el?.isRest)
-                //     console.log(restEls);
-                // }
             });
+            // getLastNoteLength();
+            console.log(getOnlyNotesAndRests().length, getOnlyNotesAndRests());
+            const cropSong = getOnlyNotesAndRests();
+            const logTime = (cropSong) => {
+                for (let i = 0; i < cropSong.length; i++) {
+                    if (cropSong[i]?.isRest)
+                        console.log(
+                            cropSong[i].time,
+                            "im a rest dont count me"
+                        );
+                    else if (cropSong[i]?.isChord)
+                        console.log(
+                            cropSong[i].time,
+                            "im a chord!!!",
+                            cropSong[i].pitch
+                        );
+                    else if (cropSong[i]?.tie?.$?.type === "start")
+                        console.log(
+                            cropSong[i].time,
+                            "im the tie!!!",
+                            cropSong[i].pitch
+                        );
+                    else console.log(cropSong[i].time, cropSong[i].pitch);
+                }
+            };
+            logTime(cropSong);
             console.log("im a song ", song);
-
         });
     };
-    loadXML();
-
-    // Dot value extends the note duration by half
-    // e.g. if it's quarter is duration will be
-    // quarter + eighth (5/16)
-    const setDotValue = (note) => {
-        // console.log('note duration is', note.type);
-        switch (note.type) {
-            case "half":
-                return "quarter";
-            case "quarter":
-                return "eighth";
-            case "eighth":
-                return "16th";
-        }
-    };
-    // const parsedXmlSong = await loadXML();
-
-    // const filterXml = parsedXmlSong;
-
-    // console.log('parsed song', filterXml);
+    parseXML();
 };
