@@ -4,7 +4,6 @@ import React, {
     useState,
     useRef,
     useContext,
-    useCallback,
 } from "react";
 import { Context } from "../Context";
 import { Link, withRouter } from "react-router-dom";
@@ -22,8 +21,6 @@ import CustomLoader from "../CustomLoader";
 
 const Checkout = ({ userInfo, ...props }) => {
 
-    console.log('set order and user name is ', userInfo?.userName, 'props are' , props)
-
     const [order, setOrder] = useState({
         phone: userInfo?.userPhone ?? "",
         orderName: userInfo?.userName,
@@ -38,8 +35,6 @@ const Checkout = ({ userInfo, ...props }) => {
         cartTotal: "",
         upfrontPayPalPayment: "",
     });
-
-    console.log('order was set, await for render');
 
     const {
         phone,
@@ -75,6 +70,8 @@ const Checkout = ({ userInfo, ...props }) => {
 
     const handleTransferSubmit = () => {
         context.notifyToaster("info", "Generando orden");
+
+        console.log('order info ', order);
         setLoader(true);
 
         axios
@@ -250,7 +247,7 @@ const Checkout = ({ userInfo, ...props }) => {
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    defaultValue={userInfo?.userName}
+                                    value={order.orderName ? order.orderName : userInfo?.userName}
                                     onChange={(e) =>
                                         setOrder({
                                             ...order,

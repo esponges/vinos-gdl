@@ -131,7 +131,7 @@ const App = (props) => {
     };
 
     useEffect(() => {
-        fetchXML();
+        // fetchXML();
         getCartTotal();
     }, [cartTotal]);
     /* End of Cart total and its toaster */
