@@ -1,12 +1,14 @@
-const xmlFileUrl = "http://127.0.0.1:8000/Arkansas-Traveller.musicxml";
+// const xmlFileUrl = "http://127.0.0.1:8000/Arkansas-Traveller.musicxml";
+const xmlFileUrl = "http://127.0.0.1:8000/Angeline-the-Baker.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Black-Mountain-Rag.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Billy-in-the-Lowground.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Wayfaring_Stranger-upload-uncompressed-musicxml-1bar-count-in-120BPM.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Blue-Moon-of-Kentucky.musicxml";
 // const xmlFileUrl = "http://127.0.0.1:8000/Wildwood-Flower-Crosspicking-without-tab-stems.musicxml";
+
 import { parseString } from "xml2js";
 
-let song = [];
+const song = [];
 let m = 0;
 let timeCounter = 0;
 const bpm = 120;
@@ -22,44 +24,49 @@ const setDotValue = (note) => {
             return "eighth";
         case "eighth":
             return "16th";
+        default:
     }
 };
 
-const setChordTime = (song) => {
-    for(let i = 0; i < song.length; i++) {
-        if (song[i].isChord && i > 0) {
-            if(song[i].defaultXPos === song[i-1].defaultXPos) {
-                song[i].time = song[i - 1].time;
+const setChordTime = (sng) => {
+    for (let i = 0; i < sng.length; i++) {
+        if (sng[i].isChord && i > 0) {
+            if (sng[i].defaultXPos === sng[i - 1].defaultXPos) {
+                sng[i].time = sng[i - 1].time;
             }
         }
     }
-    return song;
-}
+    return sng;
+};
 
 const mutateSongForPlayer = (finalSong) => {
     let mutatedSong = [];
     for (let i = 0; i < finalSong.length; i++) {
+        finalSong[i].id = i;
         if (finalSong[i]?.chordIdx === "last") {
-            // console.log('a chord!!!')
             mutatedSong[i] = [finalSong[i]];
-            for(let j = 1; j < 4; j++) { // Check last 3 notes in case they are same chord
-                // console.log(`im finalSong i = ${i} and j = ${j}`);
-                if (finalSong[i-j]?.chordIdx === "not-last" && (finalSong[i-j]?.defaultXPos === finalSong[i].defaultXPos)) {
-                    // console.log("push chord!!");
+            for (let j = 1; j < 4; j++) {
+                // Check last 3 notes in case they are same chord
+                if (
+                    finalSong[i - j]?.isChord &&
+                    finalSong[i - j]?.defaultXPos === finalSong[i].defaultXPos
+                ) {
                     mutatedSong[i].unshift(finalSong[i - j]);
-                    // console.log('add this chord', finalSong[i - j], 'i is', i, 'j is', j);
                 }
             }
-        } else {
+        }
+        if (!finalSong[i]?.chordIdx) {
             mutatedSong[i] = [finalSong[i]];
         }
     }
-    return mutatedSong;
-}
+    // remove empty indexes
+    mutatedSong = mutatedSong.filter((note) => note);
 
-const incrementTimer = (noteDuration, dot = false, bpm) => {
-    const msPerBeat = 60 / bpm;
-    // console.log("last note duration is", noteDuration, 'dot true?', dot);
+    return mutatedSong;
+};
+
+export const incrementTimer = (noteDuration, dot = false, btpm = 120) => {
+    const msPerBeat = 60 / btpm;
 
     // for a 4/4 song
     const noteLength = {
@@ -115,23 +122,23 @@ const getLastNoteLength = () => {
 
 const getOnlyNotesAndRests = () => song.filter((el) => el.isRest || el.name);
 
-const timerAction = (m, hasDot, bpm) => {
-    if (m === 1) return 0;
+const timerAction = (counter, hasDot, btpm) => {
+    if (counter === 1) return 0;
 
     const partialSong = getOnlyNotesAndRests();
     if (
-        m > 1 &&
+        counter > 1 &&
         partialSong[partialSong.length - 2]?.addToTimer !== undefined
     ) {
         return timeCounter;
     }
 
-    const incrementNormally = incrementTimer(getLastNoteLength(), hasDot, bpm);
+    const incrementNormally = incrementTimer(getLastNoteLength(), hasDot, btpm);
     return incrementNormally;
 };
 
 const pushSymbol = (count) => {
-    for(let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
         song.push({
             isLine: false,
             color: "white",
@@ -142,174 +149,245 @@ const pushSymbol = (count) => {
             isSymbol: true,
         });
     }
-}
-
-export const fetchXML = async () => {
-    const parseXML = async () => {
-        const result = await fetch(xmlFileUrl);
-        if (!result.ok) {
-            console.error("Error fetching file");
-            return;
-        }
-
-        const xml = await result.text();
-        parseString(xml, { explicitArray: false }, (error, result) => {
-            console.dir(result);
-
-            const parsedSong = result;
-
-            pushSymbol(2);
-
-            parsedSong["score-partwise"]?.part[1]?.measure.map((ms, idx) => {
-                // starting measure line
-                song.push({
-                    isLine: true,
-                    location: "start",
-                    show: false,
-                    time: 0,
-                    duration: 0,
-                    measure: idx + 1,
-                });
-
-                // set repeater if any
-                if (ms?.barline?.repeat !== undefined) {
-                    song.push({
-                        repeater: true,
-                        direction: ms.barline.repeat.$.direction,
-                        color: 'white',
-                        show: false,
-                        measure: idx + 1,
-                        color: 'white',
-                        show: false,
-                    });
-                }
-                // loop through notes from the measure
-                ms.note.map(async(nt) => {
-
-                    const songWithOnlyNotes = getOnlyNotesAndRests();
-                    let lastNote = songWithOnlyNotes[songWithOnlyNotes.length - 1];
-                    const lastNoteHasDot = lastNote?.dot ? true : false;
-                    const actualNoteHasDot =
-                        nt?.dot === "" ? setDotValue(nt) : false;
-
-                    // check if note is rest -silence- note
-                    if (nt?.rest === "" || nt?.rest) {
-                        // only if rest is staff == 1 add
-                        // otherwise there's repetition of the note
-                        if (nt.staff == 1) {
-                            m += 1;
-                            const restLength = nt?.type ?? "complete";
-                            song.push({
-                                color: 'white',
-                                show: false,
-                                isRest: true,
-                                dot: actualNoteHasDot,
-                                duration: restLength,
-                                measure: idx + 1,
-                                staff: nt?.staff ?? false,
-                                time: timerAction(m, lastNoteHasDot, bpm),
-                            });
-                        }
-                    }
-
-                    // check if it's tab note
-                    if (nt?.notations?.technical?.fret !== undefined) {
-                        m += 1;
-                        const noteLength = nt?.type;
-                        let isChord = false
-                        if (m > 1) { // avoid breaking if it's first note
-                            isChord = nt?.$["default-x"] === lastNote.defaultXPos
-                                        ? true
-                                        : false;
-                        }
-                        song.push({
-                            defaultXPos: nt?.$["default-x"],
-                            isChord: isChord,
-                            chordIdx: isChord ? 'last' : false,
-                            tie: nt?.tie ?? false,
-                            pitch: `${nt?.pitch?.step}${nt?.pitch?.octave}`,
-                            dot: actualNoteHasDot,
-                            name: {
-                                position: parseInt(nt?.notations?.technical?.fret),
-                                string: parseInt(nt?.notations?.technical?.string),
-                            },
-                            color: 'white',
-                            show: false,
-                            duration: noteLength,
-                            measure: idx + 1,
-                            time: timerAction(m, lastNoteHasDot, bpm),
-                        });
-                        if (nt?.$["default-x"] === lastNote?.defaultXPos && m > 1) {
-                            lastNote.isChord = true;
-                            lastNote.addToTimer = false;
-                            lastNote.chordIdx = 'not-last';
-                        }
-                    }
-                });
-
-                // set the end of the repeater, if any
-                if (
-                    ms?.barline !== undefined &&
-                    ms?.barline.length > 1 &&
-                    ms?.barline[1].repeat !== undefined
-                ) {
-                    song.push({
-                        repeater: true,
-                        direction: ms.barline[1].repeat.$.direction,
-                        measure: idx + 1,
-                        color: 'white',
-                        show: false,
-                    });
-                }
-
-                // ending measure line
-                // song.push({
-                //     isLine: true,
-                //     location: "end",
-                //     show: false,
-                //     time: 0,
-                //     duration: 0,
-                // });
-            });
-            const logNoteByNote = (cropSong) => {
-                for (let i = 0; i < cropSong.length; i++) {
-                    if (cropSong[i]?.isRest)
-                        console.log(
-                            cropSong[i].time,
-                            "im a rest dont count me"
-                        );
-                    else if (cropSong[i]?.isChord)
-                        console.log(
-                            cropSong[i].time,
-                            "im a chord!!!",
-                            cropSong[i].pitch,
-                            cropSong[i].name,
-                        );
-                    else if (cropSong[i]?.tie?.$?.type === "start")
-                        console.log(
-                            cropSong[i].time,
-                            "im the tie!!!",
-                            cropSong[i].pitch
-                        );
-                    else if (cropSong[i]?.isLine) console.log ('start measure', cropSong[i].measure);
-                    else if (cropSong[i]?.repeater) console.log ('im a repeater');
-                    else console.log(
-                        cropSong[i].time,
-                        cropSong[i].pitch,
-                        cropSong[i].name
-                    );
-                }
-            };
-            const finalSong = setChordTime(song);
-            const mutatedSong = mutateSongForPlayer(finalSong);
-
-            console.log('only notes', getOnlyNotesAndRests().length, getOnlyNotesAndRests());
-            console.log('final song', finalSong);
-            console.log(mutatedSong);
-            logNoteByNote(song);
-
-            // console.log("im a song ", song);
-        });
-    };
-    parseXML();
 };
+
+const pushLine = (count, idx) => {
+    // starting measure line
+    for (let i = 0; i < count; i++) {
+        song.push({
+            isLine: true,
+            color: "white",
+            duration: 0,
+            time: 0,
+            offset: 0,
+            show: false,
+            measure: idx + 1,
+        });
+    }
+};
+
+let repeaterCounter = 0;
+
+const pushRepeater = (measure, idx, backward = false) => {
+    repeaterCounter += 1;
+    song.push({
+        repeater: true,
+        repeaterCount: repeaterCounter,
+        direction: !backward
+            ? measure.barline.repeat.$.direction
+            : measure.barline[1].repeat.$.direction,
+        color: "white",
+        duration: 0,
+        time: 0,
+        offset: 0,
+        show: false,
+        measure: idx + 1,
+    });
+};
+
+// pushRest(actualNoteHasDot, restLength, m, bpm, nt, idx);
+const pushRest = (hasDot, restLn, count, btpm, nt, idx) => {
+    song.push({
+        color: "white",
+        show: false,
+        isRest: true,
+        dot: hasDot,
+        duration: restLn,
+        measure: idx + 1,
+        staff: nt?.staff ?? false,
+        time: timerAction(count, hasDot, btpm),
+    });
+};
+
+export const fetchXML = (xmlFileUrl) =>
+    new Promise((resolve, reject) => {
+        const fetchUrlAsync = async () => {
+            const result = await fetch(xmlFileUrl);
+            if (!result.ok) {
+                console.error("Error fetching file");
+                return;
+            }
+
+            const xml = await result.text();
+            return xml;
+        };
+
+        fetchUrlAsync().then((xmlRes) => {
+            parseString(xmlRes, { explicitArray: false }, (error, res) => {
+                // console.dir(res);
+                const parsedSong = res;
+                pushSymbol(2); // add symbols (clef and 4/4)
+
+                parsedSong["score-partwise"]?.part[1]?.measure.map(
+                    (ms, idx) => {
+                        pushLine(1, idx);
+
+                        // set repeater if any
+                        if (ms?.barline?.repeat) {
+                            pushRepeater(ms, idx);
+                        }
+
+                        // loop through notes from the measure
+                        ms.note.map(async (nt) => {
+                            const songWithOnlyNotes = getOnlyNotesAndRests();
+                            const lastNote =
+                                songWithOnlyNotes[songWithOnlyNotes.length - 1];
+                            const lastNoteHasDot = !!lastNote?.dot;
+                            const actualNoteHasDot =
+                                nt?.dot === "" ? setDotValue(nt) : false;
+
+                            // check if note is rest -silence- note
+                            if (nt?.rest === "" || nt?.rest) {
+                                // only if rest is staff == 1 add
+                                // otherwise there's repetition of the note
+                                if (nt.staff === "1") {
+                                    m += 1;
+                                    const restLength = nt?.type ?? "complete";
+                                    pushRest(
+                                        actualNoteHasDot,
+                                        restLength,
+                                        m,
+                                        bpm,
+                                        nt,
+                                        idx
+                                    );
+                                }
+                            }
+
+                            // check if it's tab note
+                            if (nt?.notations?.technical?.fret !== undefined) {
+                                m += 1;
+                                const noteLength = nt?.type;
+                                let isChord = false;
+                                if (m > 1) {
+                                    // avoid breaking if it's first note
+                                    isChord =
+                                        nt?.$["default-x"] ===
+                                        lastNote.defaultXPos;
+                                }
+                                song.push({
+                                    defaultXPos: nt?.$["default-x"],
+                                    isChord,
+                                    chordIdx: isChord ? "last" : false,
+                                    tie: nt?.tie ?? false,
+                                    pitch: `${nt?.pitch?.step}${nt?.pitch?.octave}`,
+                                    dot: actualNoteHasDot,
+                                    measure: idx + 1,
+                                    color: "white",
+                                    show: false,
+                                    name: {
+                                        position: parseInt(
+                                            nt?.notations?.technical?.fret
+                                        ),
+                                        string: parseInt(
+                                            nt?.notations?.technical?.string
+                                        ),
+                                    },
+                                    offset: 0,
+                                    time: timerAction(m, lastNoteHasDot, bpm),
+                                    duration: noteLength,
+                                });
+                                if (
+                                    nt?.$["default-x"] ===
+                                        lastNote?.defaultXPos &&
+                                    m > 1
+                                ) {
+                                    lastNote.isChord = true;
+                                    lastNote.addToTimer = false;
+                                    lastNote.chordIdx = "not-last";
+                                }
+                            }
+                        });
+
+                        // set the end of the repeater, if any
+                        if (
+                            ms?.barline &&
+                            ms?.barline.length > 1 &&
+                            ms?.barline[1].repeat
+                        ) {
+                            pushRepeater(ms, idx, true);
+                        }
+                    }
+                );
+
+                const finalSong = setChordTime(song);
+                const mutatedSong = mutateSongForPlayer(finalSong);
+                console.log('mutatedSong!!', mutatedSong);
+
+                resolve(mutatedSong);
+                reject();
+            });
+        });
+    });
+
+const mandolin = {
+    G4: { position: 0, string: 4 },
+    "G#4": { position: 1, string: 4 },
+    A4: { position: 2, string: 4 },
+    "A#4": { position: 3, string: 4 },
+    B4: { position: 4, string: 4 },
+    C5: { position: 5, string: 4 },
+    "C#5": { position: 6, string: 4 },
+
+    D5: { position: 0, string: 3 },
+    "D#5": { position: 1, string: 3 },
+    E5: { position: 2, string: 3 },
+    F5: { position: 3, string: 3 },
+    "F#5": { position: 4, string: 3 },
+    G5: { position: 5, string: 3 },
+    "G#5": { position: 6, string: 3 },
+
+    A5: { position: 0, string: 2 },
+    "A#5": { position: 1, string: 2 },
+    B5: { position: 2, string: 2 },
+    C6: { position: 3, string: 2 },
+    "C#6": { position: 4, string: 2 },
+    D6: { position: 5, string: 2 },
+    "D#6": { position: 6, string: 2 },
+
+    E6: { position: 0, string: 1 },
+    F6: { position: 1, string: 1 },
+    "F#6": { position: 2, string: 1 },
+    G6: { position: 3, string: 1 },
+    "G#6": { position: 4, string: 1 },
+    A6: { position: 5, string: 1 },
+    "A#6": { position: 6, string: 1 },
+
+    notFound: { position: "?", string: 1 },
+};
+
+// const mandolin = { // for sally goodin, and soldiers joy slow version, wayfaring stranger
+//   'G3': { position: 0, string: 4 },
+//   'G#3': { position: 1, string: 4 },
+//   'A3': { position: 2, string: 4 },
+//   'A#3': { position: 3, string: 4 },
+//   'B3': { position: 4, string: 4 },
+//   'C4': { position: 5, string: 4 },
+//   'C#4': { position: 6, string: 4 },
+
+//   'D4': { position: 0, string: 3 },
+//   'D#4': { position: 1, string: 3 },
+//   'E4': { position: 2, string: 3 },
+//   'F4': { position: 3, string: 3 },
+//   'F#4': { position: 4, string: 3 },
+//   'G4': { position: 5, string: 3 },
+//   'G#4': { position: 6, string: 3 },
+
+//   'A4': { position: 0, string: 2 },
+//   'A#4': { position: 1, string: 2 },
+//   'B4': { position: 2, string: 2 },
+//   'C5': { position: 3, string: 2 },
+//   'C#5': { position: 4, string: 2 },
+//   'D5': { position: 5, string: 2 },
+//   'D#5': { position: 6, string: 2 },
+
+//   'E5': { position: 0, string: 1 },
+//   'F5': { position: 1, string: 1 },
+//   'F#5': { position: 2, string: 1 },
+//   'G5': { position: 3, string: 1 },
+//   'G#5': { position: 4, string: 1 },
+//   'A5': { position: 5, string: 1 },
+//   'A#5': { position: 6, string: 1 },
+
+//   'notFound': { position: '?', string: 1 },
+// };
