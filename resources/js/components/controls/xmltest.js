@@ -228,7 +228,7 @@ export const fetchXML = (xmlFileUrl) =>
                         }
 
                         // loop through notes from the measure
-                        ms.note.map(async (nt) => {
+                        ms.note.map(async (nt, i) => {
                             const songWithOnlyNotes = getOnlyNotesAndRests();
                             const lastNote =
                                 songWithOnlyNotes[songWithOnlyNotes.length - 1];
@@ -300,6 +300,8 @@ export const fetchXML = (xmlFileUrl) =>
                         });
 
                         // set the end of the repeater, if any
+                        let backwardRepeaterIdx = [];
+
                         if (
                             ms?.barline &&
                             ms?.barline.length > 1 &&
