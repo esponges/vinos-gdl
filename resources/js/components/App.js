@@ -35,6 +35,7 @@ import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
 import { fetchXML } from "./controls/xmltest";
+import { setRepeater, setAllRepeaters } from './controls/setRepeater';
 
 const App = (props) => {
     const [cartTotal, setCartTotal] = useState(0);
@@ -131,7 +132,13 @@ const App = (props) => {
     };
 
     useEffect(() => {
-        // fetchXML();
+        // const fetchData = async() => {
+        //     const song = await fetchXML("http://127.0.0.1:8000/Angeline-the-Baker.musicxml");
+        //     setAllRepeaters(song);
+        //     setRepeater(song, song[46][0], 46);
+        // }
+        // fetchData();
+
         getCartTotal();
     }, [cartTotal]);
     /* End of Cart total and its toaster */

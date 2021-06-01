@@ -114,7 +114,7 @@ const Checkout = ({ userInfo, ...props }) => {
     // validate CP
     const getCpInfo = (cpData) => {
         console.log(order, cpData);
-        setOrder({ ...order, orderName: userInfo.userName, CP: cpData.cp, neighborhood: cpData.name });
+        setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name });
     };
 
     const getDeliveryInfo = (day, schedule) => {
