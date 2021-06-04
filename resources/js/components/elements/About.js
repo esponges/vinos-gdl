@@ -32,7 +32,7 @@ const About = () => {
                 <h3 className="mt-4">¿Qué buscamos?</h3>
                 <li>
                     Que no pagues sobreprecio en el super, tienda de
-                    conveniencia, vianata o app. Prepara con un día de
+                    conveniencia, vinata o app. Prepara con un día de
                     anticipación tu consumo y te podemos ayudar a ahorrar desde
                     la comodidad de tu casa.
                     <em>Olvídate de estar cazando ofertas</em>. <br />
