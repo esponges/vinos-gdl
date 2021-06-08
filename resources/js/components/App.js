@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+    import React, { useState, useEffect, createContext } from "react";
 
 import ReactDOM from "react-dom";
 import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
@@ -33,7 +33,11 @@ import Legal from "./elements/Legal";
 import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
+import { AppModal } from './common/AppModal';
+
 import { useEffectProducts } from "./controls/hooks";
+import { useModal } from "./controls/hooks/modal";
+
 import { fetchXML } from "./controls/xmltest";
 import { setRepeater, setAllRepeaters } from './controls/setRepeater';
 
@@ -53,6 +57,8 @@ const App = (props) => {
         setCartCount,
         getCartContent,
     } = useEffectProducts();
+
+    const modalProps = useModal();
 
     const addToCart = (id, itemCount) => {
         setLoader(true);
@@ -175,8 +181,11 @@ const App = (props) => {
                     notifyToaster: notifyToaster,
                     loader: loader,
                     setLoader: setLoader,
+                    openModal: modalProps.openModal,
+                    closeModal: modalProps.closeModal,
                 }}
             >
+                <AppModal {...modalProps}/>
                 <IndexNavbar
                     cartCount={cartCount}
                     userLogged={loggedIn}

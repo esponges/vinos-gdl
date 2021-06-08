@@ -247,7 +247,7 @@ const Checkout = ({ userInfo, ...props }) => {
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    value={order.orderName ? order.orderName : userInfo?.userName}
+                                    defaultValue={orderName || userInfo.userName}
                                     onChange={(e) =>
                                         setOrder({
                                             ...order,
@@ -402,6 +402,7 @@ const Checkout = ({ userInfo, ...props }) => {
                             >
                                 Generar orden
                             </Button>
+                            <Button onClick={(e) => context.openModal(order)}> Open Modal </Button>
                         </Form>
                         {/* <PaypalPayment /> */}
                     </div>
