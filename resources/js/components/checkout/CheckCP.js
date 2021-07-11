@@ -42,7 +42,6 @@ const CheckCP = ({getCpInfo, order}) => {
                 getRootProps,
             }) => (
                 <div>
-                    {/* {console.log('render checkCP')} */}
                     <div {...getRootProps({}, { suppressRefError: true })}>
                         <input {...getInputProps()} id="get-cp-input" />
                     </div>
