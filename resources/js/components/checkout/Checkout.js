@@ -113,7 +113,6 @@ const Checkout = ({ userInfo, ...props }) => {
 
     // validate CP
     const getCpInfo = (cpData) => {
-        console.log(order, cpData);
         setOrder({ ...order, CP: cpData.cp, neighborhood: cpData.name });
     };
 
@@ -194,11 +193,11 @@ const Checkout = ({ userInfo, ...props }) => {
                 addressNumber.length > 0 &&
                 phonePattern.test(phone) &&
                 phone.length === 10 &&
+                order.orderName &&
                 CP &&
                 deliveryDay &&
                 deliverySchedule
             ) {
-                // console.log("button is active");
                 setButtonIsActive(true);
             } else setButtonIsActive(false);
             // remind user payment method
@@ -247,7 +246,7 @@ const Checkout = ({ userInfo, ...props }) => {
                                 <Form.Label>Tu nombre</Form.Label>
                                 <Form.Control
                                     type="text"
-                                    value={order.orderName ? order.orderName : userInfo?.userName}
+                                    defaultValue={userInfo?.userName}
                                     onChange={(e) =>
                                         setOrder({
                                             ...order,
@@ -256,6 +255,11 @@ const Checkout = ({ userInfo, ...props }) => {
                                     }
                                     name="order_name"
                                 />
+                                {!order.orderName &&
+                                    <Alert variant={"warning"} className="m-1 mt-2">
+                                        Por favor ingresa tu nombre
+                                    </Alert>
+                                }
 
                                 <Form.Label className="mt-2">Email</Form.Label>
                                 <Form.Control
