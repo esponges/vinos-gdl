@@ -29,18 +29,13 @@ const ForgotPassword = (props) => {
                     },
                 })
                 .then((res) => {
-                    // console.log('successfully sent link', res.data);
                     setEmailSuccess({'msg': 'Hemos enviado un correo electrónico de recuperación'});
                 })
                 .catch(() => {
-                    // console.error('problem sending link', err);
-                    // setEmailSuccess(false);
                     setError({'msg': 'No existe ningún usuario con ese correo'});
                 })
             })
             .catch(err => {
-                // console.error('problem in sanctum cookie', err);
-                // setEmailSuccess(false);
                 setError({'msg': 'Tenemos problemas con el servidor.'});
             })
     }

@@ -8,10 +8,6 @@ const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
     const context = useContext(Context);
     const bestSellers = context.allProducts;
 
-    // console.log('best sellers ', context.allProducts);
-    // if(context.allProducts?.length > 0) console.log('> 0 context.AllProducts' , context.allProducts);
-    // if(bestSellers.length > 0) console.log('> 0 bestSellers', bestSellers);
-
     return (
         <div>
             {!context.loader && bestSellers.length > 0 ? (

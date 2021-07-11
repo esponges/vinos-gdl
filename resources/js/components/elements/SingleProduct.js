@@ -31,7 +31,7 @@ const SingleProduct = (props) => {
         let isMounted = true; // avoid unmounted item warning
 
         // get product info
-        console.log("useEffect from SingleProduct.js");
+        ("useEffect from SingleProduct.js");
         axios
             .get(`/products/${props.match.params.id}`)
             .then((res) => {

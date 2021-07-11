@@ -17,7 +17,6 @@
 const accessToken = document.head
     .querySelector('meta[name="paypaltoken"]')
     .getAttribute("content");
-console.log(orderID, accessToken);
 
 /* Using front in Payment.js */
 /* SUCCESS */

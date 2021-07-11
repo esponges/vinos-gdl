@@ -32,14 +32,7 @@ const ProductGrid = (props) => {
 
     return (
         <>
-            {/* categories prop =
-                {
-                    0: allProducts - within its categories,
-                    best_sellers: onlyBestSellers
-                }
-            */}
             <div>
-                {/* {categories && console.log(categories[0], productCount)} */}
                 <BestSellers
                     itemCount={itemCount}
                     setItemCount={setItemCount}
@@ -54,7 +47,6 @@ const ProductGrid = (props) => {
                             id={category.category_name}
                             key={category.id}
                         >
-                            {/* {console.log("render category")} */}
                             {!context.loader ? (
                                 <section
                                     className="container mb-2"

@@ -36,15 +36,12 @@ const Login = (props) => {
                             props.login();
                             if (props.cartCount > 0) {
                                 props.history.push("/cart/checkout");
-                                console.log("redirecting to checkout");
                             }
                             props.history.push("/cart");
                         } else {
-                            console.log("not 200 or 204, delete cookies");
                         }
                     })
                     .catch((err) => {
-                        // console.error(err.response.status, "error de inicio de sesión");
                         if (err.response.status === 401) {
                             return setSessionError({'msg': 'Credenciales incorrectas'});
                         };

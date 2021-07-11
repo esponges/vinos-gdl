@@ -17,14 +17,11 @@ const DownShiftSearch = (props) => {
 
 
     const onChange = (selectedProduct) => {
-        console.log("redirecting to ", selectedProduct.id);
         props.history.push(`/products/${selectedProduct.id}`);
     };
 
     return (
         <div>
-            {/* {products.allProducts && console.log(products.allProducts)}
-            {console.log('is array? ', Array.isArray(products.allProducts)), console.log('length is ', products.allProducts?.length)} */}
             {products.allProducts?.length > 0 ? (
                 <Downshift
                     onChange={onChange}
@@ -42,7 +39,6 @@ const DownShiftSearch = (props) => {
                         getRootProps,
                     }) => (
                         <div>
-                            {/* {console.log('im rendering allProducts ', products.allProducts)} */}
                             <div
                                 style={{ display: "inline-block" }}
                                 {...getRootProps(
@@ -54,8 +50,6 @@ const DownShiftSearch = (props) => {
                                     {...getInputProps()}
                                     placeholder={`Busca tu  vino`}
                                     id="product-search-input"
-                                    // value={inputProduct}
-                                    // onSubmit={e => console.log('submit query')}
                                 />
                                 &nbsp;{" "}
                                 <FontAwesomeIcon
