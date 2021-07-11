@@ -50,7 +50,6 @@ const Checkout = (props) => {
 
     // from payment type radio input
     const handlePaymentChange = (e) => {
-        console.log("payment_mode is", e.target.value);
         setPaymentMode(e.target.value);
         if (e.target.value === "paypal") setTotalToPay(`Total MX$${cartTotal}`);
         else if (e.target.value === "transfer")
@@ -75,7 +74,6 @@ const Checkout = (props) => {
                 balance: orderInfo.balance,
             })
             .then((res) => {
-                console.log(res.data);
                 const vinoreoOrderID = res.data.orderID;
 
                 axios.get(`/order/success/admin-email/${vinoreoOrderID}`);
@@ -85,7 +83,6 @@ const Checkout = (props) => {
                 props.history.push(`/checkout/success/${vinoreoOrderID}`);
             })
             .catch((err) => {
-                console.error(err);
                 context.notifyToaster(
                     "warn",
                     "Tuvimos problemas creando tu orden :("
@@ -100,7 +97,6 @@ const Checkout = (props) => {
     };
 
     const getDeliveryInfo = (day, schedule) => {
-        console.log(day, schedule);
         setDeliveryDay(day);
         setDeliverySchedule(schedule);
     };
@@ -399,11 +395,6 @@ const Checkout = (props) => {
                             </Form.Group>
 
                             {/* let user pay if all information is set */}
-                            {console.log(
-                                buttonIsActive,
-                                addressAlertMessage,
-                                phone.length
-                            )}
                             {!buttonIsActive &&
                                 (addressAlertMessage || phone.length != 10) && (
                                     <Alert variant={"warning"} className="m-1">

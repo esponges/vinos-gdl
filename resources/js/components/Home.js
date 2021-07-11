@@ -22,7 +22,6 @@ const Home = () => {
     useEffect(() => {
         axios.get("/categories")
             .then((res) => {
-                // console.log(res.data[0].id)
                 setData( res.data );
             })
             .catch( err => {

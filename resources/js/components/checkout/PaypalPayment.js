@@ -12,7 +12,6 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
 
     const createOrder = (data, actions) => {
         // create order at server side
-        console.log("create order!!!", 'actions ', actions);
         context.notifyToaster(
             "info",
             "Iniciando proceso de pago"
@@ -45,7 +44,6 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                             }
                         )
                         .then((res) => {
-                            console.log('success', res.data);
                             if (res.data?.error) {
                                 context.notifyToaster(
                                     "warn",
@@ -81,7 +79,6 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
     };
 
     const onApprove = (data, actions) => {
-        console.log("payment approved by user", data, actions);
 
         context.notifyToaster("success", 'Procesando aprobación');
         props.setShowPayPalBtn(true);
@@ -98,7 +95,6 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                 //send admin email async
                 axios.get(`/order/success/admin-email/${vinoreoOrderID}`);
 
-                console.log("success capturing order", res.data);
                 context.notifyToaster(
                     'success',
                     'Pago y orden procesados correctamente'
@@ -120,14 +116,12 @@ const PaypalPayment = ({ orderInfo, ...props }) => {
                     );
                     // propmt the user to use a different payment method
                     const restartPayment = () => {
-                        console.log('restart timeouttt');
                         props.setLoader(false);
                         actions.restart();
                     }
                     return setTimeout(() => restartPayment(), 3000);
                 }
                 // tell user about the error
-                console.log("oh nooooo, a differente error: ", err);
                 props.setLoader(false);
                 context.notifyToaster(
                     "error",

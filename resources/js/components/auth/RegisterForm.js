@@ -36,8 +36,6 @@ const RegisterForm = (props) => {
         e.preventDefault();
         setLoader(true);
 
-        console.log("submitting form");
-        console.log('mkt emails is ', mktEmails);
         const fullName = name + " " + familyName;
         // check if user is already registered
         axios({
@@ -46,7 +44,6 @@ const RegisterForm = (props) => {
             url: `/api/is-registered/${email}`
         })
             .then((res) => {
-                console.log(res.data);
                 // alert user already registered
                 if (res.data.isRegistered) setIsRegistered(true);
                 else {
@@ -82,7 +79,6 @@ const RegisterForm = (props) => {
                                                 },
                                             })
                                                 .then((res) => {
-                                                    console.log(res.data);
                                                     props.login();
                                                     context.notifyToaster('success', 'Usuario registrado exitosamente');
                                                     setTimeout(props.history.push("/cart"), 3000);
@@ -328,7 +324,6 @@ const RegisterForm = (props) => {
                         onClick={handleSubmit}
                         disabled={userDataIsValid ? false : true}
                     >
-                        {/* {console.log(userDataIsValid)} */}
                         Regístrate
                     </Button>
                     <Link to="/cart" className="btn btn-secondary ml-3">

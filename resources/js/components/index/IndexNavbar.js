@@ -52,7 +52,6 @@ const IndexNavbar = (props) => {
                 axios
                     .post("/logout")
                     .then(() => {
-                        console.log("logging out!!!");
                         props.logout();
                         props.history.push("/login");
                     })

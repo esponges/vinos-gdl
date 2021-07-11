@@ -24,15 +24,12 @@ const DeliverySchedule = (props) => {
     const handleDayChange = (day) => {
         setSelectedDay(day);
         setSelectedHours(null);
-        console.log("setting hours to null!!");
-        console.log("setting day to ", day.value);
         if (depDropIsSelected) {
             // avoid submit btn = active
             props.getDeliveryInfo(false, false);
         }
 
         if (day.value === 6) {
-            console.log('set to saturday!');
             setSchedule(saturdayHourSchedule);
         } else {
             setSchedule(weekdayHourSchedule);

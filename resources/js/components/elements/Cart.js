@@ -20,7 +20,6 @@ const Cart = (props) => {
             const res = await axios.get(`cart/${id}/add/1`);
             // if res true
             if (res) {
-                // console.log(cart);
                 const updatedCart = [...cart];
                 updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
                 setCart(updatedCart);
@@ -51,7 +50,6 @@ const Cart = (props) => {
             const res = await axios.get(`/cart/${productId}/destroy`);
             // positive response
             if (res) {
-                console.log('added!');
                 const updatedCart = cart.filter(
                     (product) => product !== productToRemove
                 );
@@ -80,12 +78,10 @@ const Cart = (props) => {
     // set cart items and total
     useEffect(() => {
         let isMounted = true;
-        // console.log('useffect from cart');
 
         axios
             .get("cart")
             .then((res) => {
-                // console.log(res.data);
                 if (isMounted) {
                     // cart items
                     setCart(Object.values(res.data));
@@ -112,7 +108,6 @@ const Cart = (props) => {
 
     return (
         <div>
-            {/* {console.log('render from cart', 'cart is ', cart)} */}
             <h1>Tu vinos seleccionados</h1>
             {cart.length == 0 ? (
                 <Alert variant="info">

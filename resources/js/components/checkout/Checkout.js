@@ -71,7 +71,6 @@ const Checkout = ({ userInfo, ...props }) => {
     const handleTransferSubmit = () => {
         context.notifyToaster("info", "Generando orden");
 
-        console.log('order info ', order);
         setLoader(true);
 
         axios

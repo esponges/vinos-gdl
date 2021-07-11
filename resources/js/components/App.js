@@ -59,7 +59,6 @@ const App = (props) => {
         axios
             .get(`cart/${id}/add/${itemCount}`)
             .then(() => {
-                console.log("add to cart! ", id, "item count ", itemCount);
                 cartCountUpdate(itemCount);
                 getCartContent();
             })
@@ -75,7 +74,6 @@ const App = (props) => {
 
     const login = () => {
         setLoggedIn(true);
-        console.log("props.login");
         axios
             .get("api/user-info")
             .then((res) => {
