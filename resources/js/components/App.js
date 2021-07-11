@@ -34,8 +34,6 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
-import { fetchXML } from "./controls/xmltest";
-import { setRepeater, setAllRepeaters } from './controls/setRepeater';
 
 const App = (props) => {
     const [cartTotal, setCartTotal] = useState(0);
