@@ -60,7 +60,7 @@ class EmailController extends Controller
 
         // staff email
         $adminEmails = [
-            'blancacarretero@vinosdivisa.com',
+            'ventas2@vinosdivisa.com',
             'ventas@vinosdivisa.com',
             'jrodriguez@vinosdivisa.com',
             // 'spalafox@vinosdivisa.com',
