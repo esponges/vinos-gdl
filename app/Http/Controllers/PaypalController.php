@@ -56,8 +56,6 @@ class PaypalController extends Controller
         foreach ($cartItems as $item) {
             $cartTotal += $item['price'] * $item['qty'];
         }
-        // dd($cartTotal, \Cart::getTotal() * 0.07);
-        // dd($cartItems, $cartTotal);
 
         $checkoutData = [
             'items' => $cartItems,
@@ -128,7 +126,7 @@ class PaypalController extends Controller
         // staff email
         $adminEmails = [
             'vinoreomx@gmail.com',
-            'blancacarretero@vinosdivisa.com',
+            'ventas2@vinosdivisa.com',
             'ventas@vinosdivisa.com',
             'jrodriguez@vinosdivisa.com',
         ];
@@ -146,7 +144,6 @@ class PaypalController extends Controller
 
     public function paypalFail($orderId, $error, $errorHeader)
     {
-        // dd('Sorry we couln\'t verifiy your payment :', Order::find($orderId));
         $order = Order::find($orderId);
         $email = 'vinoreomx@gmail.com';
 
