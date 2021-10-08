@@ -150,97 +150,95 @@ const App = (props) => {
     }, [loggedIn]);
 
     return (
-        <HashRouter>
-            <Context.Provider
-                value={{
-                    addToCart: addToCart,
-                    allProducts: prods,
-                    cartContent: cart,
-                    cartTotal: cartTotal,
-                    cartCountUpdate: cartCountUpdate,
-                    getCartContent: getCartContent,
-                    setCartCount: setCartCount,
-                    notifyMinAmountRemaining: notifyMinAmountRemaining,
-                    notifyToaster: notifyToaster,
-                    loader: loader,
-                    setLoader: setLoader,
-                }}
-            >
-                <IndexNavbar
-                    cartCount={cartCount}
-                    userLogged={loggedIn}
-                    userInfo={userInfo}
-                    logout={logout}
-                />
-                <ToastContainer position="top-center" />
-                <div className="container mb-5 body-margin-top">
-                    <Switch>
-                        <Route path="/products/:id">
-                            <div className="container"></div>
-                            <SingleProduct />
-                        </Route>
+        <Context.Provider
+            value={{
+                addToCart: addToCart,
+                allProducts: prods,
+                cartContent: cart,
+                cartTotal: cartTotal,
+                cartCountUpdate: cartCountUpdate,
+                getCartContent: getCartContent,
+                setCartCount: setCartCount,
+                notifyMinAmountRemaining: notifyMinAmountRemaining,
+                notifyToaster: notifyToaster,
+                loader: loader,
+                setLoader: setLoader,
+            }}
+        >
+            <IndexNavbar
+                cartCount={cartCount}
+                userLogged={loggedIn}
+                userInfo={userInfo}
+                logout={logout}
+            />
+            <ToastContainer position="top-center" />
+            <div className="container mb-5 body-margin-top">
+                <Switch>
+                    <Route path="/products/:id">
+                        <div className="container"></div>
+                        <SingleProduct />
+                    </Route>
 
-                        <Route path="/categories/:name">
-                            <Category />
-                        </Route>
+                    <Route path="/categories/:name">
+                        <Category />
+                    </Route>
 
-                        <Route path="/checkout">
-                            <Route path="/checkout/cancel">
-                                <CancelPayment />
-                            </Route>
-                            <Route path="/checkout/success/:id">
-                                <SuccessfulPayment />
-                            </Route>
-                            <Route path="/checkout/fail">
-                                <UnsuccessfulPayment />
-                            </Route>
+                    <Route path="/checkout">
+                        <Route path="/checkout/cancel">
+                            <CancelPayment />
                         </Route>
+                        <Route path="/checkout/success/:id">
+                            <SuccessfulPayment />
+                        </Route>
+                        <Route path="/checkout/fail">
+                            <UnsuccessfulPayment />
+                        </Route>
+                    </Route>
 
-                        <Route path="/cart/checkout">
-                            <Checkout loggedIn={loggedIn} userInfo={userInfo} />
-                        </Route>
+                    <Route path="/cart/checkout">
+                        <Checkout loggedIn={loggedIn} userInfo={userInfo} />
+                    </Route>
 
-                        <Route path="/cart">
-                            <Cart cartCountUpdate={cartCountUpdate} />
-                        </Route>
+                    <Route path="/cart">
+                        <Cart cartCountUpdate={cartCountUpdate} />
+                    </Route>
 
-                        <Route path="/forgot-password">
-                            <ForgotPassword />
-                        </Route>
+                    <Route path="/forgot-password">
+                        <ForgotPassword />
+                    </Route>
 
-                        <Route path="/login">
-                            <Login
-                                loggedIn={loggedIn}
-                                login={login}
-                                cartCount={cartCount}
-                            />
-                        </Route>
+                    <Route path="/login">
+                        <Login
+                            loggedIn={loggedIn}
+                            login={login}
+                            cartCount={cartCount}
+                        />
+                    </Route>
 
-                        <Route path="/register">
-                            <RegisterForm login={login} />
-                        </Route>
+                    <Route path="/register">
+                        <RegisterForm login={login} />
+                    </Route>
 
-                        <Route path="/FAQ">
-                            <FAQ />
-                        </Route>
+                    <Route path="/FAQ">
+                        <FAQ />
+                    </Route>
 
-                        <Route path="/about">
-                            <About />
-                        </Route>
+                    <Route path="/about">
+                        <About />
+                    </Route>
 
-                        <Route path="/legal">
-                            <Legal />
-                        </Route>
+                    <Route path="/legal">
+                        <Legal />
+                    </Route>
 
-                        <Route path="/">
-                            <MastHead />
-                            <ProductGrid products={products} />
-                        </Route>
-                    </Switch>
-                </div>
-                <Footer />
-            </Context.Provider>
-        </HashRouter>
+                    <Route path="/">
+                        <MastHead />
+                        <ProductGrid products={products} />
+                    </Route>
+                </Switch>
+            </div>
+            <Footer />
+        </Context.Provider>
     );
 };
 

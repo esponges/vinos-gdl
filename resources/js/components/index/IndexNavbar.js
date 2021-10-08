@@ -97,7 +97,7 @@ const IndexNavbar = (props) => {
             </a>
             <div className="navbar-brand" id="product-search-form">
                 <Form inline>
-                    <DownShiftSearch />
+                    <DownShiftSearch history={props.history} />
                 </Form>
             </div>
             <button

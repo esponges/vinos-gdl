@@ -15,7 +15,6 @@ const DownShiftSearch = (props) => {
     const [inputProduct, setInputProduct] = useState("");
     const products = useContext(Context);
 
-
     const onChange = (selectedProduct) => {
         props.history.push(`/products/${selectedProduct.id}`);
     };
@@ -61,44 +60,55 @@ const DownShiftSearch = (props) => {
                                 <div className="downshift-dropdown">
                                     {isOpen && inputValue.length > 3
                                         ? products.allProducts
-                                            .filter(
-                                                (item) =>
-                                                    !inputValue ||
-                                                    item.name
-                                                        // remove uppercase and special characters then compare
-                                                        // search value
-                                                        .toLowerCase()
-                                                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                                                        .includes(
-                                                            // compare with input value
-                                                            inputValue.toLowerCase()
-                                                            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                                                        )
-                                            )
-                                            .map((item, index) => (
-                                                <li
-                                                    className="dropdown-item"
-                                                    {...getItemProps({
-                                                        key: item.id,
-                                                        index,
-                                                        item,
-                                                        style: {
-                                                            backgroundColor:
-                                                                highlightedIndex ===
-                                                                index
-                                                                    ? "lightgray"
-                                                                    : "white",
-                                                            fontWeight:
-                                                                selectedItem ===
-                                                                item
-                                                                    ? "bold"
-                                                                    : "normal",
-                                                        },
-                                                    })}
-                                                >
-                                                    {item.name} ${item.price}
-                                                </li>
-                                            ))
+                                              .filter(
+                                                  (item) =>
+                                                      !inputValue ||
+                                                      item.name
+                                                          // remove uppercase and special characters then compare
+                                                          // search value
+                                                          .toLowerCase()
+                                                          .normalize("NFD")
+                                                          .replace(
+                                                              /[\u0300-\u036f]/g,
+                                                              ""
+                                                          )
+                                                          .includes(
+                                                              // compare with input value
+                                                              inputValue
+                                                                  .toLowerCase()
+                                                                  .normalize(
+                                                                      "NFD"
+                                                                  )
+                                                                  .replace(
+                                                                      /[\u0300-\u036f]/g,
+                                                                      ""
+                                                                  )
+                                                          )
+                                              )
+                                              .map((item, index) => (
+                                                  <li
+                                                      className="dropdown-item"
+                                                      {...getItemProps({
+                                                          key: item.id,
+                                                          index,
+                                                          item,
+                                                          style: {
+                                                              backgroundColor:
+                                                                  highlightedIndex ===
+                                                                  index
+                                                                      ? "lightgray"
+                                                                      : "white",
+                                                              fontWeight:
+                                                                  selectedItem ===
+                                                                  item
+                                                                      ? "bold"
+                                                                      : "normal",
+                                                          },
+                                                      })}
+                                                  >
+                                                      {item.name} ${item.price}
+                                                  </li>
+                                              ))
                                         : null}
                                 </div>
                             </ul>
@@ -112,4 +122,4 @@ const DownShiftSearch = (props) => {
     );
 };
 
-export default withRouter(DownShiftSearch);
+export default DownShiftSearch;

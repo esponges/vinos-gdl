@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { HashRouter } from "react-router-dom";
 import App from "./App";
 
 const AppLoader = () => {
@@ -12,4 +13,9 @@ const AppLoader = () => {
 
 export default AppLoader;
 
-ReactDOM.render(<AppLoader />, document.getElementById("root"));
+ReactDOM.render(
+    <HashRouter>
+        <AppLoader />
+    </HashRouter>,
+    document.getElementById("root")
+);
