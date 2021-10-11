@@ -1,7 +1,6 @@
 import React, { useState, useEffect, createContext } from "react";
 
-import ReactDOM from "react-dom";
-import { Switch, HashRouter, Route, withRouter } from "react-router-dom";
+import { Switch, Route, withRouter } from "react-router-dom";
 
 import SingleProduct from "./elements/SingleProduct";
 import Cart from "./elements/Cart";
@@ -34,6 +33,10 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
+import { cartItemsAdded } from "../store/reducers/cartReducer";
+import { useDispatch } from "react-redux";
+import { increment } from '../store/reducers/counterReducer';
+// import { useGetCartItems } from "../store/reducers/cartReducer";
 
 const App = (props) => {
     const [cartTotal, setCartTotal] = useState(0);
@@ -70,6 +73,15 @@ const App = (props) => {
         setLoader(false);
     };
 
+    // const { data, isLoading } = useGetCartItems();
+    // useDispatch(cartItemsAdded([{ name: 'cool', price: 'expensive' }]))
+    const dispatch = useDispatch();
+    dispatch(cartItemsAdded('hello'));
+    dispatch(increment());
+    // dispatch();
+    // console.log(data, isLoading);
+    // useDispatch(fetchCartItems());
+
     const login = () => {
         setLoggedIn(true);
         axios
@@ -95,8 +107,7 @@ const App = (props) => {
 
         if (newCartTotal < 1500) {
             toast.info(
-                `Sólo agrega MX$${
-                    1500 - newCartTotal
+                `Sólo agrega MX$${1500 - newCartTotal
                 } más para proceder al checkout`
             );
         }
