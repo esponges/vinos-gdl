@@ -1,13 +1,13 @@
 import { configureStore/* , getDefaultMiddleware */ } from "@reduxjs/toolkit";
+import productsReducer from "./products/reducers";
 import cartReducer from './reducers/cartReducer';
-import counterReducer from "./reducers/counterReducer";
+import { categoriesReducer } from './categories/';
 
 export const store = configureStore({
     reducer: {
         cart: cartReducer,
-        counter: counterReducer,
-        // cartItems: cartReducer,
-        // [productsApi.reducerPath]: productsApi.reducer,
+        products: productsReducer,
+        categories: categoriesReducer,
     },
     devTools: true, // add logic to false when prod
     // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productsApi.middleware),

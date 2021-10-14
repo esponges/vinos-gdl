@@ -35,7 +35,6 @@ import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
 import { cartItemsAdded } from "../store/reducers/cartReducer";
 import { useDispatch } from "react-redux";
-import { increment } from '../store/reducers/counterReducer';
 import { fetchCartItems } from "../store/reducers/cartReducer";
 
 const App = (props) => {
@@ -72,15 +71,6 @@ const App = (props) => {
         setCartCount(cartCount + qty);
         setLoader(false);
     };
-
-    // const { data, isLoading } = useGetCartItems();
-    // useDispatch(cartItemsAdded([{ name: 'cool', price: 'expensive' }]))
-    const dispatch = useDispatch();
-    dispatch(cartItemsAdded('hello'));
-    dispatch(increment());
-    // dispatch();
-    // console.log(data, isLoading);
-    // useDispatch(fetchCartItems());
 
     const login = () => {
         setLoggedIn(true);
@@ -127,7 +117,6 @@ const App = (props) => {
     };
 
     const getCartTotal = async () => {
-        dispatch(fetchCartItems());
         const res = await axios
             .get("/cart/get-total")
             .then((res) => {
