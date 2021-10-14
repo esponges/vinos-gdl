@@ -36,7 +36,7 @@ import { useEffectProducts } from "./controls/hooks";
 import { cartItemsAdded } from "../store/reducers/cartReducer";
 import { useDispatch } from "react-redux";
 import { increment } from '../store/reducers/counterReducer';
-// import { useGetCartItems } from "../store/reducers/cartReducer";
+import { fetchCartItems } from "../store/reducers/cartReducer";
 
 const App = (props) => {
     const [cartTotal, setCartTotal] = useState(0);
@@ -127,6 +127,7 @@ const App = (props) => {
     };
 
     const getCartTotal = async () => {
+        dispatch(fetchCartItems());
         const res = await axios
             .get("/cart/get-total")
             .then((res) => {
