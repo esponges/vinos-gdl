@@ -10306,6 +10306,7 @@ h3 {
 #cart-qty-btn {
   background-color: #3490dc;
   border-color: #3490dc;
+  border-radius: 10px;
 }
 
 /* Loader */

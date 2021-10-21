@@ -11,6 +11,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import CustomLoader from "../CustomLoader";
 import BestSellers from "./BestSellers.js";
 import ProductCard from "../elements/ProductCard";
+import { useDispatch } from "react-redux";
+import { fetchCartItems } from "../../store/reducers/cartReducer";
 
 library.add(fas);
 
@@ -18,14 +20,14 @@ const ProductGrid = (props) => {
     const [itemCount, setItemCount] = useState(1);
     const categories = props.products;
     const context = useContext(Context);
+    const dispatch = useDispatch();
 
     const handleItemAddClick = (e, id, price) => {
         e.preventDefault();
 
         context.addToCart(id, itemCount);
-
         context.getCartContent();
-
+        dispatch(fetchCartItems());
         const productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);
     };

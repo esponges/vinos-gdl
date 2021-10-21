@@ -33,11 +33,8 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
-import { cartItemsAdded } from "../store/reducers/cartReducer";
-import { useDispatch } from "react-redux";
-import { fetchCartItems } from "../store/reducers/cartReducer";
 
-const App = (props) => {
+const App = () => {
     const [cartTotal, setCartTotal] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");

@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { categoriesAdded, categoriesLoading } from '../categories';
 import { productsAdded, productsLoading } from '../products/';
+import { fetchCartItems } from '../reducers/cartReducer';
 
 export const initialize = () => async (dispatch, getState) => {
     /* might want to do some special fetch depending if user is logged in */
-
+    dispatch(fetchCartItems());
     dispatch(getProducts());
     dispatch(getCategories());
 };

@@ -6,10 +6,13 @@ import { Button, Table, Alert } from "react-bootstrap";
 import CustomLoader from "../CustomLoader";
 
 import { Context } from "../Context";
+import { useDispatch } from "react-redux";
+import { fetchCartItems } from "../../store/reducers/cartReducer";
 
 const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState([]);
+    const dispatch = useDispatch();
 
     const context = useContext(Context);
 
@@ -32,6 +35,7 @@ const Cart = (props) => {
 
                 props.cartCountUpdate(1);
                 context.getCartContent();
+                dispatch(fetchCartItems());
                 context.notifyMinAmountRemaining(updatedCart[i].price);
             } else {
                 console.error("error fecthing add route");

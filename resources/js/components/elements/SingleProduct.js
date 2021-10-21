@@ -2,15 +2,18 @@ import React, { useContext, useEffect, useState } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { Context } from "../Context";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import CustomLoader from "../CustomLoader";
+import { fetchCartItems } from "../../store/reducers/cartReducer";
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
     // const product = props.location.state;
     const [product, setProduct] = useState({});
     const [competidorsInfo, setCompetidorsInfo] = useState([]);
+    const dispatch = useDispatch();
 
     const [productAddId, setProductAddId] = useState("");
 
@@ -21,6 +24,7 @@ const SingleProduct = (props) => {
         setProductAddId(id);
 
         context.addToCart(id, itemCount);
+        dispatch(fetchCartItems());
         context.getCartContent();
 
         let productSubTotal = price * itemCount;
