@@ -26,6 +26,7 @@ class CpFactory extends Factory
             'cp' => FakerFactory::create()->numberBetween(22, 25) . FakerFactory::create()->numberBetween(100, 999),
             'name' => FakerFactory::create()->city(),
             'state' => FakerFactory::create()->state(),
+            'town' => 'Pueblito',
         ];
     }
 }
