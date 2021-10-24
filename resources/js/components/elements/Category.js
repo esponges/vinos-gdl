@@ -59,7 +59,6 @@ const Category = (props) => {
 
     return (
         <section className="container mb-2">
-            {/* {console.log("rendering Category.js", products)} */}
             <h1 className="mt-5">{props.match.params.name}</h1>
             {products != {} && !context.loader ? (
                 <div className="row mt-3">
