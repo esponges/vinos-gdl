@@ -43,9 +43,9 @@ const Login = (props) => {
                     })
                     .catch((err) => {
                         if (err.response.status === 401) {
-                            return setSessionError({'msg': 'Credenciales incorrectas'});
+                            return setSessionError({ 'msg': 'Credenciales incorrectas' });
                         };
-                        setSessionError({'msg': 'Problemas con el servidor. Intenta más tarde.'});
+                        setSessionError({ 'msg': 'Hay problemas con el servidor. Intenta más tarde.' });
                     });
             })
             .catch((err) => {
