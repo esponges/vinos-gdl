@@ -61,7 +61,6 @@ const SuccessfulPayment = (props) => {
 
     return (
         <Card>
-            {/* {console.log(vinoreoOrderID)} */}
             {orderInfo && cartItems ? (
                 <div>
                     <div className="container mt-2">

@@ -231,8 +231,6 @@ const Checkout = ({ userInfo, ...props }) => {
                             upfrontPayPalPayment={upfrontPayPalPayment}
                         />
 
-                        {console.log(order.paymentMode)}
-
                         {/* if user choses on_delivery */}
                         {paymentMode == "on_delivery" && (
                             <Alert variant={"warning"}>
