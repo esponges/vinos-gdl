@@ -35,7 +35,7 @@ import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
 
-const App = (props) => {
+const App = () => {
     const [cartTotal, setCartTotal] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
