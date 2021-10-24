@@ -8,6 +8,7 @@ const SuccessfulPayment = (props) => {
     const [cartItems, setCartItems] = useState(null);
     const [cartTotal, setCartTotal] = useState(null);
     const [paidWithPayPal, setPaidWithPayPal] = useState(null);
+    const [payWithMercadoPago, setPayWithMercadoPago] = useState(null);
     const [toPayOnDelivery, setToPayOnDelivery] = useState(null);
     const [orderInfo, setOrderInfo] = useState({
         id: "",
@@ -43,25 +44,13 @@ const SuccessfulPayment = (props) => {
                 vinoreoOrderID: vinoreoOrderID,
             })
             .then((res) => {
-                setOrderInfo(res.data.order);
-                setCartItems(res.data.cartItems);
-                setCartTotal(res.data.order.total);
+                const { data: { order, cartItems, order: { total, payment_mode } } } = res;
 
-                res.data.order.payment_mode !== "transfer"
-                    ? setPaidWithPayPal(
-                        res.data.order.payment_mode === "on_delivery"
-                            ? res.data.order.balance
-                            : res.data.order.total
-                    )
-                    : setPaidWithPayPal(0);
+                setOrderInfo(order);
+                setCartItems(cartItems);
+                setCartTotal(total);
+                setPayWithMercadoPago(payment_mode === 'full_MP');
 
-                res.data.order.payment_mode !== "transfer"
-                    ? setToPayOnDelivery(
-                        res.data.order.payment_mode === "on_delivery"
-                            ? res.data.order.total - res.data.order.balance
-                            : 0
-                    )
-                    : setToPayOnDelivery(0);
             })
             .catch(() => {
                 setOrderInfo(null);
@@ -72,7 +61,6 @@ const SuccessfulPayment = (props) => {
 
     return (
         <Card>
-            {/* {console.log(vinoreoOrderID)} */}
             {orderInfo && cartItems ? (
                 <div>
                     <div className="container mt-2">
@@ -107,81 +95,66 @@ const SuccessfulPayment = (props) => {
                             </tbody>
                         </table>
                         <Card style={{ marginLeft: "3%" }}>
-                            <p className="mt-2">
-                                Orden N° <b>{id}</b>{" "}
-                            </p>
-                            <p data-testid="order-total">
-                                <b>Total de tu orden MX$ {cartTotal}</b>
-                            </p>
-                            <p>
-                                {payment_mode === "transfer" && (
-                                    <b>Anticipo Pagado MX$0</b>
-                                )}
-                            </p>
-                            <h3 className="mt-1">
-                                {
-                                    payment_mode !== "transfer" &&
-                                        "Pagado con PayPal "
-                                    // payment_mode === "paypal"
-                                    //     ? "Total"
-                                    //     : "Anticipo"}
-                                    // {payment_mode !== "transfer"
-                                    //     ? " pagado con PayPal"
-                                    //     : "Total a transferir"
-                                }
-                                {/* &nbsp;
-                                <u>MX$</u>
-                                &nbsp; */}
-                                <u>
-                                    <div data-testid="relevant-payment-info">
-                                        {payment_mode === "transfer" && (
-                                            <div>
-                                                Por transferir MX${cartTotal}
-                                                <p>
-                                                    Puedes transferir MX$
-                                                    {paidWithPayPal} y el resto
-                                                    pagar en efectivo al
-                                                    recibir.
-                                                </p>
-                                            </div>
-                                        )}
-                                        {payment_mode === "on_delivery" && (
-                                            <div data-testid="paid-with-paypal">
-                                                Anticipo pagado con PayPal MX$
-                                                {paidWithPayPal}
-                                            </div>
-                                        )}
-                                        {payment_mode === "paypal" && (
-                                            <div>
-                                                Total pagado con PayPal MX$
-                                                {cartTotal}
-                                            </div>
-                                        )}
-                                    </div>
-                                </u>
-                            </h3>
-                            {payment_mode === "on_delivery" ? (
-                                <div className="mt-4">
-                                    <h3>
-                                        <b>
-                                            Saldo a pagar contra entrega MX$
-                                            {toPayOnDelivery}
-                                        </b>
-                                    </h3>
+                            <div className="container">
+                                <p className="mt-2">
+                                    Orden N° <b>{id}</b>{" "}
+                                </p>
+                                <p data-testid="order-total">
+                                    <b>Total de tu orden MX$ {cartTotal}</b>
+                                </p>
+                                <h3 className="mt-1">
                                     <u>
-                                        Recuerda que el repartidor sólo recibe
-                                        efectivo
+                                        <div data-testid="relevant-payment-info">
+                                            {payment_mode === "transfer" && (
+                                                <div>
+                                                    <p>
+                                                        Total a transferir MX${cartTotal}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {payment_mode === "on_delivery" && (
+                                                <div data-testid="paid-with-paypal">
+                                                    Anticipo pagado con PayPal MX$
+                                                    {paidWithPayPal}
+                                                </div>
+                                            )}
+                                            {payment_mode === "full_MP" && (
+                                                <div>
+                                                    Total a pagar con MercadoPago MX$&nbsp;
+                                                    {cartTotal}
+                                                </div>
+                                            )}
+                                        </div>
                                     </u>
-                                </div>
-                            ) : (
-                                payment_mode === "paypal" && (
-                                    <u data-testid="order-paid">
-                                        Tu orden ya está pagada. Te llegará en
-                                        el día y horario que elegiste.
-                                    </u>
-                                )
-                            )}
-                            <br />
+                                </h3>
+                                {payment_mode === "full_MP" && (
+                                    <p>
+                                        Te contactaremos para enviarte tu link de pago con MercadoPago
+                                    </p>
+                                )}
+                                {payment_mode === "on_delivery" ? (
+                                    <div className="mt-4">
+                                        <h3>
+                                            <b>
+                                                Saldo a pagar contra entrega MX$
+                                                {toPayOnDelivery}
+                                            </b>
+                                        </h3>
+                                        <u>
+                                            Recuerda que el repartidor sólo recibe
+                                            efectivo
+                                        </u>
+                                    </div>
+                                ) : (
+                                    payment_mode === "paypal" && (
+                                        <u data-testid="order-paid">
+                                            Tu orden ya está pagada. Te llegará en
+                                            el día y horario que elegiste.
+                                        </u>
+                                    )
+                                )}
+
+                            </div>
                         </Card>
 
                         {payment_mode === "transfer" && (

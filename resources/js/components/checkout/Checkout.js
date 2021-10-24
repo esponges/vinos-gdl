@@ -87,17 +87,17 @@ const Checkout = ({ userInfo, ...props }) => {
                 balance: 0,
             })
             .then((res) => {
-                const vinoreoOrderID = res.data.orderID;
+                const { data: { orderID, paymentType } } = res;
 
                 axios.post(`/order/success/admin-email`, {
-                    orderID: vinoreoOrderID,
+                    orderID
                 });
                 context.notifyToaster("success", "Orden creada exitosamente");
                 context.setCartCount(0);
 
                 setTimeout(() => {
                     // setLoader(false);
-                    props.history.push(`/checkout/success/${vinoreoOrderID}`);
+                    props.history.push(`/checkout/success/${orderID}/${paymentType}`);
                 }, 4000);
             })
             .catch((err) => {
@@ -240,6 +240,12 @@ const Checkout = ({ userInfo, ...props }) => {
                             </Alert>
                         )}
 
+                        {paymentMode == "full_MP" && (
+                            <Alert variant="secondary">
+                                Nos pondremos en contacto contigo para enviarte un link seguro de pago a través de MercadoPago una vez confirmada tu orden.
+                            </Alert>
+                        )}
+
                         <Form>
                             <Form.Group>
                                 <Form.Label>Tu nombre</Form.Label>
@@ -299,7 +305,7 @@ const Checkout = ({ userInfo, ...props }) => {
 
                             <Form.Group>
                                 <Form.Label>Tu Código Postal</Form.Label>
-                                <CheckCP getCpInfo={getCpInfo} order={order}/>
+                                <CheckCP getCpInfo={getCpInfo} order={order} />
                                 {/* Pop Over */}
                                 <Button
                                     variant="link"

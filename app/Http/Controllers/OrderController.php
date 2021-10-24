@@ -45,7 +45,7 @@ class OrderController extends Controller
                 ]);
             }
 
-            if ($order->payment_mode === 'transfer') {
+            if ($order->payment_mode === 'transfer' || $order->payment_mode === 'full_MP') {
                 $products = \Cart::getContent();
                 $paidWithPayPal = $order->balance;
                 $grandTotal = \Cart::getTotal();
@@ -56,7 +56,7 @@ class OrderController extends Controller
                 $emailController = new EmailController();
                 $emailController->prepareConfirmationEmails($order, $products, $paidWithPayPal, $grandTotal, $balanceToPay, $user, $paymentType);
 
-                return response()->json(['status' => 'Transfer Order Created', 'orderID' => $order->id]);
+                return response()->json(['status' => 'Transfer Order Created', 'orderID' => $order->id, 'paymentType' => $paymentType]);
             }
 
             return response()->json(['status' => 'CREATED', 'orderID' => $order->id], 200);
