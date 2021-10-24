@@ -9,29 +9,10 @@ library.add(fab);
 const PaymentMode = (props) => {
     return (
         <div>
-            <Alert variant={"warning"}>
-                Estamos experimentando problemas con Paypal. Sólo pago con
-                transferencia disponible por el momento. Disculpa los
-                inconvenientes.
-            </Alert>
             <Alert variant={"success"}>
                 ¿Cómo deseas pagar?
                 <div className="container">
                     <ul style={{ listStyle: "none" }}>
-                        <li className="mt-2 mb-2">
-                            <input
-                                type="radio"
-                                disabled={true}
-                                value={"on_delivery"}
-                                name="payment_mode"
-                                onClick={props.handlePaymentChange}
-                            />
-                            Paga un pequeño anticipo de MX$
-                            {Math.ceil(props.upfrontPayPalPayment)}
-                            &nbsp; con <b>PayPal</b> &nbsp;
-                            <FontAwesomeIcon icon={faPaypal} /> y liquida la
-                            diferencia en efectivo cuando te entreguemos
-                        </li>
                         <li className="mt-2 mb-2">
                             <input
                                 type="radio"
@@ -46,13 +27,11 @@ const PaymentMode = (props) => {
                         <li className="mt-2 mb-2">
                             <input
                                 type="radio"
-                                value={"paypal"}
+                                value={"full_MP"}
                                 name="payment_mode"
                                 onClick={props.handlePaymentChange}
-                                disabled={true}
                             />
-                            El total (100%) con <b>PayPal</b> &nbsp;
-                            <FontAwesomeIcon icon={faPaypal} />
+                            El total (100%) con <b>MercadoPago.</b> &nbsp;
                         </li>
                     </ul>
                 </div>

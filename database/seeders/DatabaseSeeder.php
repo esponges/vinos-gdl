@@ -232,6 +232,15 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create();
 
+        DB::table('cps')->insert([
+            [
+                'cp' => 45030,
+                'name' => 'Prados Guadalupe',
+                'state' => 'Jalisco',
+                'town' => 'Guadalajara',
+            ]
+        ]);
+
         DB::table('product_links')->insert([
             [
                 'product_id' => 1,

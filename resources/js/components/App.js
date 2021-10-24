@@ -195,9 +195,7 @@ const App = () => {
                             <Route path="/checkout/cancel">
                                 <CancelPayment />
                             </Route>
-                            <Route path="/checkout/success/:id">
-                                <SuccessfulPayment />
-                            </Route>
+                            <Route path="/checkout/success/:id/:paymentType?" component={SuccessfulPayment} />
                             <Route path="/checkout/fail">
                                 <UnsuccessfulPayment />
                             </Route>

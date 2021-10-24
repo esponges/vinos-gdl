@@ -11,25 +11,25 @@ Resumen:
 
 @endcomponent
 
+<b>Pago por&nbsp;&nbsp;
 @if($order['payment_mode'] == "transfer")
-
-<b>Pago por transferencia</b>
+Transferencia
+@else
+MercadoPago
+@endif
+</b>
 
 Espera la confirmación del pago y horario por parte de Vinoreo.
 
-@elseif($order['payment_mode'] == 'paypal')
+@if($order['payment_mode'] == "full_MP")
 
-<b>Pagado al 100% por Paypal</b>
+<b>Pago por MercadoPago</b>
 
-El producto ya está <b>pagado</b>
-
-@else
-
-<b>Pagado <u>solo anticipo</u> por PayPal</b>
-
-Revisar el saldo por cobrar contra entrega.
+Espera la confirmación del pago y horario por parte de Vinoreo.
 
 @endif
+
+
 
 Total: MX$<b>{{$grandTotal}}</b>
 
