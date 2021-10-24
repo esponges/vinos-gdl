@@ -55,7 +55,6 @@ const SuccessfulPayment = (props) => {
             .catch(() => {
                 setOrderInfo(null);
                 setCartItems(null);
-                console.log("we are null!!!");
             });
     }, []);
 
