@@ -238,7 +238,7 @@ const App = (props) => {
                         </Route>
 
                         <Route path="/">
-                            {/* <MastHead /> */}
+                            <MastHead />
                             <ProductGrid products={products} />
                         </Route>
                     </Switch>
