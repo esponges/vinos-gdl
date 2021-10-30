@@ -43,7 +43,7 @@ const CheckCP = ({getCpInfo, order}) => {
             }) => (
                 <div>
                     <div {...getRootProps({}, { suppressRefError: true })}>
-                        <input {...getInputProps()} id="get-cp-input" />
+                        <input {...getInputProps()} id="get-cp-input" autocomplete="chrome-off"/>
                     </div>
                     <ul {...getMenuProps()} style={{ width: "35%" }}>
                         <div className="downshift-dropdown">

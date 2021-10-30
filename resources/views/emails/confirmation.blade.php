@@ -15,7 +15,9 @@ El total de tu compra fue: MX$<b>{{$grandTotal}}</b>
 
 @if ($order['payment_mode'] !== 'transfer')
 
-Tu pago por Paypal: MX$<b>{{$paidWithPayPal}}</b>
+Pago por <b>MercadoPago</b>.
+
+Te contactaremos para mandarte un link de pago seguro.
 
 @endif
 
@@ -29,13 +31,15 @@ Tu saldo a liquidar en la entrega: MX$<b>{{$balanceToPay}}</b>
 
 
 <br>
-Detalles de entrega <br>
+Detalles de entrega: <br>
 
 Nombre del pedido: <b>{{$order['order_name']}}</b><br>
 Teléfono del comprador <b>{{$order['phone'] ? $order['phone'] : ""}}</b><br>
 Dirección de entrega: <b>{{$order['address']}}</b><br>
 Detalles de la dirección: <b>{{ $order['address_details'] ? $order->address_details : 'No proporcionados' }}</b><br>
 Colonia: <b>{{$order['neighborhood'] . " " . $order['cp']}}</b><br>
+
+<b>El pedido será programado una vez realizado tu pago.</b>
 
 <br>
 Día de entrega: <b>{{$order['delivery_day']}}</b><br>
