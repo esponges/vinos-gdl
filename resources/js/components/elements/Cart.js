@@ -8,11 +8,16 @@ import CustomLoader from "../CustomLoader";
 import { Context } from "../Context";
 import { useDispatch } from "react-redux";
 import { fetchCartItems } from "../../store/reducers/cartReducer";
+import { useSelector } from "react-redux";
 
 const Cart = (props) => {
     const [cart, setCart] = useState([]);
     const [total, setTotal] = useState([]);
     const dispatch = useDispatch();
+    const cartItems = useSelector(state => state.cart.items);
+    const cartTotal = cartItems.length > 0 ? cartItems.map(({ quantity, price }) => (quantity * price)).reduce((a, b) => a + b, 0) : null;
+    console.log(cartItems, cartTotal);
+    console.log(cart);
 
     const context = useContext(Context);
 
@@ -79,35 +84,8 @@ const Cart = (props) => {
         }
     };
 
-    // set cart items and total
     useEffect(() => {
-        let isMounted = true;
-
-        axios
-            .get("cart")
-            .then((res) => {
-                if (isMounted) {
-                    // cart items
-                    setCart(Object.values(res.data));
-                    // cart total
-                    setTotal(
-                        // map a subtotal array
-                        Object.values(res.data)
-                            .map((item) => {
-                                return item.price * item.quantity;
-                            })
-                            //then sum mapped items
-                            .reduce((a, b) => a + b, 0)
-                    );
-                }
-            })
-            .catch((err) => {
-                // setError(err.message);
-                console.error(err);
-            });
-
-        //unmount
-        return () => (isMounted = false);
+        dispatch(fetchCartItems());
     }, []);
 
     return (
@@ -126,7 +104,7 @@ const Cart = (props) => {
                             <th>Sub-Total</th>
                         </tr>
                     </thead>
-                    {cart.map((product, i) => {
+                    {cartItems.length > 0 && cartItems.map((product, i) => {
                         return (
                             /* in this case using index instead id is required for cart update */
                             <tbody key={i}>
@@ -201,16 +179,16 @@ const Cart = (props) => {
                         {new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "MXN",
-                        }).format(total)}
+                        }).format(cartTotal)}
                     </b>
                 </h3>
-                {total < 1500 && (
+                {cartTotal && (cartTotal < 1500) && (
                     <Alert variant={"warning"}>
                         Te faltan{" "}
                         {new Intl.NumberFormat("en-US", {
                             style: "currency",
                             currency: "MXN",
-                        }).format(1500 - total)}{" "}
+                        }).format(1500 - cartTotal)}{" "}
                         para completar tu pedido
                     </Alert>
                 )}
@@ -226,7 +204,7 @@ const Cart = (props) => {
                                 <Button
                                     variant="outline-success"
                                     size="lg"
-                                    disabled={total < 1500 ? true : false}
+                                    disabled={cartTotal < 1500 ? true : false}
                                 >
                                     Pagar
                                 </Button>
