@@ -16,7 +16,7 @@ export const cartSlice = createSlice({
         cartItemsAdded: (state, action) => {
             if (state.loading === 'pending') {
                 state.loading = 'idle';
-                state.items = (action.payload);
+                state.items = Object.values(action.payload);
             }
         }
     }
@@ -29,4 +29,5 @@ export const fetchCartItems = () => async (dispatch, getState) => {
     dispatch(cartItemsLoading());
     const { data } = await axios.get('/cart');
     dispatch(cartItemsAdded(data));
+    return data;
 };

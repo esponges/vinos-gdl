@@ -12,7 +12,7 @@ import CustomLoader from "../CustomLoader";
 import BestSellers from "./BestSellers.js";
 import ProductCard from "../elements/ProductCard";
 import { useDispatch } from "react-redux";
-import { fetchCartItems } from "../../store/reducers/cartReducer";
+import { fetchCartItems } from "../../store/cart/reducers";
 
 library.add(fas);
 

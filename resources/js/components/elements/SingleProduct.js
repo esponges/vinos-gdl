@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import CustomLoader from "../CustomLoader";
-import { fetchCartItems } from "../../store/reducers/cartReducer";
+import { fetchCartItems } from "../../store/cart/reducers";
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);

@@ -1,6 +1,6 @@
 import { configureStore/* , getDefaultMiddleware */ } from "@reduxjs/toolkit";
 import productsReducer from "./products/reducers";
-import cartReducer from './reducers/cartReducer';
+import cartReducer from './cart/reducers';
 import { categoriesReducer } from './categories/';
 
 export const store = configureStore({
