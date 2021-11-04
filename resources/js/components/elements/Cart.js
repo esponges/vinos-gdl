@@ -7,7 +7,7 @@ import CustomLoader from "../CustomLoader";
 
 import { Context } from "../Context";
 import { useDispatch } from "react-redux";
-import { fetchCartItems } from "../../store/reducers/cartReducer";
+import { fetchCartItems } from "../../store/cart/reducers";
 import { useSelector } from "react-redux";
 
 const Cart = (props) => {
@@ -16,38 +16,29 @@ const Cart = (props) => {
     const dispatch = useDispatch();
     const cartItems = useSelector(state => state.cart.items);
     const cartTotal = cartItems.length > 0 ? cartItems.map(({ quantity, price }) => (quantity * price)).reduce((a, b) => a + b, 0) : null;
-    console.log(cartItems, cartTotal);
-    console.log(cart);
 
     const context = useContext(Context);
 
-    const addOneMore = async (id, i) => {
+    const addOneMore = async (id, i, price) => {
         context.setLoader(true);
 
         try {
             const res = await axios.get(`cart/${id}/add/1`);
             // if res true
             if (res) {
-                const updatedCart = [...cart];
-                updatedCart[i].quantity = parseInt(updatedCart[i].quantity) + 1; //the property comes as string, must parse to int first.
-                setCart(updatedCart);
-
-                //set new total
-                const newCartTotal = updatedCart
-                    .map((item) => item.quantity * item.price)
-                    .reduce((a, b) => a + b, 0);
-                setTotal(newCartTotal);
-
                 props.cartCountUpdate(1);
-                context.getCartContent();
-                dispatch(fetchCartItems());
-                context.notifyMinAmountRemaining(updatedCart[i].price);
+                context.notifyMinAmountRemaining(price);
+
+                await dispatch(fetchCartItems());
+
             } else {
                 console.error("error fecthing add route");
                 context.setLoader(false);
             }
         } catch (err) {
             console.error(err);
+            context.setLoader(false);
+        } finally {
             context.setLoader(false);
         }
     };
@@ -129,7 +120,7 @@ const Cart = (props) => {
                                                 variant="link"
                                                 id="add-one-more-cart"
                                                 onClick={() =>
-                                                    addOneMore(product.id, i)
+                                                    addOneMore(product.id, i, product.price)
                                                 }
                                             >
                                                 <b>¡Añade una más!</b>
