@@ -87,9 +87,9 @@ const App = () => {
     };
 
     /* Start of Cart total and its toaster */
-    const notifyMinAmountRemaining = (amount) => {
-        let lastCartTotal = cartTotal;
-        let newCartTotal = amount + lastCartTotal;
+    const notifyMinAmountRemaining = (amount, oldCartTotal = null /* todo */) => {
+        const lastCartTotal = cartTotal;
+        const newCartTotal = amount + lastCartTotal;
         setCartTotal(newCartTotal);
 
         if (newCartTotal < 1500) {

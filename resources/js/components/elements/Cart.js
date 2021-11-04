@@ -59,20 +59,13 @@ const Cart = (props) => {
             const res = await axios.get(`/cart/${productId}/destroy`);
             // positive response
             if (res) {
-                const updatedCart = cart.filter(
-                    (product) => product !== productToRemove
-                );
-                setCart(updatedCart);
-                // get total to pay
-                const newCartTotal = updatedCart
-                    .map((item) => item.quantity * item.price)
-                    .reduce((a, b) => a + b, 0);
-                setTotal(newCartTotal);
+                dispatch(fetchCartItems());
+                
+                const removedAmount = productToRemove.price * qty;
                 // remove all item count from navbar counter
                 props.cartCountUpdate(qty * -1);
-
-                const removedAmount = total - newCartTotal;
                 context.notifyMinAmountRemaining(removedAmount * -1);
+
             } else {
                 console.error("error fetching delete route");
                 context.setLoader(false);
@@ -91,7 +84,7 @@ const Cart = (props) => {
     return (
         <div>
             <h1>Tu vinos seleccionados</h1>
-            {cart.length == 0 ? (
+            {cartItems.length == 0 ? (
                 <Alert variant="info">
                     Aún no has añadido productos al carrito
                 </Alert>
