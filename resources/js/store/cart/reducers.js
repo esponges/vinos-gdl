@@ -18,7 +18,10 @@ export const cartSlice = createSlice({
                 state.loading = 'idle';
                 state.items = Object.values(action.payload);
             }
-        }
+        },
+        cartItemAdded: (state, action) => {
+            return
+        },
     }
 });
 
@@ -30,4 +33,10 @@ export const fetchCartItems = () => async (dispatch, getState) => {
     const { data } = await axios.get('/cart');
     dispatch(cartItemsAdded(data));
     return data;
+};
+
+export const addItemToCart = (id, itemCount = 1) => async (dispatch, getState) => {
+    const res = await axios.get(`cart/${id}/add/${itemCount}`);
+    dispatch(fetchCartItems());
+    return true;
 };
