@@ -25,18 +25,6 @@ const Category = (props) => {
 
     const context = useContext(Context);
 
-    const handleItemAddClick = (e, id, price) => {
-        e.preventDefault();
-        setProductAddMsg("Añadido al carrito");
-        setProductAddId(id);
-
-        context.addToCart(id, itemCount);
-        dispatch(fetchCartItems());
-
-        let productSubTotal = price * itemCount;
-        context.notifyMinAmountRemaining(productSubTotal);
-    }
-
     const getProducts = async () => {
         try {
             const res = await axios
@@ -74,9 +62,6 @@ const Category = (props) => {
                                     itemCount={itemCount}
                                     setItemCount={
                                         setItemCount
-                                    }
-                                    handleItemAddClick={
-                                        handleItemAddClick
                                     }
                                 />
                             );

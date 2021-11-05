@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 
 import { Card, ListGroup, ListGroupItem, Button } from "react-bootstrap";
 import CustomLoader from "../CustomLoader";
-import { fetchCartItems } from "../../store/cart/reducers";
+import { addItemToCart, fetchCartItems } from "../../store/cart/reducers";
 
 const SingleProduct = (props) => {
     const [itemCount, setItemCount] = useState(1);
@@ -19,16 +19,13 @@ const SingleProduct = (props) => {
 
     const context = useContext(Context);
 
-    const handleItemAddClick = (e, id, price) => {
+    const handleAddItemToCart = (e, id, price) => {
         e.preventDefault();
-        setProductAddId(id);
 
-        context.addToCart(id, itemCount);
-        dispatch(fetchCartItems());
-
-        let productSubTotal = price * itemCount;
-        context.notifyMinAmountRemaining(productSubTotal);
-    };
+        dispatch(addItemToCart(id, itemCount, price));
+        const subTotal = price * itemCount;
+        context.notifyMinAmountRemaining(subTotal);
+    }
 
     useEffect(() => {
         let isMounted = true; // avoid unmounted item warning
@@ -114,7 +111,7 @@ const SingleProduct = (props) => {
                                     <Button
                                         variant="primary"
                                         onClick={(e) =>
-                                            handleItemAddClick(
+                                            handleAddItemToCart(
                                                 e,
                                                 product.id,
                                                 product.price

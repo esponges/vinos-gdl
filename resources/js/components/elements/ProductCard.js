@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../../store/cart/reducers";
+import { Context } from "../Context";
 library.add(fas);
 
-const ProductCard = React.memo(({product, setItemCount, handleItemAddClick, itemCount}) => {
+const ProductCard = React.memo(({ product, setItemCount, itemCount }) => {
+    const dispatch = useDispatch();
+    const context = useContext(Context);
+
+    const handleAddItemToCart = (e, id, price) => {
+        e.preventDefault();
+
+        dispatch(addItemToCart(id, itemCount, price));
+        const subTotal = price * itemCount;
+        context.notifyMinAmountRemaining(subTotal);
+    }
 
     return (
         <div
@@ -62,7 +75,7 @@ const ProductCard = React.memo(({product, setItemCount, handleItemAddClick, item
                             id="main-add-btn"
                             data-testid={`main-add-btn-${product.id}`}
                             onClick={(e) =>
-                                handleItemAddClick(e, product.id, product.price)
+                                handleAddItemToCart(e, product.id, product.price)
                             }
                         >
                             Añadir <FontAwesomeIcon icon={faShoppingBag} />

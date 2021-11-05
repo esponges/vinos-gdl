@@ -6,7 +6,7 @@ import ProductCard from "../elements/ProductCard";
 import CustomLoader from "../CustomLoader";
 import { useSelector } from "react-redux";
 
-const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
+const BestSellers = ({ setItemCount, itemCount }) => {
     const context = useContext(Context);
     const products = useSelector(state => state.categories.categories)
 
@@ -27,7 +27,6 @@ const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
                         </span>
                     </h1>
                     <div className="row mt-3">
-                        {/* {console.log('im gonna map now', 'best sellers btw is ', bestSellers)} */}
                         {products.best_sellers.map((product) => {
                             if (product.best_seller === 1) {
                                 return (
@@ -37,7 +36,6 @@ const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
                                         product={product}
                                         itemCount={itemCount}
                                         setItemCount={setItemCount}
-                                        handleItemAddClick={handleItemAddClick}
                                     />
                                 );
                             }
