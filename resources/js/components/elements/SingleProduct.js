@@ -25,7 +25,6 @@ const SingleProduct = (props) => {
 
         context.addToCart(id, itemCount);
         dispatch(fetchCartItems());
-        context.getCartContent();
 
         let productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);

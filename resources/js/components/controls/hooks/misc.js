@@ -8,19 +8,6 @@ export const useEffectProducts = () => {
     const [cartCount, setCartCount] = useState(0);
     const [cart, setCart] = useState(null);
 
-    /* Remove this from context after setting paypal in back end  */
-    const getCartContent = async () => {
-        const res = await axios
-            .get("cart")
-            .then((res) => {
-                setCart(Object.values(res.data));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        return res;
-    };
-
     useEffect(() => {
         axios
             .get("/categories")
@@ -40,8 +27,6 @@ export const useEffectProducts = () => {
                 setError(err.message);
             });
 
-        getCartContent();
-
         axios.get("/cart/count").then((res) => {
             setCartCount(res.data[0]);
         });
@@ -52,8 +37,6 @@ export const useEffectProducts = () => {
         prods,
         error,
         cartCount,
-        cart,
         setCartCount,
-        getCartContent,
     };
 };

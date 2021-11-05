@@ -26,7 +26,6 @@ const ProductGrid = (props) => {
         e.preventDefault();
 
         context.addToCart(id, itemCount);
-        context.getCartContent();
         dispatch(fetchCartItems());
         const productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);

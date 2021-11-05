@@ -7,6 +7,8 @@ import axios from 'axios';
 import { Card, ListGroup, Button, ListGroupItem } from 'react-bootstrap';
 import CustomLoader from '../CustomLoader';
 import ProductCard from './ProductCard';
+import { useDispatch } from 'react-redux';
+import { fetchCartItems } from '../../store/cart/reducers';
 
 const Category = (props) => {
     const [products, setProducts] = useState({});
@@ -16,6 +18,7 @@ const Category = (props) => {
     const [offset, setOffset] = useState(0);
     const [perPage] = useState(8);
     const [pageCount, setPageCount] = useState(0);
+    const dispatch = useDispatch();
 
     const [productAddMsg, setProductAddMsg] = useState(false);
     const [productAddId, setProductAddId] = useState("");
@@ -28,7 +31,7 @@ const Category = (props) => {
         setProductAddId(id);
 
         context.addToCart(id, itemCount);
-        context.getCartContent();
+        dispatch(fetchCartItems());
 
         let productSubTotal = price * itemCount;
         context.notifyMinAmountRemaining(productSubTotal);
