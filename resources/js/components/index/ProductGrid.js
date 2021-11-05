@@ -1,10 +1,8 @@
-import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import React, { useContext, useState } from "react";
+import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { Context } from "../Context";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBag, fas } from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
@@ -13,12 +11,13 @@ import BestSellers from "./BestSellers.js";
 import ProductCard from "../elements/ProductCard";
 import { useDispatch } from "react-redux";
 import { fetchCartItems } from "../../store/cart/reducers";
+import _ from "lodash";
 
 library.add(fas);
 
-const ProductGrid = (props) => {
+const ProductGrid = ({ productsByCategories }) => {
     const [itemCount, setItemCount] = useState(1);
-    const categories = props.products;
+    const categories = productsByCategories;
     const context = useContext(Context);
     const dispatch = useDispatch();
 
@@ -40,7 +39,7 @@ const ProductGrid = (props) => {
                     handleItemAddClick={handleItemAddClick}
                 />
             </div>
-            {categories &&
+            {!_.isEmpty(categories) &&
                 categories[0].map((category) => {
                     return (
                         <div

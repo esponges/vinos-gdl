@@ -33,7 +33,7 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCartItems } from "../store/cart/reducers";
 
 const App = () => {
@@ -41,12 +41,11 @@ const App = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
     const dispatch = useDispatch();
+    const productsByCategories = useSelector(state => state.categories.categories);
 
     const [loader, setLoader] = useState(false);
 
     const {
-        products,
-        prods,
         cartCount,
         setCartCount,
     } = useEffectProducts();
@@ -151,7 +150,6 @@ const App = () => {
         <Context.Provider
             value={{
                 addToCart: addToCart,
-                allProducts: prods,
                 cartTotal: cartTotal,
                 cartCountUpdate: cartCountUpdate,
                 setCartCount: setCartCount,
@@ -205,7 +203,7 @@ const App = () => {
 
                     <Route path="/">
                         <MastHead />
-                        <ProductGrid products={products} />
+                        <ProductGrid productsByCategories={productsByCategories} />
                     </Route>
                 </Switch>
             </div>
