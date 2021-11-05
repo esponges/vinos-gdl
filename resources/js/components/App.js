@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Switch, Route, withRouter } from "react-router-dom";
 
@@ -33,22 +33,22 @@ import CancelPayment from "./checkout/PayPal/CancelPayment";
 import SuccessfulPayment from "./checkout/PayPal/SuccessfulPayment";
 import UnsuccessfulPayment from "./checkout/PayPal/UnsuccessfulPayment";
 import { useEffectProducts } from "./controls/hooks";
+import { useDispatch } from "react-redux";
+import { fetchCartItems } from "../store/cart/reducers";
 
 const App = () => {
     const [cartTotal, setCartTotal] = useState(0);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userInfo, setUserInfo] = useState("");
+    const dispatch = useDispatch();
 
     const [loader, setLoader] = useState(false);
 
     const {
         products,
         prods,
-        error,
         cartCount,
-        cart,
         setCartCount,
-        getCartContent,
     } = useEffectProducts();
 
     const addToCart = (id, itemCount) => {
@@ -57,7 +57,7 @@ const App = () => {
             .get(`cart/${id}/add/${itemCount}`)
             .then(() => {
                 cartCountUpdate(itemCount);
-                getCartContent();
+                dispatch(fetchCartItems());
             })
             .catch((err) => {
                 console.error(err);
@@ -152,10 +152,8 @@ const App = () => {
             value={{
                 addToCart: addToCart,
                 allProducts: prods,
-                cartContent: cart,
                 cartTotal: cartTotal,
                 cartCountUpdate: cartCountUpdate,
-                getCartContent: getCartContent,
                 setCartCount: setCartCount,
                 notifyMinAmountRemaining: notifyMinAmountRemaining,
                 notifyToaster: notifyToaster,
@@ -172,25 +170,14 @@ const App = () => {
             <ToastContainer position="top-center" />
             <div className="container mb-5 body-margin-top">
                 <Switch>
-                    <Route path="/products/:id">
-                        <div className="container"></div>
-                        <SingleProduct />
-                    </Route>
+                    <Route path="/products/:id" component={SingleProduct} />
 
-                    <Route path="/categories/:name">
-                        <Category />
-                    </Route>
+                    <Route path="/categories/:name" component={Category} />
 
                     <Route path="/checkout">
-                        <Route path="/checkout/cancel">
-                            <CancelPayment />
-                        </Route>
-                        <Route path="/checkout/success/:id">
-                            <SuccessfulPayment />
-                        </Route>
-                        <Route path="/checkout/fail">
-                            <UnsuccessfulPayment />
-                        </Route>
+                        <Route path="/checkout/cancel" component={CancelPayment} />
+                        <Route path="/checkout/success/:id" component={SuccessfulPayment} />
+                        <Route path="/checkout/fail" component={UnsuccessfulPayment} />
                     </Route>
 
                     <Route path="/cart/checkout">
@@ -201,9 +188,7 @@ const App = () => {
                         <Cart cartCountUpdate={cartCountUpdate} />
                     </Route>
 
-                    <Route path="/forgot-password">
-                        <ForgotPassword />
-                    </Route>
+                    <Route path="/forgot-password" component={ForgotPassword} />
 
                     <Route path="/login">
                         <Login
@@ -213,21 +198,10 @@ const App = () => {
                         />
                     </Route>
 
-                    <Route path="/register">
-                        <RegisterForm login={login} />
-                    </Route>
-
-                    <Route path="/FAQ">
-                        <FAQ />
-                    </Route>
-
-                    <Route path="/about">
-                        <About />
-                    </Route>
-
-                    <Route path="/legal">
-                        <Legal />
-                    </Route>
+                    <Route path="/register" component={RegisterForm} />
+                    <Route path="/FAQ" component={FAQ} />
+                    <Route path="/about" component={About} />
+                    <Route path="/legal" component={Legal} />
 
                     <Route path="/">
                         <MastHead />
