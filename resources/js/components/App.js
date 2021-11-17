@@ -32,24 +32,27 @@ import Legal from './elements/Legal';
 import CancelPayment from './checkout/PayPal/CancelPayment';
 import SuccessfulPayment from './checkout/PayPal/SuccessfulPayment';
 import UnsuccessfulPayment from './checkout/PayPal/UnsuccessfulPayment';
-import { useEffectProducts } from './controls/hooks';
 import { fetchCartItems } from '../store/cart/reducers';
 
+const getCartItemsCount = (cartItems) => {
+  return cartItems.reduce((acc, { quantity }) => (acc + parseInt(quantity)), 0);
+}
+
+
 const App = function () {
-  const [cartTotal, setCartTotal] = useState(0);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userInfo, setUserInfo] = useState('');
   const dispatch = useDispatch();
   const productsByCategories = useSelector((state) => state.categories.categories);
+  const cartItems = useSelector(state => state.cart.items);
 
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState('');
   const [loader, setLoader] = useState(false);
 
-  const {
-    cartCount,
-    setCartCount,
-  } = useEffectProducts();
+  const [cartTotal, setCartTotal] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
 
   const cartCountUpdate = (qty) => {
+    console.log('setCart count!!!', qty, cartCount);
     setCartCount(cartCount + qty);
     setLoader(false);
   };
@@ -125,6 +128,7 @@ const App = function () {
 
   useEffect(() => {
     getCartTotal();
+    setCartCount(getCartItemsCount(cartItems));
   }, [cartTotal]);
   /* End of Cart total and its toaster */
 
@@ -145,21 +149,19 @@ const App = function () {
     });
   }, [loggedIn]);
 
-  const contextEls = useMemo(() => ({
-    addToCart,
-    cartTotal,
-    cartCountUpdate,
-    setCartCount,
-    notifyMinAmountRemaining,
-    notifyToaster,
-    loader,
-    setLoader,
-  }), []);
-
   return (
     <Context.Provider
       value={
-        contextEls
+        {
+          cartCountUpdate,
+          addToCart,
+          cartTotal,
+          setCartCount,
+          notifyMinAmountRemaining,
+          notifyToaster,
+          loader,
+          setLoader,
+        }
       }
     >
       <IndexNavbar
