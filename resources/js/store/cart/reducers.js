@@ -5,7 +5,9 @@ export const cartSlice = createSlice({
     name: 'cartItems',
     initialState: {
         loading: 'idle',
-        items: []
+        items: [],
+        cartTotal: null,
+        itemCount: 0,
     },
     reducers: {
         cartItemsLoading: (state) => {
@@ -16,12 +18,11 @@ export const cartSlice = createSlice({
         cartItemsAdded: (state, action) => {
             if (state.loading === 'pending') {
                 state.loading = 'idle';
-                state.items = Object.values(action.payload);
+                const cartPayload = Object.values(action.payload)
+                state.items = cartPayload;
+                state.cartTotal = cartPayload.reduce((acc, { quantity }) => (acc + parseInt(quantity)), 0);
             }
-        },
-        cartItemAdded: (state, action) => {
-            return
-        },
+        }
     }
 });
 
@@ -36,7 +37,6 @@ export const fetchCartItems = () => async (dispatch, getState) => {
 };
 
 export const addItemToCart = (id, itemCount = 1) => async (dispatch, getState) => {
-    const res = await axios.get(`cart/${id}/add/${itemCount}`);
+    await axios.get(`cart/${id}/add/${itemCount}`);
     dispatch(fetchCartItems());
-    return true;
 };

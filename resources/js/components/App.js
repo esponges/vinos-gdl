@@ -34,25 +34,19 @@ import SuccessfulPayment from './checkout/PayPal/SuccessfulPayment';
 import UnsuccessfulPayment from './checkout/PayPal/UnsuccessfulPayment';
 import { fetchCartItems } from '../store/cart/reducers';
 
-const getCartItemsCount = (cartItems) => {
-  return cartItems.reduce((acc, { quantity }) => (acc + parseInt(quantity)), 0);
-}
-
-
 const App = function () {
   const dispatch = useDispatch();
   const productsByCategories = useSelector((state) => state.categories.categories);
-  const cartItems = useSelector(state => state.cart.items);
+  const cartItemCount = useSelector(state => state.cart.cartTotal);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState('');
   const [loader, setLoader] = useState(false);
 
   const [cartTotal, setCartTotal] = useState(0);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(cartItemCount);
 
   const cartCountUpdate = (qty) => {
-    console.log('setCart count!!!', qty, cartCount);
     setCartCount(cartCount + qty);
     setLoader(false);
   };
@@ -128,7 +122,7 @@ const App = function () {
 
   useEffect(() => {
     getCartTotal();
-    setCartCount(getCartItemsCount(cartItems));
+    setCartCount(cartItemCount);
   }, [cartTotal]);
   /* End of Cart total and its toaster */
 
