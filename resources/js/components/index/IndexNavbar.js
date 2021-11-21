@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Form,
   NavDropdown,
@@ -21,7 +22,7 @@ import CustomLoader from '../CustomLoader';
 library.add(fas, fab);
 
 const IndexNavbar = function ({
-  logout, history, cartCount, userInfo, userLogged,
+  logout, history, userInfo, userLogged,
 }) {
   // logout, history cartCount, userInfo, userLogged in
   const [navbarBg, setNavbarBg] = useState(false);
@@ -29,6 +30,7 @@ const IndexNavbar = function ({
 
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
+  const cartCount = useSelector((state) => state.cart.cartTotal);
 
   const handleScroll = debounce(() => {
     // use debounce help to reduce rerenders from scroll listener
@@ -39,12 +41,16 @@ const IndexNavbar = function ({
       // ensures navbar is shown only when swiping up more than 70px
       prevScrollPos - currentScrollPos > 70
       //  ensures navbar is shown always at the verytop
-        || currentScrollPos < 10,
+      || currentScrollPos < 10,
     );
 
     setPrevScrollPos(currentScrollPos);
 
-    window.scrollY >= 480 ? setNavbarBg(true) : setNavbarBg(false);
+    if (window.scrollY >= 480) {
+      setNavbarBg(true);
+    } else {
+      setNavbarBg(false);
+    }
   }, 100);
 
   const navbarLogout = () => {
@@ -162,7 +168,7 @@ const IndexNavbar = function ({
               >
                 <b>Carrito</b>
                 {' '}
-                                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;
                 <Badge
                   pill
                   variant="info"
@@ -173,7 +179,7 @@ const IndexNavbar = function ({
                     icon={faShoppingBasket}
                     data-testid="cart-count-badge"
                   />
-                                    &nbsp;
+                  &nbsp;
                   {cartCount ?? cartCount}
                 </Badge>
               </Link>
@@ -221,7 +227,7 @@ const IndexNavbar = function ({
       </a>
       <Link to="/cart" className="material-icons floating-btn-cart">
         <FontAwesomeIcon icon={['fas', 'shopping-cart']} />
-                &nbsp;
+        &nbsp;
         <Badge pill variant="warning" data-testid="floating-cart-count">
           {cartCount && cartCount}
         </Badge>

@@ -1,4 +1,7 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable consistent-return */
 import React, { useCallback, useContext, useState } from 'react';
+import _ from 'lodash';
 import { Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -11,7 +14,7 @@ import ProductCard from '../elements/ProductCard';
 
 library.add(fas);
 
-const ProductGrid = ({ productsByCategories }) => {
+const ProductGrid = function ({ productsByCategories }) {
   const [itemCount, setItemCount] = useState(1);
   const categories = productsByCategories;
   const context = useContext(Context);
@@ -29,68 +32,68 @@ const ProductGrid = ({ productsByCategories }) => {
         />
       </div>
       {!_.isEmpty(categories)
-                && categories[0].map((category) => (
-                  <div
-                    className="mt-2"
-                    id={category.category_name}
-                    key={category.id}
+        && categories[0].map((category) => (
+          <div
+            className="mt-2"
+            id={category.category_name}
+            key={category.id}
+          >
+            {!context.loader ? (
+              <section
+                className="container mb-2"
+                id={category.category_name}
+              >
+                <h1
+                  className="mt-5 center"
+                  style={{
+                    textAlign: 'center',
+                    fontSize: '3rem',
+                  }}
+                >
+                  <span className="badge badge-secondary">
+                    <Link to={`/categories/${category.category_name}`}>{category.category_name}</Link>
+                  </span>
+                </h1>
+                <div className="row mt-3">
+                  {category.products.map((product) => {
+                    if (product.featured) {
+                      // filter only featured products
+                      return (
+                        <ProductCard
+                          key={product.id}
+                          product={product}
+                          itemCount={itemCount}
+                          setItemCount={
+                            handleItemCount
+                          }
+                        />
+                      );
+                    }
+                  })}
+                </div>
+                <div className="container mt-5">
+                  <Link
+                    className="mt-3"
+                    to={`/categories/${category.category_name}`}
                   >
-                    {!context.loader ? (
-                      <section
-                        className="container mb-2"
-                        id={category.category_name}
-                      >
-                        <h1
-                          className="mt-5 center"
-                          style={{
-                            textAlign: 'center',
-                            fontSize: '3rem',
-                          }}
-                        >
-                          <span className="badge badge-secondary">
-                            {category.category_name}
-                          </span>
-                        </h1>
-                        <div className="row mt-3">
-                          {category.products.map((product) => {
-                            if (product.featured) {
-                              // filter only featured products
-                              return (
-                                <ProductCard
-                                  key={product.id}
-                                  product={product}
-                                  itemCount={itemCount}
-                                  setItemCount={
-                                        handleItemCount
-                                    }
-                                />
-                              );
-                            }
-                          })}
-                        </div>
-                        <div className="container mt-5">
-                          <Link
-                            className="mt-3"
-                            to={`/categories/${category.category_name}`}
-                          >
-                            <Button
-                              variant="outline-primary"
-                              size="lg"
-                            >
-                              ¿Quieres más? ¡Checa todo el
-                              surtido de
-                              {' '}
-                              {category.category_name}
-                              !
-                            </Button>
-                          </Link>
-                        </div>
-                      </section>
-                    ) : (
-                      <CustomLoader />
-                    )}
-                  </div>
-                ))}
+                    <Button
+                      variant="outline-primary"
+                      size="lg"
+                    >
+                      ¿Quieres más? ¡Checa todo el
+                      surtido de
+                      {' '}
+                      {category.category_name}
+                      !
+                    </Button>
+                  </Link>
+                </div>
+              </section>
+            ) : (
+              <CustomLoader />
+            )}
+          </div>
+        ))}
     </>
   );
 };

@@ -8,6 +8,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../store/cart/reducers';
 import { Context } from '../Context';
+import { getProductImage } from '../../utilities/helpers';
 
 library.add(fas);
 
@@ -21,6 +22,7 @@ const ProductCard = React.memo(({ product, setItemCount, itemCount }) => {
     dispatch(addItemToCart(id, itemCount, price));
     const subTotal = price * itemCount;
     context.notifyMinAmountRemaining(subTotal);
+    context.cartCountUpdate(itemCount);
   };
 
   return (
@@ -35,13 +37,10 @@ const ProductCard = React.memo(({ product, setItemCount, itemCount }) => {
             pathname: `/products/${product.id}`,
           }}
         >
-          <Card.Img
-              variant="top"
-              src={`/img/products/${product.id}.jpg`}
-          />
+          {getProductImage(product.id)}
         </Link>
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title><Link to={`/products/${product.id}`}>{product.name}</Link></Card.Title>
           <Card.Text>
             <b>
               {new Intl.NumberFormat('en-US', {
