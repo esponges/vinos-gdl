@@ -366,6 +366,20 @@
     .card-body {
         padding: 0.5rem;
         text-align: center;
+        .row {
+            .col-6 {
+                input {
+                    width: 50%;
+                    text-align: center;
+                    display: inline;
+                    float: right;
+                }
+                .btn-primary {
+                    width: 50%;
+                    float: left;
+                }
+            }
+        }
     }
 }
 

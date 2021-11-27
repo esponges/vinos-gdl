@@ -10348,6 +10348,16 @@ h3 {
   padding: 0.5rem;
   text-align: center;
 }
+.card .card-body .row .col-6 input {
+  width: 50%;
+  text-align: center;
+  display: inline;
+  float: right;
+}
+.card .card-body .row .col-6 .btn-primary {
+  width: 50%;
+  float: left;
+}
 
 .table-bordered td {
   vertical-align: middle;
