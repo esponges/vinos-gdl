@@ -1,4 +1,5 @@
 /* eslint-disable prefer-rest-params */
+import _ from 'lodash';
 import React from 'react';
 import { Card } from 'react-bootstrap';
 
@@ -30,3 +31,18 @@ export const getProductImage = (productId) => (
     alt={`Product Id ${productId}`}
   />
 );
+
+export const renderCurrency = (number) => {
+  const currencyNumber = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'MXN',
+  }).format(
+    number,
+  );
+  return currencyNumber;
+};
+
+export const renderCategory = (id, categories) => {
+  const categoryName = !_.isEmpty(categories) && categories[0].find((category) => category.id === id);
+  return _.has(categoryName, 'category_name') ? categoryName.category_name : null;
+};

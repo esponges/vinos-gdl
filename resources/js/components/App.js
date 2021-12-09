@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+/* eslint-disable react/jsx-no-constructed-context-values */
+import React, { useState, useEffect } from 'react';
 
 import { Switch, Route, withRouter } from 'react-router-dom';
 
@@ -33,11 +34,12 @@ import CancelPayment from './checkout/PayPal/CancelPayment';
 import SuccessfulPayment from './checkout/PayPal/SuccessfulPayment';
 import UnsuccessfulPayment from './checkout/PayPal/UnsuccessfulPayment';
 import { fetchCartItems } from '../store/cart/reducers';
+import ProductList from './elements/ProductList';
 
 const App = function () {
   const dispatch = useDispatch();
   const productsByCategories = useSelector((state) => state.categories.categories);
-  const cartItemCount = useSelector(state => state.cart.cartTotal);
+  const cartItemCount = useSelector((state) => state.cart.cartTotal);
 
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState('');
@@ -82,11 +84,10 @@ const App = function () {
   };
 
   /* Start of Cart total and its toaster */
-  const notifyMinAmountRemaining = (amount, oldCartTotal = null /* todo */) => {
+  const notifyMinAmountRemaining = (amount/* , oldCartTotal = null */ /* todo */) => {
     const lastCartTotal = cartTotal;
     const newCartTotal = amount + lastCartTotal;
     setCartTotal(newCartTotal);
-    console.log(' amount remind', amount);
 
     if (newCartTotal < 1500) {
       toast.info(
@@ -168,6 +169,7 @@ const App = function () {
       <div className="container mb-5 body-margin-top">
         <Switch>
           <Route path="/products/:id" component={SingleProduct} />
+          <Route path="/products" component={ProductList} />
 
           <Route path="/categories/:name" component={Category} />
 
