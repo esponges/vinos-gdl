@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import { Table, Column, AutoSizer } from 'react-virtualized';
 import { withRouter } from 'react-router';
 import { Form } from 'react-bootstrap';
@@ -8,30 +8,38 @@ import { Form } from 'react-bootstrap';
 import 'react-virtualized/styles.css';
 import { renderCurrency, renderCategory } from '../../utilities/helpers';
 import { useUrlParams, useUrlParamsHandler } from '../controls/hooks/misc';
+import DownShiftSearch from '../index/DownShiftSearch';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const defaultParams = {
-  sortBy: 'updatedAt', sortDir: 'desc', search: '', page: '1',
+  sortBy: 'updatedAt', sortDir: 'DESC', search: '', page: '1',
 };
 
 const ProductList = function ({ history, location }) {
   const products = useSelector((state) => state.products.products);
   const categories = useSelector((state) => state.categories.categories);
-  const areProductsSet = products?.length > 0;
+  const [searchFilteredProducts, setSearchFilteredProducts] = useState([]);
+
+  const productsListToUse = searchFilteredProducts.length === 0 ? products : searchFilteredProducts;
+  const areProductsSet = productsListToUse.length > 0;
 
   const urlParams = useUrlParams(location.search, defaultParams);
-  // const onSortChange = useUrlParamsHandler({ history, location });
   const onSearchChange = useUrlParamsHandler({ history, location, key: 'search' });
 
   useEffect(() => {
+    const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(urlParams.search.toLowerCase()));
+    setSearchFilteredProducts(filteredProducts);
+  }, [urlParams.search]);
 
-  }, [])
+  /* TODO, ADD ADD TO CART ACTION */
 
   return (
     // Render your table
-    <div>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" value={urlParams.search} onChange={onSearchChange} />
+    <div className="list__products">
+      <Form.Group controlId="formBasicEmail" className="list__products__search-input mb-3 pb-3">
+        <Form.Label>Búsqueda</Form.Label>
+        <Form.Control type="text" placeholder="¿Qué buscas?" value={urlParams.search} onChange={onSearchChange} />
       </Form.Group>
       <AutoSizer>
         {({ width }) => (
@@ -40,11 +48,9 @@ const ProductList = function ({ history, location }) {
             height={window.innerHeight - 300}
             headerHeight={20}
             rowHeight={60}
-            // autoHeight
-            rowCount={areProductsSet ? products.length : 0}
-            rowGetter={areProductsSet ? ({ index }) => products[index] : () => { }}
-            // onColumnClick={(data) => console.log(data)}
-            sortDirection="DESC"
+            rowCount={areProductsSet ? productsListToUse.length : 0}
+            rowGetter={areProductsSet ? ({ index }) =>productsListToUse[index] : () => { }}
+            sortDirection={urlParams.sortDir}
           >
             <Column
               label="Nombre"
@@ -69,7 +75,6 @@ const ProductList = function ({ history, location }) {
               dataKey=""
             />
           </Table>
-
         )}
       </AutoSizer>
 

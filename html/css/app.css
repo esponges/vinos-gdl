@@ -10370,3 +10370,7 @@ a {
 .payment-mode {
   margin-top: 1rem;
 }
+
+.list__products__search-input {
+  width: 50%;
+}
