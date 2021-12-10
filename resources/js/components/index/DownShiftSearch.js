@@ -9,21 +9,18 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../Context';
+import { useSelector } from 'react-redux';
 
 library.add(fab, fas);
 
-const DownShiftSearch = function ({ history }) {
-  const products = useContext(Context);
-
-  const onChange = (selectedProduct) => {
-    history.push(`/products/${selectedProduct.id}`);
-  };
+const DownShiftSearch = function ({ handleDownshiftChange }) {
+  const products = useSelector((state) => state.products.products);
 
   return (
     <div>
-      {products.allProducts?.length > 0 ? (
+      {products.length > 0 ? (
         <Downshift
-          onChange={onChange}
+          onChange={handleDownshiftChange}
           itemToString={(item) => (item ? item.name : '')}
         >
           {({
@@ -58,30 +55,30 @@ const DownShiftSearch = function ({ history }) {
               <ul {...getMenuProps()}>
                 <div className="downshift-dropdown">
                   {isOpen && inputValue.length > 3
-                    ? products.allProducts
+                    ? products
                       .filter(
                         (item) => !inputValue
-                                                    || item.name
-                                                    // remove uppercase and special characters then compare
-                                                    // search value
-                                                      .toLowerCase()
-                                                      .normalize('NFD')
-                                                      .replace(
-                                                        /[\u0300-\u036f]/g,
-                                                        '',
-                                                      )
-                                                      .includes(
-                                                        // compare with input value
-                                                        inputValue
-                                                          .toLowerCase()
-                                                          .normalize(
-                                                            'NFD',
-                                                          )
-                                                          .replace(
-                                                            /[\u0300-\u036f]/g,
-                                                            '',
-                                                          ),
-                                                      ),
+                          || item.name
+                            // remove uppercase and special characters then compare
+                            // search value
+                            .toLowerCase()
+                            .normalize('NFD')
+                            .replace(
+                              /[\u0300-\u036f]/g,
+                              '',
+                            )
+                            .includes(
+                              // compare with input value
+                              inputValue
+                                .toLowerCase()
+                                .normalize(
+                                  'NFD',
+                                )
+                                .replace(
+                                  /[\u0300-\u036f]/g,
+                                  '',
+                                ),
+                            ),
                       )
                       .map((item, index) => (
                         <li
@@ -92,15 +89,15 @@ const DownShiftSearch = function ({ history }) {
                             item,
                             style: {
                               backgroundColor:
-                                                                highlightedIndex
-                                                                    === index
-                                                                  ? 'lightgray'
-                                                                  : 'white',
+                                highlightedIndex
+                                  === index
+                                  ? 'lightgray'
+                                  : 'white',
                               fontWeight:
-                                                                selectedItem
-                                                                    === item
-                                                                  ? 'bold'
-                                                                  : 'normal',
+                                selectedItem
+                                  === item
+                                  ? 'bold'
+                                  : 'normal',
                             },
                           })}
                         >

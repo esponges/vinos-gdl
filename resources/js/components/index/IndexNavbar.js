@@ -21,9 +21,9 @@ import CustomLoader from '../CustomLoader';
 
 library.add(fas, fab);
 
-const IndexNavbar = function ({
+const IndexNavbar = ({
   logout, history, userInfo, userLogged,
-}) {
+}) => {
   // logout, history cartCount, userInfo, userLogged in
   const [navbarBg, setNavbarBg] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -52,6 +52,10 @@ const IndexNavbar = function ({
       setNavbarBg(false);
     }
   }, 100);
+
+  const handleDownshiftChange = (selectedProduct) => {
+    history.push(`/products/${selectedProduct.id}`);
+  };
 
   const navbarLogout = () => {
     sanctumApi
@@ -101,7 +105,7 @@ const IndexNavbar = function ({
       <Link className="navbar-brand" to="/">VINOREO</Link>
       <div className="navbar-brand" id="product-search-form">
         <Form inline>
-          <DownShiftSearch history={history} />
+          <DownShiftSearch handleDownshiftChange={handleDownshiftChange} />
         </Form>
       </div>
       <button
