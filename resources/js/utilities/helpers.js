@@ -1,7 +1,8 @@
 /* eslint-disable prefer-rest-params */
 import _ from 'lodash';
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Button, Card } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 /* eslint-disable import/prefer-default-export */
 export function debounce(func, wait, inmmediate) {
@@ -46,3 +47,9 @@ export const renderCategory = (id, categories) => {
   const categoryName = !_.isEmpty(categories) && categories[0].find((category) => category.id === id);
   return _.has(categoryName, 'category_name') ? categoryName.category_name : null;
 };
+
+export const nameLinkRenderer = ({ rowData: { name, id } }) => (<Link to={`/products/${id}`}>{name}</Link>);
+
+export const listActionsRenderer = (id, price, handleAddItemToCart) => (
+  <Button onClick={() => handleAddItemToCart(id, price)} content="Añadir">Comprar</Button>
+);
