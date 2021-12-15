@@ -1,24 +1,25 @@
-import { createSlice } from '@reduxjs/toolkit'
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
 
 export const categoriesSlice = createSlice({
-    name: 'categories',
-    initialState: {
-        loading: 'idle',
-        categories: []
+  name: 'categories',
+  initialState: {
+    loading: 'idle',
+    categories: [],
+  },
+  reducers: {
+    categoriesLoading: (state) => {
+      if (state.loading === 'idle') {
+        state.loading = 'pending';
+      }
     },
-    reducers: {
-        categoriesLoading: (state) => {
-            if (state.loading === 'idle') {
-                state.loading = 'pending';
-            }
-        },
-        categoriesAdded: (state, action) => {
-            if (state.loading === 'pending') {
-                state.loading = 'idle';
-                state.categories = (action.payload);
-            }
-        }
-    }
+    categoriesAdded: (state, action) => {
+      if (state.loading === 'pending') {
+        state.loading = 'idle';
+        state.categories = (action.payload);
+      }
+    },
+  },
 });
 
 export const { categoriesAdded, categoriesLoading } = categoriesSlice.actions;
