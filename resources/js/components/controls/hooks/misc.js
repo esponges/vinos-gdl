@@ -1,9 +1,12 @@
 import axios from 'axios';
 import _ from 'lodash';
 import {
-  useEffect, useState, useCallback, useMemo,
+  useEffect, useState, useCallback, useMemo, useContext,
 } from 'react';
 import queryString from 'query-string';
+import { useDispatch } from 'react-redux';
+import { Context } from '../../Context';
+import { addItemToCart } from '../../../store/cart/reducers';
 
 export const useEffectProducts = () => {
   const [cartCount, setCartCount] = useState(0);
@@ -41,3 +44,16 @@ export const useUrlParamsHandler = ({
   const newParams = _.pickBy({ ...(queryString.parse(location.search, { arrayFormat: 'index' })), ...result }, _.identity);
   history.replace(`${history.location.pathname}?${queryString.stringify(newParams, { arrayFormat: 'index' })}`);
 }, [key, serializer, history, location]);
+
+export const useAddItemToCart = () => {
+  const dispatch = useDispatch();
+  const context = useContext(Context);
+
+  const handleAddItemToCart = (id, itemCount = 1, price) => {
+    dispatch(addItemToCart(id));
+    const subTotal = price * itemCount;
+    context.notifyMinAmountRemaining(subTotal);
+  };
+
+  return handleAddItemToCart;
+};
