@@ -9,22 +9,15 @@ import {
 } from 'react-bootstrap';
 import { Context } from '../Context';
 import CustomLoader from '../CustomLoader';
-import { addItemToCart } from '../../store/cart/reducers';
+import { useAddItemToCart } from '../controls/hooks';
+import { getProduct } from '../../store/products';
 
-const SingleProduct = function ({ match }) {
+const SingleProduct = ({ match }) => {
   const [itemCount, setItemCount] = useState(1);
   const [product, setProduct] = useState({});
-  const dispatch = useDispatch();
-
   const context = useContext(Context);
-
-  const handleAddItemToCart = (e, id, price) => {
-    e.preventDefault();
-
-    dispatch(addItemToCart(id, itemCount, price));
-    const subTotal = price * itemCount;
-    context.notifyMinAmountRemaining(subTotal);
-  };
+  const handleAddItemToCart = useAddItemToCart();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     let isMounted = true; // avoid unmounted item warning
@@ -38,6 +31,8 @@ const SingleProduct = function ({ match }) {
       .catch((err) => {
         console.error(err);
       });
+    console.log('get product');
+    dispatch(getProduct(match.params.id));
     // get competidors info (links & price)
 
     return () => {
@@ -99,9 +94,9 @@ const SingleProduct = function ({ match }) {
                 <div className="col-6">
                   <Button
                     variant="primary"
-                    onClick={(e) => handleAddItemToCart(
-                      e,
+                    onClick={() => handleAddItemToCart(
                       product.id,
+                      itemCount,
                       product.price,
                     )}
                   >

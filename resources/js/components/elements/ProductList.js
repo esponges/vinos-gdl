@@ -1,22 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import _, { set } from 'lodash';
+import _ from 'lodash';
 import { Table, Column, AutoSizer } from 'react-virtualized';
 import { withRouter } from 'react-router';
 import { Form } from 'react-bootstrap';
 
 import 'react-virtualized/styles.css';
-import { renderCurrency, renderCategory } from '../../utilities/helpers';
-import { useUrlParams, useUrlParamsHandler } from '../controls/hooks/misc';
-import DownShiftSearch from '../index/DownShiftSearch';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import {
+  renderCurrency, renderCategory, nameLinkRenderer, listActionsRenderer,
+} from '../../utilities/helpers';
+import { useAddItemToCart, useUrlParams, useUrlParamsHandler } from '../controls/hooks/misc';
 
 const defaultParams = {
   sortBy: 'updatedAt', sortDir: 'DESC', search: '', page: '1',
 };
 
-const ProductList = function ({ history, location }) {
+const ProductList = ({ history, location }) => {
   const products = useSelector((state) => state.products.products);
   const categories = useSelector((state) => state.categories.categories);
   const [searchFilteredProducts, setSearchFilteredProducts] = useState([]);
@@ -32,7 +31,7 @@ const ProductList = function ({ history, location }) {
     setSearchFilteredProducts(filteredProducts);
   }, [urlParams.search]);
 
-  /* TODO, ADD ADD TO CART ACTION */
+  const handleAddItemToCart = useAddItemToCart();
 
   return (
     // Render your table
@@ -49,13 +48,14 @@ const ProductList = function ({ history, location }) {
             headerHeight={20}
             rowHeight={60}
             rowCount={areProductsSet ? productsListToUse.length : 0}
-            rowGetter={areProductsSet ? ({ index }) =>productsListToUse[index] : () => { }}
+            rowGetter={areProductsSet ? ({ index }) => productsListToUse[index] : () => { }}
             sortDirection={urlParams.sortDir}
           >
             <Column
               label="Nombre"
               dataKey="name"
               width={width * 0.7}
+              cellRenderer={nameLinkRenderer}
             />
             <Column
               width={width * 0.1}
@@ -73,6 +73,7 @@ const ProductList = function ({ history, location }) {
               width={width * 0.2}
               label=""
               dataKey=""
+              cellRenderer={({ rowData: { id, price } }) => listActionsRenderer(id, price, handleAddItemToCart)}
             />
           </Table>
         )}
