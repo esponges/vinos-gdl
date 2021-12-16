@@ -9,7 +9,9 @@ import 'react-virtualized/styles.css';
 import {
   renderCurrency, renderCategory, nameLinkRenderer, listActionsRenderer,
 } from '../../utilities/helpers';
-import { useAddItemToCart, useUrlParams, useUrlParamsHandler } from '../controls/hooks/misc';
+import {
+  useAddItemToCart, useUrlParams, useUrlParamsHandler, useWindowSize,
+} from '../controls/hooks/misc';
 
 const defaultParams = {
   sortBy: 'updatedAt', sortDir: 'DESC', search: '', page: '1',
@@ -33,6 +35,8 @@ const ProductList = ({ history, location }) => {
 
   const handleAddItemToCart = useAddItemToCart();
 
+  const { isMobile } = useWindowSize();
+
   return (
     // Render your table
     <div className="list__products">
@@ -52,28 +56,31 @@ const ProductList = ({ history, location }) => {
             sortDirection={urlParams.sortDir}
           >
             <Column
-              label="Nombre"
-              dataKey="name"
-              width={width * 0.7}
-              cellRenderer={nameLinkRenderer}
-            />
-            <Column
-              width={width * 0.1}
-              label="Categoría"
-              dataKey="category_id"
-              cellRenderer={({ cellData }) => renderCategory(cellData, categories)}
-            />
-            <Column
-              width={width * 0.1}
+              width={width * 0.1 * (isMobile ? 1.65 : 1)}
               label="Precio"
               dataKey="price"
-              cellRenderer={({ cellData }) => renderCurrency(cellData)}
+              cellRenderer={({ cellData }) => renderCurrency(cellData, isMobile)}
             />
+            <Column
+              label="Nombre"
+              dataKey="name"
+              width={width * 0.5 * (isMobile ? 1.2 : 1)}
+              cellRenderer={nameLinkRenderer}
+            />
+            {!isMobile
+              && (
+                <Column
+                  width={width * 0.1}
+                  label="Categoría"
+                  dataKey="category_id"
+                  cellRenderer={({ cellData }) => renderCategory(cellData, categories)}
+                />
+              )}
             <Column
               width={width * 0.2}
               label=""
               dataKey=""
-              cellRenderer={({ rowData: { id, price } }) => listActionsRenderer(id, price, handleAddItemToCart)}
+              cellRenderer={({ rowData: { id, price } }) => listActionsRenderer(id, price, handleAddItemToCart, isMobile)}
             />
           </Table>
         )}
