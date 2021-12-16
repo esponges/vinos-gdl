@@ -18,6 +18,7 @@ import DownShiftSearch from './DownShiftSearch';
 import { debounce } from '../../utilities/helpers';
 
 import CustomLoader from '../CustomLoader';
+import { useWindowSize } from '../controls/hooks/misc';
 
 library.add(fas, fab);
 
@@ -96,17 +97,22 @@ const IndexNavbar = ({
     };
   }, [prevScrollPos, visible]);
 
+  const { isMobile } = useWindowSize();
+
   return (
     <nav
       className={`navbar navbar-expand-lg fixed-top
             ${navbarBg ? 'navbar-light bg-light' : 'navbar-dark bg-dark'}`}
-      style={{ top: visible ? '0' : '-180px', transition: 'top 0.6s' }}
+      style={{ top: visible ? '0' : '-180px', transition: 'top 0.6s', padding: !isMobile ? '0.5rem 10%' : '0.1rem 1%' }}
     >
       <Link className="navbar-brand" to="/">VINOREO</Link>
       <div className="navbar-brand" id="product-search-form">
         <Form inline>
           <DownShiftSearch handleDownshiftChange={handleDownshiftChange} />
         </Form>
+      </div>
+      <div className="navbar-brand" id="product-search-form">
+        <Link className="navbar-brand" to="/products">{!isMobile ? 'Lista de precios' : 'Lista'}</Link>
       </div>
       <button
         className="navbar-toggler"
