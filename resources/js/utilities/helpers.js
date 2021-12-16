@@ -33,13 +33,19 @@ export const getProductImage = (productId) => (
   />
 );
 
-export const renderCurrency = (number) => {
-  const currencyNumber = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'MXN',
-  }).format(
-    number,
-  );
+export const renderCurrency = (number, isMobile = false) => {
+  let currencyNumber;
+  if (!isMobile) {
+    currencyNumber = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'MXN',
+    }).format(
+      number,
+    );
+  } else {
+    currencyNumber = `$${number}`;
+  }
+
   return currencyNumber;
 };
 
@@ -50,6 +56,6 @@ export const renderCategory = (id, categories) => {
 
 export const nameLinkRenderer = ({ rowData: { name, id } }) => (<Link to={`/products/${id}`}>{name}</Link>);
 
-export const listActionsRenderer = (id, price, handleAddItemToCart) => (
-  <Button onClick={() => handleAddItemToCart(id, price)} content="Añadir">Comprar</Button>
+export const listActionsRenderer = (id, price, handleAddItemToCart, isMobile = false) => (
+  <Button onClick={() => handleAddItemToCart(id, price)} content="Añadir">{!isMobile ? 'comprar' : '+'}</Button>
 );

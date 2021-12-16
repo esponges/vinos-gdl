@@ -96,8 +96,8 @@ const SingleProduct = ({ match }) => {
                     variant="primary"
                     onClick={() => handleAddItemToCart(
                       product.id,
-                      itemCount,
                       product.price,
+                      itemCount,
                     )}
                   >
                     +

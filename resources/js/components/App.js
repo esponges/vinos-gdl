@@ -36,7 +36,7 @@ import UnsuccessfulPayment from './checkout/PayPal/UnsuccessfulPayment';
 import { fetchCartItems } from '../store/cart/reducers';
 import ProductList from './elements/ProductList';
 
-const App = function () {
+const App = () => {
   const dispatch = useDispatch();
   const productsByCategories = useSelector((state) => state.categories.categories);
   const cartItemCount = useSelector((state) => state.cart.cartTotal);
