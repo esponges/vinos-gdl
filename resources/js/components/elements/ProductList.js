@@ -6,6 +6,7 @@ import { withRouter } from 'react-router';
 import { Form } from 'react-bootstrap';
 
 import 'react-virtualized/styles.css';
+import { createSelector } from 'reselect';
 import {
   renderCurrency, renderCategory, nameLinkRenderer, listActionsRenderer,
 } from '../../utilities/helpers';
@@ -31,6 +32,7 @@ AutoSizer.prototype.render = function render() {
 
 const ProductList = ({ history, location }) => {
   const products = useSelector((state) => state.products.products);
+  const orderedProductsByCategoryAndAlphabetical = createSelector(products, (prods) => )
   const categories = useSelector((state) => state.categories.categories);
   const [searchFilteredProducts, setSearchFilteredProducts] = useState([]);
 
