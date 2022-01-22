@@ -1,59 +1,100 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import _ from 'lodash';
+import {
+  useEffect, useState, useCallback, useMemo, useContext,
+} from 'react';
+import queryString from 'query-string';
+import { useDispatch } from 'react-redux';
+import { Context } from '../../Context';
+import { addItemToCart } from '../../../store/cart/reducers';
 
 export const useEffectProducts = () => {
-    const [error, setError] = useState(null);
-    const [products, setProducts] = useState(null);
-    const [prods, setProds] = useState("");
-    const [cartCount, setCartCount] = useState(0);
-    const [cart, setCart] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
-    /* Remove this from context after setting paypal in back end  */
-    const getCartContent = async () => {
-        const res = await axios
-            .get("cart")
-            .then((res) => {
-                setCart(Object.values(res.data));
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        return res;
-    };
+  useEffect(() => {
+    axios.get('/cart/count').then((res) => {
+      setCartCount(res.data[0]);
+    });
+  }, []);
 
-    useEffect(() => {
-        axios
-            .get("/categories")
-            .then((res) => {
-                setProducts(res.data);
-            })
-            .catch((err) => {
-                setError(err.message);
-            });
+  return {
+    cartCount,
+    setCartCount,
+  };
+};
 
-        axios
-            .get("/products")
-            .then((res) => {
-                setProds(res.data);
-            })
-            .catch((err) => {
-                setError(err.message);
-            });
+export const useUrlParams = (query, defaultParams) => useMemo(() => {
+  const params = queryString.parse(query, { arrayFormat: 'index' });
+  const defaultsKeysValues = _.mapValues(defaultParams, (value, key) => (_.isFunction(value) ? value(params[key]) : _.has(params, key) ? params[key] : value));
+  return { ...params, ...defaultsKeysValues };
+}, [query, defaultParams]);
 
-        getCartContent();
+export const useUrlParamsHandler = ({
+  history, location, key, serializer = _.identity,
+}) => useCallback((source, ...rest) => {
+  let result = {};
+  if (_.isUndefined(key)) {
+    result = serializer(source, ...rest);
+  } else if (_.has(source, 'target.value')) {
+    result[key] = serializer(source.target.value);
+  } else {
+    result[key] = serializer(source, ...rest);
+  }
 
-        axios.get("/cart/count").then((res) => {
-            setCartCount(res.data[0]);
-        });
-    }, []);
+  const newParams = _.pickBy({ ...(queryString.parse(location.search, { arrayFormat: 'index' })), ...result }, _.identity);
+  history.replace(`${history.location.pathname}?${queryString.stringify(newParams, { arrayFormat: 'index' })}`);
+}, [key, serializer, history, location]);
 
-    return {
-        products,
-        prods,
-        error,
-        cartCount,
-        cart,
-        setCartCount,
-        getCartContent,
-    };
+export const useAddItemToCart = () => {
+  const dispatch = useDispatch();
+  const context = useContext(Context);
+
+  const handleAddItemToCart = (id, price, itemCount = 1) => {
+    dispatch(addItemToCart(id));
+
+    const subTotal = price * itemCount;
+    context.notifyMinAmountRemaining(subTotal);
+  };
+
+  return handleAddItemToCart;
+};
+
+const getDeviceScreenSize = (width) => {
+  if (width < 415) {
+    return 'mobile';
+  }
+  if (width < 469) {
+    return 'tablet';
+  }
+  return 'desktop';
+};
+
+export const useWindowSize = () => {
+  // Initialize state with undefined width/height so server and client renders match
+  // Learn more here: https://joshwcomeau.com/react/the-perils-of-rehydration/
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+    screenType: undefined,
+  });
+  useEffect(() => {
+    // Handler to call on window resize
+    function handleResize() {
+      // Set window width/height to state
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+        screenType: getDeviceScreenSize(window.innerWidth),
+        isMobile: getDeviceScreenSize(window.innerWidth) === 'mobile',
+      });
+    }
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    // Call handler right away so state gets updated with initial window size
+    handleResize();
+    // Remove event listener on cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Empty array ensures that effect is only run on mount
+  // console.log('windowsize', windowSize);
+  return { ...windowSize };
 };

@@ -6,29 +6,13 @@
     margin: 1rem;
 }
 
-// @media (max-width: 415px) {
-//     .col-3 {
-//         max-width: 100%;
-//         padding: 0;
-//     }
-// }
-
-/* Navbar */
-
 .navbar {
     padding-top: 1.5%;
     padding: 0.5rem 10%;
 }
 
-@media (max-width: 801px) {
-    .navbar {
-        // padding: 0% 2%;
-        // padding: 0px;
-    }
-}
-
 .nav-link {
-    padding: 0px;
+    padding: 20px 0;
 }
 .navbar-dark .navbar-nav .nav-link {
     color: #6492f3;
@@ -251,10 +235,6 @@
         width: 100px;
         margin: 0px;
     }
-
-    #product-search-form {
-        padding-top: 3%;
-    }
 }
 
 #vinoreo-logo-header {
@@ -338,6 +318,7 @@
 #cart-qty-btn {
     background-color: #3490dc;
     border-color: #3490dc;
+    border-radius: 10px;
 }
 
 /* Loader */
@@ -376,6 +357,36 @@
     margin-bottom: 0.5rem;
 }
 
-.card-body {
-    padding: 0.5rem;
+.card {
+    text-align: center;
+    .card-body {
+        padding: 0.5rem;
+        text-align: center;
+        .row {
+            .col-6 {
+                input {
+                    width: 50%;
+                    text-align: center;
+                    display: inline;
+                    float: right;
+                }
+                .btn-primary {
+                    width: 50%;
+                    float: left;
+                }
+            }
+        }
+    }
+}
+
+.table-bordered td {
+    vertical-align: middle;
+}
+
+a {
+    color: none;
+}
+
+.payment-mode {
+    margin-top: 1rem;
 }

@@ -1,16 +1,18 @@
 import React, { useContext } from "react";
+import _ from "lodash";
 import { Context } from "../Context";
 
 import ProductCard from "../elements/ProductCard";
 import CustomLoader from "../CustomLoader";
+import { useSelector } from "react-redux";
 
-const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
+const BestSellers = ({ setItemCount, itemCount }) => {
     const context = useContext(Context);
-    const bestSellers = context.allProducts;
+    const products = useSelector(state => state.categories.categories)
 
     return (
         <div>
-            {!context.loader && bestSellers.length > 0 ? (
+            {!context.loader && !_.isEmpty(products) && !_.isEmpty(products.best_sellers) ? (
                 /* somehow I was getting empty object for bestSellers which was crashing app */
                 <section className="container mb-2" id="best_sellers">
                     <h1
@@ -25,8 +27,7 @@ const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
                         </span>
                     </h1>
                     <div className="row mt-3">
-                        {/* {console.log('im gonna map now', 'best sellers btw is ', bestSellers)} */}
-                        {bestSellers.map((product) => {
+                        {products.best_sellers.map((product) => {
                             if (product.best_seller === 1) {
                                 return (
                                     <ProductCard
@@ -35,14 +36,13 @@ const BestSellers = ({ setItemCount, handleItemAddClick, itemCount }) => {
                                         product={product}
                                         itemCount={itemCount}
                                         setItemCount={setItemCount}
-                                        handleItemAddClick={handleItemAddClick}
                                     />
                                 );
                             }
                         })}
                     </div>
                 </section>
-            ) : bestSellers.length > 0 ? (
+            ) : !_.isEmpty(products) ? (
                 <CustomLoader />
             ) : (
                 ""
