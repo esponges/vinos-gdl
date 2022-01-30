@@ -11,7 +11,7 @@ import { Context } from '../Context';
 import { fetchCartItems } from '../../store/cart/reducers';
 import { getProductImage } from '../../utilities/helpers';
 
-const Cart = function ({ cartCountUpdate }) {
+const Cart = ({ cartCountUpdate }) => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   // eslint-disable-next-line max-len
