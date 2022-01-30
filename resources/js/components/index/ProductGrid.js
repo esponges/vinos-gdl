@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { Context } from '../Context';
+import { useSelector } from 'react-redux';
 
 import CustomLoader from '../CustomLoader';
 import BestSellers from './BestSellers';
@@ -14,7 +15,8 @@ import ProductCard from '../elements/ProductCard';
 
 library.add(fas);
 
-const ProductGrid = function ({ productsByCategories }) {
+const ProductGrid = () => {
+  const productsByCategories = useSelector((state) => state.categories.categories);
   const [itemCount, setItemCount] = useState(1);
   const categories = productsByCategories;
   const context = useContext(Context);
@@ -56,7 +58,7 @@ const ProductGrid = function ({ productsByCategories }) {
                 </h1>
                 <div className="row mt-3">
                   {category.products.map((product) => {
-                    if (product.featured) {
+                    if (product.featured && product.is_available) {
                       // filter only featured products
                       return (
                         <ProductCard
