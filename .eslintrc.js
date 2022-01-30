@@ -35,5 +35,6 @@ module.exports = {
     'no-console': 'off',
     'no-unused-vars': 'off',
     'default-param-last': 'off',
+    'line-breaks': 'windows',
   },
 };
