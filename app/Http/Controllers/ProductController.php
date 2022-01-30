@@ -15,8 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('is_available', '=', 1)
-            ->get()->sortBy([['category_id', 'asc'], ['name', 'asc']]);
+        $products = Product::get()->sortBy([['category_id', 'asc'], ['name', 'asc']]);
 
         return response()->json($products, 200);
     }

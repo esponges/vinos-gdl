@@ -95,6 +95,5 @@ export const useWindowSize = () => {
     // Remove event listener on cleanup
     return () => window.removeEventListener('resize', handleResize);
   }, []); // Empty array ensures that effect is only run on mount
-  // console.log('windowsize', windowSize);
   return { ...windowSize };
 };

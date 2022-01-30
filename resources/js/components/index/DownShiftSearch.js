@@ -2,13 +2,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import Downshift from 'downshift';
 
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { Context } from '../Context';
 import { useSelector } from 'react-redux';
 
 library.add(fab, fas);
@@ -105,6 +104,7 @@ const DownShiftSearch = function ({ handleDownshiftChange }) {
                           {' '}
                           $
                           {item.price}
+                          {item.is_available ? null : ' - Agotado'}
                         </li>
                       ))
                     : null}

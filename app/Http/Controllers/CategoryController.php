@@ -24,7 +24,6 @@ class CategoryController extends Controller
             $productsFromCategory = $category
                 ->products()
                 ->orderBy('score', 'desc')
-                ->where('is_available', 1)
                 ->get(); // call relationship
 
             array_push($categoriesProducts, array(
@@ -34,7 +33,7 @@ class CategoryController extends Controller
             ));
         }
 
-        $bestSellers = Product::where('best_seller', 1)->get();
+        $bestSellers = Product::where('best_seller', 1)->where('is_available', 1)->get();
 
         return response()->json([$categoriesProducts, 'best_sellers' => $bestSellers], 200);
     }
