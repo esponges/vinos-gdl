@@ -38,7 +38,6 @@ import ProductList from './elements/ProductList';
 
 const App = () => {
   const dispatch = useDispatch();
-  const productsByCategories = useSelector((state) => state.categories.categories);
   const cartItemCount = useSelector((state) => state.cart.cartTotal);
 
   const [loggedIn, setLoggedIn] = useState(false);
@@ -204,7 +203,7 @@ const App = () => {
 
           <Route path="/">
             <MastHead />
-            <ProductGrid productsByCategories={productsByCategories} />
+            <ProductGrid />
           </Route>
         </Switch>
       </div>
