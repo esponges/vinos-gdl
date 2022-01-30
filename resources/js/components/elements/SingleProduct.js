@@ -31,7 +31,6 @@ const SingleProduct = ({ match }) => {
       .catch((err) => {
         console.error(err);
       });
-    console.log('get product');
     dispatch(getProduct(match.params.id));
     // get competidors info (links & price)
 
