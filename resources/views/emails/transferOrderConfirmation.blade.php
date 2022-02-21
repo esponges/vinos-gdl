@@ -23,7 +23,7 @@ CLABE interbancaria <b>0123 2001 5371 445882</b><br>
 Nombre <b>Tomas Sanchez Garcia</b>
 N° de cuenta <b>153 714 4588</b><br>
 Banco <b>BBVA BANCOMER</b><br><br>
-Por favor envía tu comprobante de pago junto a tu n° de orden al Whatsapp <b>33 20 19 24 20</b> o al correo electrónico <b>hola@vinoreo.mx</b> para procesar tu envío
+Por favor envía tu comprobante de pago junto a tu n° de orden al Whatsapp <b>33 23 63 33 43</b> o al correo electrónico <b>hola@vinoreo.mx</b> para procesar tu envío
 <br>
 
 <b>Detalles de entrega</b>
