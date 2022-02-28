@@ -11,6 +11,7 @@ import { Context } from '../Context';
 import CustomLoader from '../CustomLoader';
 import { useAddItemToCart } from '../controls/hooks';
 import { getProduct } from '../../store/products';
+import { getProductImage } from '../../utilities/helpers';
 
 const SingleProduct = ({ match }) => {
   const [itemCount, setItemCount] = useState(1);
@@ -20,24 +21,17 @@ const SingleProduct = ({ match }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let isMounted = true; // avoid unmounted item warning
-
-    // get product info
-    axios
-      .get(`/products/${match.params.id}`)
-      .then((res) => {
-        if (isMounted) setProduct(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    dispatch(getProduct(match.params.id));
-    // get competidors info (links & price)
-
-    return () => {
-      isMounted = false;
-    };
+    const dispatchGetProduct = async (product) => {
+      const res = await dispatch(getProduct(match.params.id));
+      setProduct(res);
+    }
+    dispatchGetProduct();
   }, [match.params.id]);
+
+  const addItemToCart = (id, price) => {
+    handleAddItemToCart(id, price, itemCount);
+    setItemCount(1);
+  }
 
   return (
     <div
@@ -46,13 +40,11 @@ const SingleProduct = ({ match }) => {
     >
       {!_.isEmpty(product) && !context.loader ? (
         <Card>
-          <Card.Img
-            variant="top"
-            src={product.id && `/img/products/${product.id}.jpg`}
-          />
+          <div>
+            {getProductImage(product.id, { minWidth: '35%' })}
+          </div>
           <Card.Body>
             <Card.Title>{product.name}</Card.Title>
-            {/* <Card.Text>{product.description}</Card.Text> */}
           </Card.Body>
           <ListGroup
             className="list-group-flush"
@@ -67,13 +59,6 @@ const SingleProduct = ({ match }) => {
                 }).format(product.price)}
               </b>
             </ListGroupItem>
-            {product.comp_price && (
-            <Card.Text id="single-competitor-price">
-              Prom. competencia: $
-              {product.comp_price}
-              *
-            </Card.Text>
-            )}
           </ListGroup>
           <Card.Body>
             {product.is_available ? (
@@ -93,10 +78,9 @@ const SingleProduct = ({ match }) => {
                 <div className="col-6">
                   <Button
                     variant="primary"
-                    onClick={() => handleAddItemToCart(
+                    onClick={() => addItemToCart(
                       product.id,
                       product.price,
-                      itemCount,
                     )}
                   >
                     +
