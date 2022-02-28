@@ -230,7 +230,7 @@ const IndexNavbar = ({
 
       {/* floating btns */}
       <a
-        href="https://wa.me/message/U6TWALXLFVMJF1"
+        href="https://wa.me/message/FHZNST5IP6LFB1"
         className="material-icons floating-btn-whats"
       >
         <FontAwesomeIcon icon={faWhatsapp} />

@@ -52,7 +52,7 @@
                             <li>Banco <b>Banorte</b><br><br></li>
                             </ul>
                             <p>Por favor envía tu comprobante de pago junto a tu número de orden al Whatsapp
-                                <b>33 31 67 31 50</b>
+                                <b>33 23 63 33 43</b>
                                 o al correo electrónico
                                 <b>hola@vinoreo.mx</b>
                                 &nbsp;para procesar tu envío
