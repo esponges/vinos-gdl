@@ -37,7 +37,10 @@ const ProductCard = React.memo(({ product, setItemCount, itemCount }) => {
             pathname: `/products/${product.id}`,
           }}
         >
-          {getProductImage(product.id)}
+          {getProductImage(product.id, {
+            width: '85px',
+            height: '85px'
+          })}
         </Link>
         <Card.Body>
           <Card.Title><Link to={`/products/${product.id}`}>{product.name}</Link></Card.Title>
@@ -49,13 +52,6 @@ const ProductCard = React.memo(({ product, setItemCount, itemCount }) => {
               }).format(product.price)}
             </b>
           </Card.Text>
-          {product.comp_price && (
-            <Card.Text id="grid-competitor-price">
-              Prom. competencia: $
-              {product.comp_price}
-              *
-            </Card.Text>
-          )}
           <div className="btn-group">
             <div className="d-none d-xl-block">
               <input

@@ -50,7 +50,7 @@ export const useAddItemToCart = () => {
   const context = useContext(Context);
 
   const handleAddItemToCart = (id, price, itemCount = 1) => {
-    dispatch(addItemToCart(id));
+    dispatch(addItemToCart(id, itemCount));
 
     const subTotal = price * itemCount;
     context.notifyMinAmountRemaining(subTotal);
