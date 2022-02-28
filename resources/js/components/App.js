@@ -93,6 +93,8 @@ const App = () => {
         `Sólo agrega MX${1500 - newCartTotal
         } más para proceder al checkout`,
       );
+    } else {
+      toast.success('Producto añadido al carrito');
     }
   };
 
