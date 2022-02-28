@@ -92,8 +92,10 @@ const Cart = ({ cartCountUpdate }) => {
               <tr>
                 <td>
                   <h5>{product.name}</h5>
-                  <br />
-                  {getProductImage(product.id)}
+                  {getProductImage(product.id, {
+                    width: '85px',
+                    height: '85px'
+                  })}
                 </td>
                 <td>
                   <div
@@ -154,16 +156,16 @@ const Cart = ({ cartCountUpdate }) => {
           </b>
         </h3>
         {cartTotal && (cartTotal < 1500) && (
-        <Alert variant="warning">
-          Te faltan
-          {' '}
-          {new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'MXN',
-          }).format(1500 - cartTotal)}
-          {' '}
-          para completar tu pedido
-        </Alert>
+          <Alert variant="warning">
+            Te faltan
+            {' '}
+            {new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'MXN',
+            }).format(1500 - cartTotal)}
+            {' '}
+            para completar tu pedido
+          </Alert>
         )}
         {cartTotal === 0 ? (
           <Link to="/">

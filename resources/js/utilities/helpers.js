@@ -21,12 +21,11 @@ export function debounce(func, wait, inmmediate) {
   };
 }
 
-export const getProductImage = (productId) => (
+export const getProductImage = (productId, styleProps) => (
   <Card.Img
     src={`/img/products/${productId}.jpg`}
     style={{
-      width: '85px',
-      height: '85px',
+      ...styleProps,
     }}
     onError={(e) => { e.target.onerror = null; e.target.src = '/img/products/no-product.jpg'; }}
     alt={`Product Id ${productId}`}
